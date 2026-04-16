@@ -1,0 +1,5 @@
+git add . (Prepara los cambios).
+
+git commit -m "Hice el ejercicio 2" (Etiqueta el cambio).
+
+git push (Sube el cambio).

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tarea: 20 Etiquetas HTML Semánticas</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+        section { margin-bottom: 30px; padding: 15px; border-left: 5px solid #2196F3; background-color: #f9f9f9; }
+        h2 { color: #333; border-bottom: 2px solid #ccc; }
+        hr { border: 0; height: 1px; background: #eee; margin: 20px 0; }
+        dialog { position: relative; margin-top: 10px; border: 1px solid #000; } /* Para que no flote sobre todo */
+    </style>
+</head>
+<body>
+
+    <h1>Investigación de Etiquetas HTML</h1>
+
+    <section>
+        <h2>1. Estructura y Semántica</h2>
+        
+        <details>
+            <summary>Ver especificaciones técnicas</summary>
+            <ul>
+                <li>Procesador: Octa-core</li>
+                <li>RAM: 16GB</li>
+            </ul>
+        </details>
+        <hr>
+
+        <details>
+            <summary>¿Qué es HTML5?</summary>
+            <p>Es la quinta revisión importante del lenguaje básico de la World Wide Web.</p>
+        </details>
+        <hr>
+
+        <figure>
+            <img src="LOGOHTML.WEBP" alt="Logo de HTML5" width="150">
+        </figure>
+        <hr>
+
+        <figure>
+            <img src="LOGOHTML.WEBP" alt="Logo de HTML5" width="150">
+            <figcaption>Logo oficial de HTML5.</figcaption>
+        </figure>
+        <hr>
+
+        <p>La entrega es el <time datetime="2026-04-20">20 de abril</time>.</p>
+        <hr>
+
+        <p>En este examen, es vital estudiar las etiquetas <mark>semánticas</mark>.</p>
+    </section>
+
+    <section>
+        <h2>2. Herramientas de Texto</h2>
+
+        <p>Mi libro favorito es <cite>El amor en los tiempos del cólera</cite> de Gabo.</p>
+        <hr>
+
+        <p>El estándar <abbr title="World Wide Web Consortium">W3C</abbr> regula la web.</p>
+        <hr>
+
+        <p><dfn>JavaScript</dfn> es un lenguaje de programación interpretado.</p>
+        <hr>
+
+        <p>¡Oferta! Antes <s>$100.00</s> ahora solo $75.00.</p>
+        <hr>
+
+        <p>Para guardar los cambios, presiona <kbd>Ctrl</kbd> + <kbd>S</kbd>.</p>
+        <hr>
+
+        <p>El servidor respondió: <samp>404 Not Found</samp>.</p>
+    </section>
+
+    <section>
+        <h2>3. Elementos Interactivos</h2>
+
+        <label>Elige un navegador:</label>
+        <input list="browsers">
+        <datalist id="browsers">
+            <option value="Edge">
+            <option value="Firefox">
+            <option value="Chrome">
+        </datalist>
+        <hr>
+
+        <p>Uso del almacenamiento: <meter value="80" min="0" max="100">80%</meter></p>
+        <hr>
+
+        <label>Descargando archivo:</label>
+        <progress value="45" max="100">45%</progress>
+        <hr>
+
+        <form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+            <input type="number" id="a" value="10"> +
+            <input type="number" id="b" value="20"> =
+            <output name="x" for="a b">30</output>
+        </form>
+        <hr>
+
+        <dialog open>
+            <p>¿Deseas guardar los cambios antes de salir?</p>
+            <button>Sí</button>
+        </dialog>
+    </section>
+
+    <section>
+        <h2>4. Control de Contenido e Idioma</h2>
+
+        <ruby>
+            明日 <rt>Ashita</rt>
+        </ruby>
+        <hr>
+
+        <ul>
+            <li>Usuario <bdi>إيان</bdi>: 150 puntos</li>
+            <li>Usuario <bdi>Juan</bdi>: 120 puntos</li>
+        </ul>
+        <hr>
+
+        <div style="width: 150px; border: 1px solid red;">
+        <p>
+            Esta es una palabra exageradamente larga: 
+            Super<wbr>cali<wbr>fragi<wbr>listico<wbr>espiali<wbr>dosso.
+        </p>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+/* Trae la fuente Poppins desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0; /* Quita márgenes por defecto */
+    font-family: 'Poppins', sans-serif; /* Aplica la fuente moderna */
+    background: linear-gradient(135deg, #fdfcfb 0%, #e2ebf0 100%); /* Fondo con degradado suave */
+    color: #444; /* Color de texto gris oscuro */
+    line-height: 1.8; /* Mayor espacio entre renglones */
+}
+
+/* Bloque superior con degradado y forma curva */
+header {
+    background: linear-gradient(to right, #B3E5FC, #81D4FA); /* Degradado de celeste a azul */
+    color: white; /* Texto blanco */
+    text-align: center; /* Centra el contenido */
+    padding: 4rem 1rem; /* Espaciado interno generoso */
+    clip-path: ellipse(100% 100% at 50% 0%); /* Crea el recorte curvo en la parte inferior */
+}
+
+h1 {
+    font-size: 2.8rem; /* Tamaño de letra grande */
+    margin: 0; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Sombra suave tras el texto */
+    letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+header span {
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.2); /* Fondo blanco con transparencia */
+    padding: 5px 20px;
+    border-radius: 50px; /* Bordes totalmente redondeados */
+    font-weight: 300;
+}
+
+/* Tarjeta principal que flota sobre el header */
+.contenedor {
+    width: 85%;
+    max-width: 900px;
+    margin: -50px auto 40px; /* Margen negativo para subir la tarjeta */
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05); /* Sombra profunda y suave */
+}
+
+.seccion {
+    margin-bottom: 40px; /* Separación entre bloques */
+}
+
+/* Títulos con adorno lateral */
+.titulo-seccion {
+    color: #0288D1;
+    font-size: 1.5rem;
+    border-left: 5px solid #81D4FA; /* Línea celeste a la izquierda */
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+
+/* Contenedor flexible para foto y datos */
+.perfil-flex {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos bajen en pantallas pequeñas */
+    align-items: center; /* Centra verticalmente */
+    gap: 30px; /* Espacio entre foto y texto */
+    background: #f9fdfd;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.foto-perfil {
+    width: 160px;
+    height: 160px;
+    border-radius: 30px; /* Bordes redondeados modernos */
+    border: 5px solid white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
+}
+
+/* Lista con emoji personalizado */
+.lista-estudios {
+    list-style-type: '🌸 '; /* Cambia los puntos por flores */
+    padding-left: 25px;
+}
+
+/* Estilo de etiquetas pequeñas */
+em {
+    color: #0277BD;
+    background-color: #E1F5FE;
+    padding: 3px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-style: normal; /* Quita la cursiva */
+}
+
+/* Contenedor de habilidades en filas */
+.habilidades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+/* Estilo de "píldoras" para cada habilidad */
+.habilidades li {
+    background: #E0F7FA;
+    color: #00838F;
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid #B2EBF2;
+    transition: 0.3s; /* Animación suave al pasar el mouse */
+}
+
+.habilidades li:hover {
+    background: #B2EBF2;
+    transform: translateY(-3px); /* Pequeño salto hacia arriba */
+}
+
+/* Tabla con diseño moderno */
+.tabla-moderna {
+    width: 100%;
+    border-collapse: collapse; /* Quita espacios entre celdas */
+    margin-top: 20px;
+    overflow: hidden; /* Corta esquinas para que el borde redondeado funcione */
+    border-radius: 12px;
+}
+
+.tabla-moderna th {
+    background-color: #81D4FA; /* Fondo de encabezados */
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+.tabla-moderna td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0; /* Línea divisoria sutil */
+}
+
+.tabla-moderna tr:hover {
+    background-color: #f1faff; /* Resalte al pasar el cursor por la fila */
+}
