@@ -1,47 +1,58 @@
 body {
     background: #f4f7f6;
+    /* Flexbox: Se usa para centrar el formulario perfectamente en pantalla */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100vh; /* Asegura que el body ocupe todo el alto de la ventana */
     margin: 0;
 }
+
 .form-container {
     background: #fff;
     padding: 30px;
     border-radius: 12px;
+    /* Sombra para dar efecto de elevación (profundidad) */
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 450px;
+    max-width: 450px; /* Evita que el formulario se estire demasiado en pantallas grandes */
 }
+
 h2 {
     text-align: center;
     color: #2c3e50;
     margin-bottom: 25px;
     font-size: 1.5rem;
 }
+
 .input-group {
-    margin-bottom: 18px;
+    margin-bottom: 18px; /* Espaciado uniforme entre cada campo */
 }
+
 label {
-    display: block;
+    display: block; /* Obliga a la etiqueta a estar arriba del input */
     margin-bottom: 8px;
     color: #34495e;
     font-weight: 600;
 }
+
 input {
     width: 100%;
     padding: 12px;
     border: 1px solid #dcdde1;
     border-radius: 6px;
-    box-sizing: border-box;
-    transition: 0.3s;
+    /* Crucial: Incluye el padding dentro del ancho total para no romper el diseño */
+    box-sizing: border-box; 
+    transition: 0.3s; /* Suaviza el cambio de color al hacer clic o pasar el mouse */
 }
+
 input:focus {
+    /* Resalta el campo cuando el usuario está escribiendo */
     border-color: #3498db;
     outline: none;
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
+
 .btn-submit {
     width: 100%;
     padding: 14px;
@@ -49,11 +60,11 @@ input:focus {
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 1rem;
     font-weight: bold;
-    cursor: pointer;
+    cursor: pointer; /* Cambia el cursor a una 'mano' para indicar que es clickeable */
     transition: 0.3s;
 }
+
 .btn-submit:hover {
-    background: #2980b9;
+    background: #2980b9; /* Oscurece el botón al pasar el mouse (feedback visual) */
 }
