@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Graduados - ULEAM</title>
+    <!-- Tailwind CSS para diseño profesional -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --uleam-blue: #004a99;
+            --uleam-green: #00a859;
+        }
+        .bg-uleam-blue { background-color: var(--uleam-blue); }
+        .text-uleam-blue { color: var(--uleam-blue); }
+        .btn-uleam {
+            background-color: var(--uleam-blue);
+            transition: all 0.3s ease;
+        }
+        .btn-uleam:hover { background-color: var(--uleam-green); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <!-- Header / Logo -->
+    <header class="bg-white shadow-sm p-4 border-b-4 border-green-600">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-uleam-blue">ULEAM | <span class="text-gray-600 font-light">Seguimiento de Graduados</span></h1>
+        </div>
+    </header>
+
+    <!-- Formulario Principal -->
+    <main class="flex-grow container mx-auto px-4 py-10">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-uleam-blue p-6 text-white text-center">
+                <h2 class="text-xl font-semibold">Formulario de Registro Académico</h2>
+                <p class="text-blue-100 text-sm">Completa tus datos para actualizar tu perfil en el sistema</p>
+            </div>
+
+            <form id="formRegistro" class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Cédula -->
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700">Cédula de Identidad</label>
+                    <input type="text" id="cedula" maxlength="10" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+
+                <!-- Nombres -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nombres</label>
+                    <input type="text" id="nombres" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Apellidos -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Apellidos</label>
+                    <input type="text" id="apellidos" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Carrera (Cargar dinámicamente) -->
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700">Carrera</label>
+                    <select id="id_carrera" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500 bg-white">
+                        <option value="">Cargando carreras...</option>
+                    </select>
+                </div>
+
+                <!-- Año de Graduación -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Año de Graduación</label>
+                    <input type="number" id="año_graduacion" min="1970" max="2026" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Género -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Género</label>
+                    <select id="genero" required 
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500 bg-white">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Envío -->
+                <div class="col-span-1 md:col-span-2 pt-4">
+                    <button type="submit" id="btnEnviar"
+                        class="w-full btn-uleam text-white font-bold py-3 px-4 rounded-md shadow-md focus:outline-none">
+                        REGISTRAR INFORMACIÓN
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
