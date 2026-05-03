@@ -1,0 +1,70 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 4 - Bucles y Operaciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Procesamiento de Operaciones Matemáticas</h2>
+        <p>Los resultados se mostrarán en ventanas emergentes.</p>
+        <button onclick="ejecutarTarea()">Comenzar Tarea</button>
+    </div>
+
+    <script>
+        function ejecutarTarea() {
+            // Ingreso de 2 números
+            var n1 = parseFloat(prompt("Ingrese el primer número:"));
+            var n2 = parseFloat(prompt("Ingrese el segundo número:"));
+            var resultado;
+
+            // Bucle de 5 iteraciones
+            for (var i = 1; i <= 5; i++) {
+                if (i === 1) {
+                    resultado = n1 + n2;
+                    alert("Iteración 1: SUMA\nEl resultado de " + n1 + " + " + n2 + " es: " + resultado);
+                } 
+                else if (i === 2) {
+                    resultado = n1 - n2;
+                    alert("Iteración 2: RESTA\nEl resultado de " + n1 + " - " + n2 + " es: " + resultado);
+                } 
+                else if (i === 3) {
+                    resultado = n1 * n2;
+                    alert("Iteración 3: MULTIPLICACIÓN\nEl resultado de " + n1 + " * " + n2 + " es: " + resultado);
+                } 
+                else if (i === 4) {
+                    if (n2 !== 0) {
+                        resultado = n1 / n2;
+                        alert("Iteración 4: DIVISIÓN\nEl resultado de " + n1 + " / " + n2 + " es: " + resultado);
+                    } else {
+                        alert("Iteración 4: DIVISIÓN\nNo se puede dividir por cero.");
+                    }
+                } 
+                else if (i === 5) {
+                    resultado = n1 % n2;
+                    alert("Iteración 5: MOD(%)\nEl residuo de " + n1 + " % " + n2 + " es: " + resultado);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

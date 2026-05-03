@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript: Variables</title>
+</head>
+<body>
+    <script type="text/javascript">
+        
+        // --- 1. Definición de variables ---
+        // Se pueden declarar una por una
+        var mi_variable_1;
+        var mi_variable_2;
+
+        // O varias en una sola línea separadas por comas
+        var mi_variable_1, mi_variable_2;
+
+        // --- 2. Inicialización de variables ---
+        
+        // Asignamos un valor numérico
+        mi_variable_1 = 30;
+
+        // Asignamos un valor basado en otra variable (30 + 10)
+        mi_variable_2 = mi_variable_1 + 10;
+
+        // Mostramos el resultado de la suma
+        alert("El valor de mi_variable_2 es: " + mi_variable_2); // Debería salir 40
+
+        // --- 3. Inicialización mediante prompt ---
+        // El valor que introduzca el usuario se guardará en mi_variable_3
+        var mi_variable_3 = prompt('Introduce un valor:');
+
+        // Mostramos lo que el usuario escribió
+        alert("Has introducido: " + mi_variable_3);
+    </script>
+</body>
+</html>

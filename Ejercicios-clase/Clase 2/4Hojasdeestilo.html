@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hojas de estilo CSS</title>
+
+    <style>
+        /* El siguiente código CSS establece el color del texto de los párrafos a rojo y el fondo a amarillo. */
+        p {
+            color: red; 
+            background: yellow;
+        }
+
+        .dudoso {
+            color: red;
+        }
+
+        .revisado {
+            color: blue;
+        }
+    </style>
+    <!-- El siguiente código CSS vincula una hoja de estilo externa llamada "miweb.css" al documento HTML. -->
+    <link rel="stylesheet" href="miweb.css" type="text/css">
+</head>
+<body>  
+    <p>
+        Este párrafo 
+        <span class="dudoso">largo</span> 
+        deberá ser corregido por el 
+        <span class="revisado">director general</span>
+    </p>
+</body>
+</html>

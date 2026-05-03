@@ -1,0 +1,29 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicios JavaScript: Sintaxis</title>
+</head>
+<body>
+    <script type="text/javascript">
+        // --- EJERCICIO 1: Comentarios ---
+        // Este modo permite comentar una sola línea
+        /* Este modo permite realizar
+           comentarios
+           de varias líneas */
+
+        // --- EJERCICIO 2: Sensibilidad a mayúsculas y minúsculas ---
+        // Nota: document.bgColor cambia el color de fondo
+        document.bgColor = "red"; 
+        alert('Cambiamos el color de la página');
+
+        // --- EJERCICIO 3: Recoger datos y visualizarlo ---
+        var nom;
+        // El primer texto es el mensaje, el segundo es el valor por defecto
+        nom = prompt("Escribe tu nombre", "NOMBRE");
+        
+        if (nom != null) {
+            alert("Mucho gusto " + nom);
+        }
+    </script>
+</body>
+</html>
