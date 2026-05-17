@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Graduados - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --azul-uleam: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+            --borde: #e2e8f0;
+            --verde-exito: #10b981;
+            --purpura: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* SIDEBAR ADMIN */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid var(--borde);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azul-uleam);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-uleam);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-uleam);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--borde);
+        }
+
+        .container {
+            padding: 2.5rem;
+        }
+
+        h2 {
+            color: var(--azul-uleam);
+            margin: 0 0 1.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        /* TABLA DE DATOS */
+        .table-container {
+            background: var(--blanco);
+            border-radius: 12px;
+            border: 1px solid var(--borde);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--texto-mutado);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--borde);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--borde);
+            color: var(--texto-oscuro);
+        }
+
+        tr:hover {
+            background-color: #fdfdfd;
+        }
+
+        .btn-perfil {
+            background-color: var(--azul-uleam);
+            color: var(--blanco);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-perfil:hover {
+            background-color: var(--azul-hover);
+        }
+
+        /* MODAL INTERACTIVO */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--blanco);
+            width: 700px;
+            max-height: 85vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            animation: entradaModal 0.3s ease-out;
+        }
+
+        @keyframes entradaModal {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--azul-uleam);
+            font-size: 1.2rem;
+        }
+
+        .btn-cerrar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--texto-mutado);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .seccion-perfil {
+            margin-bottom: 2rem;
+        }
+
+        .seccion-perfil h4 {
+            margin: 0 0 0.8rem 0;
+            color: var(--texto-oscuro);
+            font-size: 0.95rem;
+            border-left: 4px solid var(--azul-uleam);
+            padding-left: 0.5rem;
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .info-item span {
+            display: block;
+        }
+        .info-label {
+            color: var(--texto-mutado);
+            font-weight: 500;
+        }
+        .info-value {
+            font-weight: 600;
+            color: var(--texto-oscuro);
+        }
+
+        /* TARJETAS INTERNAS MODAL */
+        .item-subtabla {
+            background: #ffffff;
+            border: 1px solid var(--borde);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">Dpto. Seguimiento</div>
+        <ul class="sidebar-menu">
+            <li class="menu-item"><a href="admin-dashboard.html">📊 Dashboard</a></li>
+            <li class="menu-item"><a href="solicitudes.html">✉️ Solicitudes</a></li>
+            <li class="menu-item active"><a href="graduados.html">🎓 Graduados</a></li>
+            <li class="menu-item"><a href="encuestas.html">📝 Resultados CACES</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <span style="font-weight: 600; color: var(--azul-uleam);">Área de Administración de Calidad</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Rol: Facultad</span>
+        </div>
+
+        <div class="container">
+            <h2>Egresados y Graduados Oficiales</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Apellidos y Nombres</th>
+                            <th>Carrera</th>
+                            <th>Año de Graduación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-graduados">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPerfil" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-nombre">Nombre del Egresado</h3>
+                <button class="btn-cerrar" id="cerrarModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="seccion-perfil">
+                    <h4>Información de Contacto</h4>
+                    <div class="grid-info">
+                        <div class="info-item"><span class="info-label">Correo Institucional</span><span class="info-value" id="mod-correo-inst">-</span></div>
+                        <div class="info-item"><span class="info-label">Correo Personal</span><span class="info-value" id="mod-correo-pers">-</span></div>
+                        <div class="info-item"><span class="info-label">Celular</span><span class="info-value" id="mod-celular">-</span></div>
+                        <div class="info-item"><span class="info-label">Periodo Académico</span><span class="info-value" id="mod-periodo">-</span></div>
+                    </div>
+                </div>
+
+                <div class="seccion-perfil">
+                    <h4>Trayectoria Profesional Actual / Pasada</h4>
+                    <div id="wrapper-laboral">
+                        </div>
+                </div>
+
+                <div class="seccion-perfil">
+                    <h4>Estudios de Posgrado y Certificaciones</h4>
+                    <div id="wrapper-formacion">
+                        </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function cargarGraduadosAprobados() {
+            try {
+                // Consultamos solo los graduados aprobados en el sistema
+                const { data: graduados, error } = await supabase
+                    .from('graduados')
+                    .select('*')
+                    .eq('estado_registro', 'aprobado')
+                    .order('apellidos', { ascending: true });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('tabla-graduados');
+                tbody.innerHTML = '';
+
+                if (!graduados || graduados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--texto-mutado);">No hay graduados oficiales aprobados todavía.</td></tr>`;
+                    return;
+                }
+
+                graduados.forEach(g => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td style="font-weight:600;">${g.cedula}</td>
+                        <td>${g.apellidos} ${g.nombres}</td>
+                        <td><span style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:4px; font-size:0.8rem; font-weight:500;">${g.carrera}</span></td>
+                        <td>${g.ano_graduacion}</td>
+                        <td><button class="btn-perfil" data-id="${g.id}">Ver Perfil Completo</button></td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+
+                // Añadir oyentes de eventos a los nuevos botones
+                document.querySelectorAll('.btn-perfil').forEach(btn => {
+                    btn.addEventListener('click', (e) => abrirPerfilCompleto(e.target.getAttribute('data-id')));
+                });
+
+            } catch (error) {
+                console.error("Error al traer graduados:", error.message);
+            }
+        }
+
+        async function abrirPerfilCompleto(graduadoId) {
+            try {
+                // 1. Traer los datos básicos del graduado seleccionado
+                const { data: g } = await supabase.from('graduados').select('*').eq('id', graduadoId).single();
+                
+                // 2. Traer su historial laboral relacional
+                const { data: laboral } = await supabase.from('historial_laboral').select('*').eq('graduado_id', graduadoId);
+                
+                // 3. Traer su formación continua relacional
+                const { data: formacion } = await supabase.from('formacion_continua').select('*').eq('graduado_id', graduadoId);
+
+                if (!g) return;
+
+                // Mapear cabecera e info de contacto al modal
+                document.getElementById('modal-nombre').textContent = `🎓 Perfil Profesional: ${g.apellidos} ${g.nombres}`;
+                document.getElementById('mod-correo-inst').textContent = g.correo_institucional;
+                document.getElementById('mod-correo-pers').textContent = g.correo_personal;
+                document.getElementById('mod-celular').textContent = g.celular || 'No registrado';
+                document.getElementById('mod-periodo').textContent = g.periodo_academico;
+
+                // Mapear Historial Laboral
+                const wrapperLaboral = document.getElementById('wrapper-laboral');
+                wrapperLaboral.innerHTML = '';
+                if (!laboral || laboral.length === 0) {
+                    wrapperLaboral.innerHTML = `<div style="color:var(--texto-mutado); font-size:0.85rem; font-style:italic;">Sin experiencia profesional registrada.</div>`;
+                } else {
+                    laboral.forEach(job => {
+                        const div = document.createElement('div');
+                        div.className = 'item-subtabla';
+                        div.innerHTML = `
+                            <div style="font-weight:600; color:var(--azul-uleam);">${job.cargo}</div>
+                            <div style="font-weight:500;">📍 Empresa: ${job.empresa} | Área: ${job.area_desarrollo}</div>
+                            <div style="color:var(--texto-mutado); font-size:0.8rem; margin-top:2px;">
+                                💰 Rango Salarial: <strong>${job.salario_aproximado}</strong> | 
+                                ¿Relacionado a Carrera?: ${job.relacion_con_carrera ? 'Sí' : 'No'}
+                            </div>
+                        `;
+                        wrapperLaboral.appendChild(div);
+                    });
+                }
+
+                // Mapear Formación Continua
+                const wrapperFormacion = document.getElementById('wrapper-formacion');
+                wrapperFormacion.innerHTML = '';
+                if (!formacion || formacion.length === 0) {
+                    wrapperFormacion.innerHTML = `<div style="color:var(--texto-mutado); font-size:0.85rem; font-style:italic;">Sin estudios adicionales de posgrado.</div>`;
+                } else {
+                    formacion.forEach(estudio => {
+                        const div = document.createElement('div');
+                        div.className = 'item-subtabla';
+                        div.innerHTML = `
+                            <div style="font-weight:600; color:var(--purpura);">${estudio.titulo_nombre}</div>
+                            <div style="font-weight:500;">🏛️ Institución: ${estudio.institucion} (${estudio.tipo})</div>
+                            <div style="color:var(--texto-mutado); font-size:0.8rem;">Periodo: ${estudio.fecha_inicio} al ${estudio.fecha_finalizacion}</div>
+                        `;
+                        wrapperFormacion.appendChild(div);
+                    });
+                }
+
+                // Mostrar el modal
+                document.getElementById('modalPerfil').style.display = 'flex';
+
+            } catch (error) {
+                console.error("Error al desplegar modal consolidado:", error);
+            }
+        }
+
+        // Lógica de cierre del modal
+        document.getElementById('cerrarModal').onclick = () => {
+            document.getElementById('modalPerfil').style.display = 'none';
+        };
+
+        window.onclick = (e) => {
+            const modal = document.getElementById('modalPerfil');
+            if (e.target === modal) modal.style.display = 'none';
+        };
+
+        document.addEventListener('DOMContentLoaded', cargarGraduadosAprobados);
+    </script>
+</body>
+</html>

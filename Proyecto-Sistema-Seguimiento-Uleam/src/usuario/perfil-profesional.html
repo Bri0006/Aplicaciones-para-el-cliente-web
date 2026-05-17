@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Profesional - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* SIDEBAR (Idéntico para navegación fluida) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-sidebar);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-sidebar);
+        }
+
+        .btn-logout {
+            padding: 0.85rem 1.5rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-top: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .container {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* TARJETAS */
+        .card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        }
+
+        .card-header h2 {
+            margin: 0 0 1.5rem 0;
+            color: var(--azul-sidebar);
+            font-size: 1.3rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        /* FORMULARIO EN GRID */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--texto-oscuro);
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--azul-sidebar);
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 0.5rem;
+            padding-top: 1.5rem;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            align-self: flex-start;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--azul-hover);
+        }
+
+        /* TABLA DE HISTORIAL GUARDADO */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--texto-oscuro);
+            padding: 0.85rem;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 0.85rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-actual { background-color: #d1fae5; color: #065f46; }
+        .badge-relacion { background-color: #e0f2fe; color: #0369a1; }
+        .badge-no-relacion { background-color: #f1f5f9; color: #475569; }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .alert-msg {
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">Panel del Graduado</div>
+            <ul class="sidebar-menu">
+                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                <li class="menu-item active"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+            </ul>
+        </div>
+        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Historial Profesional</span>
+            </div>
+            <div>
+                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registrar Nueva Experiencia Laboral</h2>
+                </div>
+                
+                <div id="alert-profesional" class="alert-msg"></div>
+
+                <form id="form-laboral" class="form-grid">
+                    <div class="form-group">
+                        <label>Cargo / Puesto de Trabajo</label>
+                        <input type="text" id="txt-cargo" placeholder="Ej: Desarrollador Frontend" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Empresa / Institución</label>
+                        <input type="text" id="txt-empresa" placeholder="Ej: CNEL EP" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Área de Trabajo / Departamento</label>
+                        <select id="cmb-area" required>
+                            <option value="">Seleccione una opción...</option>
+                            <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
+                            <option value="Operaciones / Producción">Operaciones / Producción</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Administración / Finanzas">Administración / Finanzas</option>
+                            <option value="Comercial / Ventas / Marketing">Comercial / Ventas / Marketing</option>
+                            <option value="Dirección / Gerencia">Dirección / Gerencia</option>
+                            <option value="Consultoría / Asesoría Independiente">Consultoría / Asesoría Independiente</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rango Salarial Aproximado</label>
+                        <select id="cmb-salario" required>
+                            <option value="">Seleccione una opción...</option>
+                            <option value="Menos de $460 (Menos del básico)">Menos de $460</option>
+                            <option value="$460 - $600">$460 - $600</option>
+                            <option value="$601 - $1000">$601 - $1000</option>
+                            <option value="$1001 - $1500">$1001 - $1500</option>
+                            <option value="Más de $1500">Más de $1500</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Inicio</label>
+                            <input type="date" id="txt-fecha-inicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Finalización</label>
+                        <input type="date" id="txt-fecha-fin">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="chk-actual">
+                        <label for="chk-actual">Trabajo en esta empresa actualmente</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="chk-relacion" checked>
+                        <label for="chk-relacion" id="lbl-relacion-carrera">¿Tiene relación con tu carrera profesional?</label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-submit">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tu Historial Laboral Registrado</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cargo</th>
+                                <th>Empresa</th>
+                                <th>Área</th>
+                                <th>Duración</th>
+                                <th>Relación</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-historial">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/profesional.js"></script>
+</body>
+</html>

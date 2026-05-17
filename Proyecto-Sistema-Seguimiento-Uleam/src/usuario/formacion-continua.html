@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formación Continua - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* SIDEBAR (Idéntico para mantener la navegación uniforme) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-sidebar);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-sidebar);
+        }
+
+        .btn-logout {
+            padding: 0.85rem 1.5rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-top: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .container {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* TARJETAS */
+        .card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        }
+
+        .card-header h2 {
+            margin: 0 0 1.5rem 0;
+            color: var(--azul-sidebar);
+            font-size: 1.3rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        /* FORMULARIO EN GRID */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--texto-oscuro);
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--azul-sidebar);
+        }
+
+        .btn-submit {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            align-self: flex-start;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--azul-hover);
+        }
+
+        /* TABLA DE RESULTADOS */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--texto-oscuro);
+            padding: 0.85rem;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 0.85rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Badges personalizados para los tipos de estudio */
+        .badge-maestria { background-color: #e0f2fe; color: #0369a1; }
+        .badge-certificacion { background-color: #ecfdf5; color: #047857; }
+        .badge-diplomado { background-color: #fef3c7; color: #b45309; }
+        .badge-doctorado { background-color: #f3e8ff; color: #6b21a8; }
+        .badge-curso { background-color: #f1f5f9; color: #475569; }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .alert-msg {
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">Panel del Graduado</div>
+            <ul class="sidebar-menu">
+                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                <li class="menu-item active"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+            </ul>
+        </div>
+        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Formación Continua y Posgrados</span>
+            </div>
+            <div>
+                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registrar Estudio, Curso o Certificación</h2>
+                </div>
+                
+                <div id="alert-formacion" class="alert-msg"></div>
+
+                <form id="form-formacion" class="form-grid">
+                    <div class="form-group">
+                        <label>Tipo de Formación</label>
+                        <select id="cmb-tipo" required>
+                            <option value="">Seleccione el tipo...</option>
+                            <option value="Maestría">Maestría</option>
+                            <option value="Diplomado">Diplomado</option>
+                            <option value="Certificación">Certificación</option>
+                            <option value="Doctorado">Doctorado</option>
+                            <option value="Curso Corto">Curso Corto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Título / Certificado / Curso</label>
+                        <input type="text" id="txt-titulo" placeholder="Ej: Maestría en Ciencia de Datos o Scrum Master" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Institución / Universidad</label>
+                        <input type="text" id="txt-institucion" placeholder="Ej: Universidad Laica Eloy Alfaro de Manabí" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Inicio</label>
+                        <input type="date" id="txt-fecha-inicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Finalización</label>
+                        <input type="date" id="txt-fecha-fin" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-submit">Guardar Formación</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tus Estudios Registrados</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Título / Programa</th>
+                                <th>Institución</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-formacion">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/formacion.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Sistema - Seguimiento Graduados ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-institucional: #004a99;
+            --celeste-claro: #e6f0fa;
+            --rojo-alerta: #dc2626;
+            --blanco: #ffffff;
+            --gris-fondo: #f4f7fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .logo-container img {
+            width: 140px;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            color: var(--azul-institucional);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #4b5563;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--azul-institucional);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--azul-institucional);
+            color: var(--blanco);
+        }
+
+        .btn-primary:hover {
+            background-color: #003670;
+        }
+
+        .info-msg {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #059669;
+            background-color: #ecfdf5;
+            padding: 0.6rem;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .error-msg {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--rojo-alerta);
+            background-color: #fef2f2;
+            padding: 0.6rem;
+            border-radius: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="logo-container">
+        <div style="font-weight: 600; color: var(--azul-institucional); font-size: 1.5rem; margin-bottom: 0.5rem;">ULEAM</div>
+    </div>
+    <h2>Seguimiento a Graduados</h2>
+    
+    <div id="step-cedula">
+        <div class="form-group">
+            <label for="cedula-input">Número de Cédula</label>
+            <input type="text" id="cedula-input" placeholder="Ej. 131XXXXXXX" maxlength="10">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-solicitar">SOLICITAR CLAVE</button>
+    </div>
+
+    <div id="msg-exito" class="info-msg"></div>
+    <div id="msg-error" class="error-msg"></div>
+    
+    <div class="register-redirect" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+    ¿Eres graduado y no estás registrado? 
+    <a href="registro.html" style="color: var(--azul-sidebar); font-weight: 600; text-decoration: none;">Solicitar acceso aquí</a>
+</div>
+</div>
+
+<script type="module" src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Solicitudes ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-uleam: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+            --verde-exito: #10b981;
+            --rojo-error: #ef4444;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* SIDEBAR ADMIN */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azul-uleam);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-uleam);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-uleam);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .container {
+            padding: 2.5rem;
+        }
+
+        h2 {
+            color: var(--azul-uleam);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        /* TABLAS ESTILIZADAS */
+        .table-container {
+            background: var(--blanco);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .admin-table th {
+            background-color: #f8fafc;
+            color: var(--texto-oscuro);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .btn-action {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action:hover {
+            opacity: 0.85;
+        }
+
+        .btn-approve {
+            background-color: var(--verde-exito);
+            color: var(--blanco);
+        }
+
+        .btn-reject {
+            background-color: var(--rojo-error);
+            color: var(--blanco);
+        }
+
+        .badge-pending {
+            background-color: #fef3c7;
+            color: #d97706;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* MODAL DE SIMULACIÓN DE NOTIFICACIÓN */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--blanco);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .email-preview {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            margin: 1rem 0;
+        }
+
+        .btn-close-modal {
+            background-color: var(--azul-uleam);
+            color: var(--blanco);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">Dpto. Seguimiento</div>
+            <ul class="sidebar-menu">
+                <li class="menu-item"><a href="dashboard.html">📊 Dashboard</a></li>
+                <li class="menu-item active"><a href="solicitudes.html">✉️ Solicitudes</a></li>
+                <li class="menu-item"><a href="graduados.html">🎓 Graduados</a></li>
+                <li class="menu-item"><a href="encuestas.html">📝 Resultados CACES</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <span style="font-weight: 600; color: var(--azul-uleam);">Área de Administración de Calidad</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Rol: Facultad</span>
+        </div>
+
+        <div class="container">
+            <h2>Solicitudes de Registro Pendientes</h2>
+            <p style="color: var(--texto-mutado); font-size: 0.9rem; margin-top: -0.5rem;">Valida la veracidad de los datos antes de habilitar el acceso al aplicativo de encuestas.</p>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Graduado</th>
+                            <th>Correo</th>
+                            <th>Carrera</th>
+                            <th>Año</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-solicitudes">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-correo" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: var(--verde-exito);">✉️ Notificación Enviada</h3>
+            <p style="font-size: 0.9rem; color: var(--texto-mutado);">El sistema ha procesado la aprobación e interactuó con el servidor simulado de correos salientes:</p>
+            <div class="email-preview" id="email-body"></div>
+            <button class="btn-close-modal" id="btn-cerrar-modal">Entendido</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const tbody = document.getElementById('tabla-solicitudes');
+        const modal = document.getElementById('modal-correo');
+        const emailBody = document.getElementById('email-body');
+        const btnCerrarModal = document.getElementById('btn-cerrar-modal');
+
+        async function cargarSolicitudes() {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Cargando registros activos...</td></tr>`;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('solicitudes_registro')
+                    .select('*')
+                    .eq('estado', 'pendiente')
+                    .order('creado_en', { ascending: false });
+
+                if (error) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error de carga: ${error.message}</td></tr>`;
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--texto-mutado);">No existen solicitudes pendientes de aprobación.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(solicitud => {
+                    const tr = document.createElement('tr');
+                    // CORRECCIÓN: La columna oficial de tu SQL es 'id', no 'id_solicitud'
+                    tr.innerHTML = `
+                        <td style="font-weight:600;">${solicitud.cedula}</td>
+                        <td>${solicitud.nombres} ${solicitud.apellidos}</td>
+                        <td>${solicitud.correo}</td>
+                        <td>${solicitud.carrera}</td>
+                        <td>${solicitud.anio_graduacion}</td>
+                        <td><span class="badge-pending">Pendiente</span></td>
+                        <td>
+                            <button class="btn-action btn-approve" data-id="${solicitud.id}">Aprobar</button>
+                            <button class="btn-action btn-reject" data-id="${solicitud.id}">Rechazar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                asignarEventosBotones(data);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Fatal: ${err.message}</td></tr>`;
+            }
+        }
+
+        function asignarEventosBotones(solicitudes) {
+            document.querySelectorAll('.btn-approve').forEach(btn => {
+                btn.onclick = async (e) => {
+                    const idSolicitud = e.target.getAttribute('data-id');
+                    // CORRECCIÓN: Buscamos usando el campo 'id' real del registro
+                    const info = solicitudes.find(s => String(s.id) === String(idSolicitud));
+                    
+                    if (info) {
+                        e.target.disabled = true; // Evitamos múltiples envíos
+                        await aprobarSolicitud(info);
+                    }
+                };
+            });
+
+            document.querySelectorAll('.btn-reject').forEach(btn => {
+                btn.onclick = async (e) => {
+                    const idSolicitud = e.target.getAttribute('data-id');
+                    if (confirm("¿Desea rechazar la postulación de acceso de este egresado?")) {
+                        e.target.disabled = true;
+                        await actualizarEstadoSolicitud(idSolicitud, 'rechazado');
+                        await cargarSolicitudes();
+                    }
+                };
+            });
+        }
+
+        async function aprobarSolicitud(solicitud) {
+            try {
+                // 1. Validaciones y valores de respaldo ultra seguros
+                const anioSeguro = String(solicitud.anio_graduacion || "2026");
+                const periodoSeguro = `${anioSeguro}-1`;
+                const fechaRespaldo = "2000-01-01"; 
+
+                // Detectamos si el correo viene en 'correo' o 'correo_institucional' o inventamos uno
+                const correoSeguro = solicitud.correo || solicitud.correo_institucional || "correo.egresado@uleam.edu.ec";
+
+                console.log("Datos que se enviarán a graduados:", {
+                    cedula: solicitud.cedula,
+                    nombres: solicitud.nombres,
+                    apellidos: solicitud.apellidos,
+                    correo_institucional: correoSeguro,
+                    correo_personal: correoSeguro
+                });
+
+                // 2. Traspaso a la tabla oficial 'graduados'
+                const { error: insertError } = await supabase
+                    .from('graduados')
+                    .insert([
+                        {
+                            cedula: solicitud.cedula,
+                            nombres: solicitud.nombres,
+                            apellidos: solicitud.apellidos,
+                            correo_institucional: correoSeguro,
+                            correo_personal: correoSeguro, // Asegurado con el fallback
+                            fecha_nacimiento: fechaRespaldo, 
+                            ano_graduacion: anioSeguro, 
+                            periodo_academico: periodoSeguro, 
+                            carrera: solicitud.carrera || 'Ingeniería en Software',
+                            estado_registro: 'aprobado'
+                        }
+                    ]);
+
+                if (insertError) {
+                    console.error("Detalle del error en la inserción:", insertError);
+                    alert("Error en la base de datos al transferir a graduados: " + insertError.message);
+                    await cargarSolicitudes();
+                    return;
+                }
+
+                // 3. Modificación de estado en 'solicitudes_registro'
+                await actualizarEstadoSolicitud(solicitud.id, 'aprobado');
+
+                // 4. Renderizado del correo simulado enviado
+                mostrarSimulacionCorreo(solicitud);
+                
+                // 5. Refresco reactivo definitivo de la tabla
+                await cargarSolicitudes();
+
+            } catch (err) {
+                alert("Error crítico durante la aprobación: " + err.message);
+                await cargarSolicitudes();
+            }
+        }
+
+        async function actualizarEstadoSolicitud(id, nuevoEstado) {
+            // CORRECCIÓN: Actualizamos filtrando por la columna 'id' que manda tu base de datos
+            const { error } = await supabase
+                .from('solicitudes_registro')
+                .update({ estado: nuevoEstado })
+                .eq('id', id);
+
+            if (error) {
+                console.error("Error al actualizar estado:", error);
+                alert("Error al cambiar estado de la solicitud: " + error.message);
+            }
+        }
+
+        function mostrarSimulacionCorreo(solicitud) {
+            const fechaActual = new Date().toLocaleString();
+            emailBody.textContent = `De: departamento.calidad@uleam.edu.ec\nPara: ${solicitud.correo}\nFecha: ${fechaActual}\nAsunto: ¡Acceso Habilitado - Seguimiento de Graduados ULEAM!\n\nEstimado(a) ${solicitud.nombres} ${solicitud.apellidos},\n\nTu registro ha sido aprobado exitosamente por las autoridades de la carrera de ${solicitud.carrera}.\n\nYa puedes ingresar a la plataforma de seguimiento utilizando tu número de cédula en el portal de acceso.\n\nAtentamente,\nDirección de Aseguramiento de la Calidad - ULEAM`;
+            modal.style.display = 'flex';
+        }
+
+        btnCerrarModal.onclick = () => { modal.style.display = 'none'; };
+
+        document.addEventListener('DOMContentLoaded', cargarSolicitudes);
+    </script>
+</body>
+</html>

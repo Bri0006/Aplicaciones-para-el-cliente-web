@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código - Seguimiento Graduados ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-institucional: #004a99;
+            --rojo-alerta: #dc2626;
+            --blanco: #ffffff;
+            --gris-fondo: #f4f7fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .verify-card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--azul-institucional);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #4b5563;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-align: center;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--azul-institucional);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-success {
+            background-color: #059669;
+            color: var(--blanco);
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+        }
+
+        .error-msg {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--rojo-alerta);
+            background-color: #fef2f2;
+            padding: 0.6rem;
+            border-radius: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="verify-card">
+    <h2>Ingresa tu Clave de Acceso</h2>
+    <p>Hemos registrado un código único válido por 15 minutos. Revísalo en tu bandeja.</p>
+    
+    <div class="form-group">
+        <label for="token-input">Código de Verificación (6 dígitos)</label>
+        <input type="text" id="token-input" placeholder="000000" maxlength="6">
+    </div>
+
+    <button type="button" class="btn btn-success" id="btn-verificar">VERIFICAR E INGRESAR</button>
+
+    <div id="msg-error-verify" class="error-msg"></div>
+</div>
+
+<script type="module" src="verificar.js"></script>
+</body>
+</html>

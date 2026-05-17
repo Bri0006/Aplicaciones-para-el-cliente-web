@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetos Nativos de JavaScript</title>
+</head>
+<body>
+    <script type="text/javascript">
+        
+        // 1. OBJETO DATE (Fechas)
+        // Obtiene la fecha y hora exacta del sistema
+        var fecha_actual = new Date(); 
+        // Crea una fecha específica (Año, Mes - 1, Día) 
+        // Nota: En JS los meses empiezan en 0 (Enero es 0, Diciembre es 11)
+        var fecha_maya = new Date(2012, 11, 21);
+        
+        alert("Fecha actual: " + fecha_actual);
+        alert("Fecha Maya: " + fecha_maya);
+
+
+        // 2. OBJETO MATH (Matemáticas) 
+        var r = 5; // Definimos un radio para la prueba
+        // Calcula el área de un círculo: PI * r²
+        var area = Math.PI * Math.pow(r, 2);
+        alert("El área del círculo con radio 5 es: " + area);
+
+
+        // 3. OBJETO NUMBER (Propiedades numéricas)
+        // Muestra el valor máximo y mínimo que JS puede procesar
+        alert("Propiedad MAX_VALUE: " + Number.MAX_VALUE);
+        alert("Propiedad MIN_VALUE: " + Number.MIN_VALUE);
+
+
+        // 4. OBJETO STRING (Cadenas de texto)
+        var texto = new String("Prueba de texto");
+        // Escribe directamente en el documento HTML
+        // .length nos dice cuántos caracteres tiene el texto
+        document.write("Número de letras de la cadena de texto: " + texto.length + "<br>");
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Registro - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--texto-oscuro);
+        }
+        .register-container {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: var(--azul-sidebar);
+            margin-top: 0;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        p {
+            color: var(--texto-mutado);
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        input, select {
+            padding: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--azul-sidebar);
+        }
+        .btn-submit {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.85rem;
+            border-radius: 30px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2);
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+        .btn-submit:hover {
+            background-color: var(--azul-hover);
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .success { background-color: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .error { background-color: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <h2>Solicitud de Registro</h2>
+    <p>Ingrese sus datos para verificar su condición de graduado. La institución validará la información y le notificará por correo.</p>
+    
+    <div id="msg-box" class="message"></div>
+
+    <form id="form-registro">
+        <div class="form-group">
+            <label for="reg-cedula">Número de Cédula</label>
+            <input type="text" id="reg-cedula" maxlength="10" required placeholder="Ej: 131xxxxxxx">
+        </div>
+        <div class="form-group">
+            <label for="reg-nombres">Nombres Completos</label>
+            <input type="text" id="reg-nombres" required placeholder="Ej: Brithany Gia">
+        </div>
+        <div class="form-group">
+            <label for="reg-apellidos">Apellidos Completos</label>
+            <input type="text" id="reg-apellidos" required placeholder="Ej: Macias Toala">
+        </div>
+        <div class="form-group">
+            <label for="reg-correo">Correo Electrónico</label>
+            <input type="email" id="reg-correo" required placeholder="Ej: usuario@live.uleam.edu.ec">
+        </div>
+        <div class="form-group">
+            <label for="reg-carrera">Carrera Universitaria</label>
+            <select id="reg-carrera" required>
+                <option value="">Seleccione su carrera</option>
+                <option value="Ingeniería en Software">Ingeniería en Software</option>
+                <option value="Tecnologías de la Información">Tecnologías de la Información</option>
+                <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="reg-anio">Año de Graduación</label>
+            <input type="number" id="reg-anio" min="2000" max="2026" required placeholder="Ej: 2025">
+        </div>
+
+        <button type="submit" class="btn-submit">Enviar Solicitud</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="login.html" style="color: var(--texto-mutado); font-size: 0.85rem; text-decoration: none;">← Volver al Login</a>
+    </div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    
+    // REPLAZA ESTOS VALORES CON LOS DE TU PROYECTO REAL DE SUPABASE
+    const SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M';
+    
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('form-registro');
+    const msgBox = document.getElementById('msg-box');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msgBox.style.display = 'none';
+
+        const cedula = document.getElementById('reg-cedula').value.trim();
+        const nombres = document.getElementById('reg-nombres').value.trim();
+        const apellidos = document.getElementById('reg-apellidos').value.trim();
+        const correo = document.getElementById('reg-correo').value.trim();
+        const carrera = document.getElementById('reg-carrera').value;
+        const anio = parseInt(document.getElementById('reg-anio').value);
+
+        try {
+            // Insertar datos especificando una selección para asegurar el retorno correcto
+            const { data, error } = await supabase
+                .from('solicitudes_registro')
+                .insert([
+                    { 
+                        cedula: cedula, 
+                        nombres: nombres, 
+                        apellidos: apellidos, 
+                        correo: correo, 
+                        carrera: carrera, 
+                        anio_graduacion: anio,
+                        estado: 'pendiente'
+                    }
+                ])
+                .select();
+
+            if (error) {
+                msgBox.className = "message error";
+                if(error.message.includes('unique') || error.code === '23505') {
+                    msgBox.innerText = "Esta cédula ya tiene una solicitud registrada o en proceso.";
+                } else {
+                    msgBox.innerText = "Error de base de datos: " + error.message;
+                }
+                msgBox.style.display = 'block';
+            } else {
+                msgBox.className = "message success";
+                msgBox.innerText = "¡Solicitud enviada con éxito! La facultad revisará tus datos y recibirás una notificación en tu correo.";
+                msgBox.style.display = 'block';
+                form.reset();
+            }
+        } catch (err) {
+            msgBox.className = "message error";
+            msgBox.innerText = "Error de conexión inesperado: " + err.message;
+            msgBox.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>

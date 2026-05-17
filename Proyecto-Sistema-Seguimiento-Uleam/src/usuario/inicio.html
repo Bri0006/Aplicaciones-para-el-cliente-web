@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Seguimiento Graduados ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --celeste-banner: #1e62ff;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* BARRA LATERAL (SIDEBAR) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-sidebar);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-sidebar);
+        }
+
+        .btn-logout {
+            padding: 0.85rem 1.5rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            margin-top: auto;
+            cursor: pointer;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: var(--gris-fondo);
+        }
+
+        /* BARRA SUPERIOR */
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .institution-info h1 {
+            font-size: 1.15rem;
+            margin: 0;
+            color: var(--azul-sidebar);
+        }
+
+        .institution-info p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--texto-mutado);
+        }
+
+        .user-profile {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .user-meta {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            margin: 0;
+        }
+
+        /* PANEL CENTRAL */
+        .dashboard-container {
+            padding: 2.5rem;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--celeste-banner), #0d47a1);
+            color: var(--blanco);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(30, 98, 255, 0.2);
+        }
+
+        .welcome-banner h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.4rem;
+        }
+
+        .welcome-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        /* TARJETAS DE ACCESO RÁPIDO */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--blanco);
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .card h3 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.05rem;
+            color: var(--texto-oscuro);
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--texto-mutado);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">Panel del Graduado</div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active"><a href="inicio.html">🏠 Inicio</a></li>
+                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+            </ul>
+        </div>
+        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="institution-info">
+                <h1>Universidad Laica Eloy Alfaro de Manabí</h1>
+                <p>Portal del Graduado</p>
+            </div>
+            <div class="user-profile">
+                <p class="user-name" id="lbl-nombre-usuario">Cargando...</p>
+                <p class="user-meta" id="lbl-meta-usuario">Graduado</p>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+            <div class="welcome-banner">
+                <h2>¡Bienvenido al Panel del Graduado!</h2>
+                <p>Mantén actualizada tu información profesional y académica para fortalecer los procesos de acreditación de tu carrera.</p>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card" onclick="window.location.href='perfil-academico.html'">
+                    <span class="card-icon">📊</span>
+                    <h3>Perfil Completo</h3>
+                    <p>Actualiza tus datos académicos, dirección y números de contacto personales.</p>
+                </div>
+                <div class="card" onclick="window.location.href='perfil-profesional.html'">
+                    <span class="card-icon">🎓</span>
+                    <h3>Formación Continua</h3>
+                    <p>Registra tus estudios de posgrado, maestrías, cursos realizados y certificaciones.</p>
+                </div>
+                <div class="card" onclick="window.location.href='encuesta-caces.html'">
+                    <span class="card-icon">📝</span>
+                    <h3>Encuesta CACES</h3>
+                    <p>Completa la encuesta obligatoria de seguimiento y evaluación de calidad de la carrera.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/dashboard.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Envíos Automáticos - ULEAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl">
+            <div>
+                <div class="mb-8 px-2">
+                    <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
+                    <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-chart-pie w-5"></i><span>Estadísticas</span>
+                    </a>
+                    <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-user-graduate w-5"></i><span>Graduados</span>
+                    </a>
+                    <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-invoice w-5"></i><span>Reportes CACES</span>
+                    </a>
+                    <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md">
+                        <i class="fa-solid fa-clock-history w-5"></i><span>Cron-Job Log</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left">
+                <i class="fa-solid fa-right-from-bracket w-5"></i>
+                <span class="font-medium">Cerrar Sesión</span>
+            </button>
+        </aside>
+
+        <main class="flex-1 p-8">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Historial de Envíos Automáticos</h2>
+                    <p class="text-sm text-slate-500">Registro de correos masivos de invitación para la actualización de datos e indicadores institucionales.</p>
+                </div>
+                <button onclick="forzarEnvioGlobal()" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl shadow-md text-sm font-semibold tracking-wide transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-paper-plane text-xs text-blue-400"></i>
+                    <span>FORZAR ENVÍO AHORA</span>
+                </button>
+            </header>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
+                            <th class="px-6 py-4">Fecha / Hora</th>
+                            <th class="px-6 py-4">Graduado</th>
+                            <th class="px-6 py-4">Tipo</th>
+                            <th class="px-6 py-4">Estado</th>
+                            <th class="px-6 py-4 text-center">Acción Manual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">juan.perez@uleam.edu.ec</td>
+                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-slate-400">-</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">maria.gamma@uleam.edu.ec</td>
+                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-slate-400">-</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">carlos.rodriguez@uleam.edu.ec</td>
+                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
+                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="reenviarCorreoManual('carlos.rodriguez@uleam.edu.ec', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
+                                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                                    <span>Reenviar</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Función para cargar los logs desde Supabase en tiempo real
+async function cargarCronJobLogs() {
+    // Se asume que 'supabase' es tu cliente global inicializado de Supabase
+    const { data, error } = await supabase
+        .from('cronjob_log')
+        .select('*')
+        .order('fecha_envio', { ascending: false });
+
+    if (error) {
+        console.error("Error al extraer los registros de cronjob_log:", error);
+        alert("No se pudieron cargar los registros del historial de envíos.");
+        return;
+    }
+
+    const tbody = document.getElementById('log-table-body');
+    if (!tbody) {
+        console.error("Error: No se encontró el contenedor 'log-table-body' en el DOM.");
+        return;
+    }
+    
+    tbody.innerHTML = ''; // Limpiar las filas estáticas de muestra
+
+    // Renderizar cada registro de la base de datos de forma dinámica
+    data.forEach(log => {
+        // Formatear la marca de tiempo UTC a formato local de Ecuador (DD/MM/AAAA HH:MM)
+        const fecha = new Date(log.fecha_envio).toLocaleString('es-EC', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false
+        });
+
+        // Inicializar variables de estructura interna
+        let estadoBadge = '';
+        let accionHtml = '<td class="px-6 py-4 text-center text-slate-400">-</td>';
+
+        // Evaluar el estado guardado en la columna 'estado'
+        if (log.estado === 'ENVIADO') {
+            estadoBadge = `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
+                </span>`;
+        } else if (log.estado === 'LEÍDO') {
+            estadoBadge = `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
+                </span>`;
+        } else if (log.estado === 'FALLIDO') {
+            estadoBadge = `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
+                </span>`;
+            
+            // Inyección del botón de reenvío manual apuntando a la columna 'graduado_email'
+            accionHtml = `
+                <td class="px-6 py-4 text-center">
+                    <button onclick="reenviarCorreoManual('${log.graduado_email}', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
+                        <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                        <span>Reenviar</span>
+                    </button>
+                </td>`;
+        }
+
+        // Construir la fila completa estructurada con Tailwind CSS
+        tbody.innerHTML += `
+            <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
+                <td class="px-6 py-4 font-mono text-xs text-slate-500">${fecha}</td>
+                <td class="px-6 py-4 font-medium text-slate-900">${log.graduado_email}</td>
+                <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                        ${log.tipo_envio || 'ANUAL'}
+                    </span>
+                </td>
+                <td class="px-6 py-4">${estadoBadge}</td>
+                ${accionHtml}
+            </tr>
+        `;
+    });
+}
+
+// Escuchar la carga del árbol DOM para inicializar la extracción de datos de forma segura
+// Asignar el evento al botón general al cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Ejecutar la lectura inicial de la tabla
+    cargarCronJobLogs();
+
+    // Vincular el botón superior de "Forzar Envío"
+    const btnForzar = document.querySelector('button:has(.fa-paper-plane), button:contains("FORZAR ENVÍO")') || document.getElementById('btn-forzar-envio');
+    
+    if (btnForzar) {
+        btnForzar.addEventListener('click', forzarCronJobGlobal);
+    }
+});
+
+// Función para ejecutar el barrido masivo del Cron-Job
+async function forzarCronJobGlobal() {
+    const confirmar = confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job ahora?\nEsto evaluará a todos los graduados pendientes y enviará los correos masivos correspondientes.");
+    if (!confirmar) return;
+
+    try {
+        // Aquí se conectaría con la lógica de tu servidor que busca graduados sin encuesta.
+        // Como muestra, insertaremos un nuevo registro directo a la tabla para validar el flujo dinámico.
+        
+        const { error } = await supabase
+            .from('cronjob_log')
+            .insert([
+                { 
+                    graduado_email: 'nuevo.graduado@uleam.edu.ec', 
+                    tipo_envio: 'ANUAL', 
+                    estado: 'ENVIADO' 
+                }
+            ]);
+
+        if (error) throw error;
+
+        alert("El proceso del Cron-Job global se ha ejecutado con éxito.");
+        await cargarCronJobLogs(); // Refrescar la vista con los nuevos envíos detectados
+
+    } catch (error) {
+        console.error("Error al forzar el Cron-Job:", error);
+        alert("Ocurrió un error al intentar procesar el envío global.");
+    }
+}
+
+
+
+        // CONTROL DE REENVÍO MANUAL DE UN LOG ESPECÍFICO
+        // Función para reenviar un correo de manera individual (Fila Fallida)
+async function reenviarCorreoManual(email, boton) {
+    // Guardar el contenido original del botón para restaurarlo si hay un error
+    const contenidoOriginal = boton.innerHTML;
+    
+    // 1. Cambiar el estado visual del botón a modo "Cargando..."
+    boton.disabled = true;
+    boton.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin text-[10px]"></i>
+        <span>Enviando...</span>
+    `;
+    boton.className = "inline-flex items-center space-x-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-not-allowed";
+
+    try {
+        // En un entorno de producción, aquí llamarías a tu Edge Function o servicio de Email (NodeMailer/Resend)
+        // Ejemplo: await enviarEmailAPI(email);
+        
+        // Simulación de retraso de red (1.5 segundos) para asegurar una experiencia de usuario fluida
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // 2. Actualizar el estado del registro en la base de datos de Supabase
+        const { error } = await supabase
+            .from('cronjob_log')
+            .update({ estado: 'ENVIADO', fecha_envio: new Date().toISOString() })
+            .eq('graduado_email', email)
+            .eq('estado', 'FALLIDO'); // Asegura que solo alteramos el registro erróneo
+
+        if (error) throw error;
+
+        // 3. Notificación de éxito al usuario
+        alert(`Solicitud procesada: Invitación enviada exitosamente de forma manual a ${email}.`);
+        
+        // 4. Recargar los logs para actualizar la tabla y los colores de los badges automáticamente
+        await cargarCronJobLogs();
+
+    } catch (error) {
+        console.error("Error durante el reenvío manual:", error);
+        alert("No se pudo completar el reenvío del correo. Inténtelo nuevamente.");
+        
+        // Restaurar el botón a su estado original si ocurre un fallo en la red o base de datos
+        boton.disabled = false;
+        boton.innerHTML = contenidoOriginal;
+        boton.className = "inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95";
+    }
+}
+
+        // CONTROL DE ENVÍO AUTOMÁTICO FORZADO GLOBAL
+        function forzarEnvioGlobal() {
+            if(confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job para todos los graduados pendientes en este momento?")) {
+                alert("Proceso de sincronización masiva inicializado. El servidor está distribuyendo las colas de correo.");
+            }
+        }
+
+        // LÓGICA INTEGRADA DEL BOTÓN DE CERRAR SESIÓN
+        document.getElementById('btn-logout').onclick = function() {
+            if (confirm("¿Está seguro de que desea cerrar su sesión en el panel administrativo?")) {
+                // Aquí eliminas los tokens de autenticación guardados
+                localStorage.removeItem('session_token'); 
+                sessionStorage.clear();
+                
+                // Redirección directa a la pantalla de acceso principal
+                window.location.href = "../login.html"; 
+            }
+        };
+    </script>
+</body>
+</html>

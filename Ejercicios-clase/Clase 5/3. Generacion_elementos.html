@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generación Dinámica de HTML</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        hr { margin: 30px 0; }
+        .box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <h1>Ejercicio: Generación de Elementos con JS</h1>
+
+    <div class="box">
+        <h3>1. Información del Sistema</h3>
+        <script type="text/javascript">
+            var SO = navigator.platform;
+            document.write("<h4>Documento abierto con: " + SO + "</h4>");
+        </script>
+    </div>
+
+    <hr>
+
+    <div class="box">
+        <h3>2. Ventanas Emergentes</h3>
+        <button onclick="abrirNuevaVentana()">Abrir Título en Nueva Ventana</button>
+        
+        <script type="text/javascript">
+            function abrirNuevaVentana() {
+                var texto = prompt("Ingresa un título para la nueva ventana:");
+                if (texto) {
+                    var ventana = window.open("", "_blank", "width=400,height=200");
+                    ventana.document.write("<h1>" + texto + "</h1>");
+                }
+            }
+        </script>
+    </div>
+
+    <hr>
+
+    <div class="box">
+        <h3>3. Modificador de Colores Dinámico</h3>
+        <script type="text/javascript">
+            document.write("<form name='cambiacolor'>");
+            document.write("<b>Selecciona un color para el fondo:</b><br><br>");
+            document.write("<select name='color'>");
+            document.write("<option value='red'>Rojo</option>");
+            document.write("<option value='blue'>Azul</option>");
+            document.write("<option value='yellow'>Amarillo</option>");
+            document.write("<option value='green'>Verde</option>");
+            document.write("<option value='white'>Blanco</option>");
+            document.write("</select><br><br>");
+            document.write("<input type='button' value='Modifica el color' onclick='document.bgColor=document.cambiacolor.color.value'>");
+            document.write("</form>");
+        </script>
+    </div>
+
+</body>
+</html>

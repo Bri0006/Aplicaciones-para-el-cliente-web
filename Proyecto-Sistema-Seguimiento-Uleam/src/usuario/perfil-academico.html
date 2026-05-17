@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Académico - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-sidebar);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item.active a {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-sidebar);
+        }
+
+        .btn-logout {
+            padding: 0.85rem 1.5rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-top: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        /* CONTENIDO */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .container {
+            padding: 2.5rem;
+        }
+
+        .profile-card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header h2 {
+            margin: 0;
+            color: var(--azul-sidebar);
+            font-size: 1.3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .info-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-group label {
+            font-size: 0.82rem;
+            color: var(--texto-mutado);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-group input {
+            padding: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        .info-group input:not([disabled]) {
+            background-color: var(--blanco);
+            border-color: var(--azul-sidebar);
+        }
+
+        .btn-edit {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save {
+            background-color: #059669;
+            color: var(--blanco);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .alert-msg {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">Panel del Graduado</div>
+            <ul class="sidebar-menu">
+                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+            </ul>
+        </div>
+        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Información Personal</span>
+            </div>
+            <div>
+                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Datos de Registro Universitarios</h2>
+                    <button class="btn-edit" id="btn-editar">Editar Datos</button>
+                    <button class="btn-save" id="btn-guardar">Guardar Cambios</button>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-group" style="grid-column: span 2;">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="txt-nombre-completo" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Número de Cédula</label>
+                        <input type="text" id="txt-cedula" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" id="txt-fecha-nac" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Año de Graduación</label>
+                        <input type="number" id="txt-ano-grad" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Período Académico</label>
+                        <input type="text" id="txt-periodo" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Correo Institucional</label>
+                        <input type="email" id="txt-correo-inst" disabled>
+                    </div>
+                    <div class="info-group">
+                        <label>Correo Personal</label>
+                        <input type="email" id="txt-correo-pers" disabled>
+                    </div>
+                    <div class="info-group" style="grid-column: span 2;">
+                        <label>Número de Celular / Contacto</label>
+                        <input type="text" id="txt-celular" placeholder="Ej: 09XXXXXXXX" disabled>
+                    </div>
+                </div>
+
+                <div id="alert-perfil" class="alert-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/perfil.js"></script>
+</body>
+</html>
