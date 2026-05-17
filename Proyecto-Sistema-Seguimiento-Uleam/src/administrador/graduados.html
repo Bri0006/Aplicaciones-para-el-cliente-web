@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Graduados - ULEAM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -22,90 +25,24 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--gris-fondo);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            color: var(--texto-oscuro);
         }
 
-        /* SIDEBAR ADMIN */
-        .sidebar {
-            width: 260px;
-            background-color: var(--blanco);
-            border-right: 1px solid var(--borde);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem 0;
-            box-sizing: border-box;
+        /* Estilos personalizados para el contenedor del menú scrollable */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
-        .sidebar-brand {
-            padding: 0 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--azul-uleam);
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .menu-item a {
-            display: flex;
-            align-items: center;
-            padding: 0.85rem 1.5rem;
-            color: var(--texto-oscuro);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .menu-item.active a {
-            background-color: var(--azul-uleam);
-            color: var(--blanco);
-            border-radius: 0 25px 25px 0;
-            margin-right: 1rem;
-        }
-
-        .menu-item:not(.active) a:hover {
-            background-color: #f1f5f9;
-            color: var(--azul-uleam);
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .topbar {
-            background-color: var(--blanco);
-            padding: 1rem 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .container {
-            padding: 2.5rem;
-        }
-
-        h2 {
-            color: var(--azul-uleam);
-            margin: 0 0 1.5rem 0;
-            font-size: 1.5rem;
-        }
-
-        /* TABLA DE DATOS */
+        /* TABLA DE DATOS MANTENIDA */
         .table-container {
             background: var(--blanco);
             border-radius: 12px;
@@ -159,14 +96,11 @@
             background-color: var(--azul-hover);
         }
 
-        /* MODAL INTERACTIVO */
+        /* MODAL INTERACTIVO MANTENIDO */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
             justify-content: center;
@@ -260,49 +194,110 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800">
 
-    <div class="sidebar">
-        <div class="sidebar-brand">Dpto. Seguimiento</div>
-        <ul class="sidebar-menu">
-            <li class="menu-item"><a href="admin-dashboard.html">📊 Dashboard</a></li>
-            <li class="menu-item"><a href="solicitudes.html">✉️ Solicitudes</a></li>
-            <li class="menu-item active"><a href="graduados.html">🎓 Graduados</a></li>
-            <li class="menu-item"><a href="encuestas.html">📝 Resultados CACES</a></li>
-        </ul>
-    </div>
+    <div class="flex min-h-screen">
+        
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0 h-screen sticky top-0">
+            <div>
+                <div class="mb-6 px-2 py-1 border-b border-slate-800 pb-4">
+                    <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
+                    <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
+                </div>
+                
+                <nav class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-190px)] pr-1 custom-scrollbar">
+                    
+                    <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>Estadísticas</span>
+                    </a>
 
-    <div class="main-content">
-        <div class="topbar">
-            <span style="font-weight: 600; color: var(--azul-uleam);">Área de Administración de Calidad</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Rol: Facultad</span>
-        </div>
+                    <a href="solicitudes.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-circle-check w-5 text-center"></i>
+                        <span>Solicitudes</span>
+                    </a>
 
-        <div class="container">
-            <h2>Egresados y Graduados Oficiales</h2>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cédula</th>
-                            <th>Apellidos y Nombres</th>
-                            <th>Carrera</th>
-                            <th>Año de Graduación</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-graduados">
-                        </tbody>
-                </table>
+                    <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md transition">
+                        <i class="fa-solid fa-user-graduate w-5 text-center"></i>
+                        <span>Graduados</span>
+                    </a>
+                    
+                    <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-invoice w-5 text-center"></i>
+                        <span>Reportes CACES</span>
+                    </a>
+                    
+                    <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-history w-5 text-center"></i>
+                        <span>Cron-Job Log</span>
+                    </a>
+
+                    <hr class="border-slate-800 my-2">
+
+                    <div>
+                        <button id="btn-admin-menu" class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition focus:outline-none">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                                <span>Administrador</span>
+                            </div>
+                            <i id="icon-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
+                        </button>
+                        
+                        <div id="sub-menu-admin" class="hidden mt-1 mb-2 space-y-0.5 border-l-2 border-slate-800 ml-6 pl-4">
+                            <a href="admin-usuarios.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Usuarios</a>
+                            <a href="admin-profesionales.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Profesionales</a>
+                            <a href="admin-roles.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Roles</a>
+                            <a href="admin-carreras.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Carreras</a>
+                            <a href="admin-facultades.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Facultades</a>
+                            <a href="admin-instituciones.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Instituciones</a>
+                            <a href="admin-encuestas.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Encuestas</a>
+                            <a href="admin-menus.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Menús</a>
+                        </div>
+                    </div>
+                </nav>
             </div>
-        </div>
+            
+            <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
+                <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                <span class="font-medium">Cerrar Sesión</span>
+            </button>
+        </aside>
+
+        <main class="flex-grow overflow-y-auto flex flex-col h-screen">
+            
+            <div class="bg-white px-10 py-4 flex justify-between items-center border-b border-slate-200 shrink-0">
+                <span class="font-semibold text-slate-700">Área de Administración de Calidad</span>
+                <span class="text-sm font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">Rol: Facultad</span>
+            </div>
+
+            <div class="p-10 space-y-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 tracking-tight !mb-1">Egresados y Graduados Oficiales</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Apellidos y Nombres</th>
+                                <th>Carrera</th>
+                                <th>Año de Graduación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-graduados">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
     <div id="modalPerfil" class="modal">
-        <div class="modal-content">
+        <div class="modal-content custom-scrollbar">
             <div class="modal-header">
-                <h3 id="modal-nombre">Nombre del Egresado</h3>
+                <h3 id="modal-nombre" class="font-bold">Nombre del Egresado</h3>
                 <button class="btn-cerrar" id="cerrarModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -459,6 +454,33 @@
         };
 
         document.addEventListener('DOMContentLoaded', cargarGraduadosAprobados);
+
+        // =========================================================
+        // 3. CONTROL DE INTERFAZ: SUBMENÚ DE ADMINISTRADOR
+        // =========================================================
+        document.getElementById('btn-admin-menu').onclick = function() {
+            const submenu = document.getElementById('sub-menu-admin');
+            const arrow = document.getElementById('icon-arrow');
+            if (submenu && arrow) {
+                submenu.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            }
+        };
+
+
+        // =========================================================
+        // 8. MANEJO DE CIERRE DE SESIÓN
+        // =========================================================
+        const btnLogout = document.getElementById('btn-logout');
+        if (btnLogout) {
+            btnLogout.onclick = function() {
+                if (confirm("¿Está seguro de que desea cerrar su sesión?")) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = "../login.html"; 
+                }
+            };
+        }
     </script>
 </body>
 </html>

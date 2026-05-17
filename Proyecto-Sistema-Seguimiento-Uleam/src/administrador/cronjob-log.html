@@ -6,49 +6,121 @@
     <title>Historial de Envíos Automáticos - ULEAM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl">
-            <div>
-                <div class="mb-8 px-2">
-                    <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
-                    <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
-                </div>
-                <nav class="space-y-2">
-                    <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-chart-pie w-5"></i><span>Estadísticas</span>
-                    </a>
-                    <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-user-graduate w-5"></i><span>Graduados</span>
-                    </a>
-                    <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-file-invoice w-5"></i><span>Reportes CACES</span>
-                    </a>
-                    <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md">
-                        <i class="fa-solid fa-clock-history w-5"></i><span>Cron-Job Log</span>
-                    </a>
-                </nav>
-            </div>
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0 h-screen sticky top-0">
+    <div>
+        <div class="mb-6 px-2 py-1 border-b border-slate-800 pb-4">
+            <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
+            <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
+        </div>
+        
+        <nav class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-190px)] pr-1 custom-scrollbar">
             
-            <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left">
-                <i class="fa-solid fa-right-from-bracket w-5"></i>
-                <span class="font-medium">Cerrar Sesión</span>
-            </button>
-        </aside>
+            <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                <span>Estadísticas</span>
+            </a>
+
+            <a href="solicitudes.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-file-circle-check w-5 text-center"></i>
+                <span>Solicitudes</span>
+            </a>
+
+            <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-user-graduate w-5 text-center"></i>
+                <span>Graduados</span>
+            </a>
+            
+            <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-file-invoice w-5 text-center"></i>
+                <span>Reportes CACES</span>
+            </a>
+            
+            <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md transition">
+                        <i class="fa-solid fa-history w-5 text-center"></i>
+                        <span>Cron-Job Log</span>
+                    </a>
+
+            <hr class="border-slate-800 my-2">
+
+            <div>
+                <button id="btn-admin-menu" class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition focus:outline-none">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                        <span>Administrador</span>
+                    </div>
+                    <i id="icon-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
+                </button>
+                
+                <div id="sub-menu-admin" class="hidden pl-9 mt-1 space-y-1 border-l border-slate-800 ml-6">
+                    <a href="admin-usuarios.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Usuarios</a>
+                    <a href="admin-profesionales.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Profesionales</a>
+                    <a href="admin-roles.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Roles</a>
+                    <a href="admin-carreras.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Carreras</a>
+                    <a href="admin-facultades.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Facultades</a>
+                    <a href="admin-instituciones.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Instituciones</a>
+                    <a href="admin-encuestas.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Encuestas</a>
+                    <a href="admin-menus.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Menús</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
+        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+        <span class="font-medium">Cerrar Sesión</span>
+    </button>
+</aside>
+
+<style>
+    /* Estilos personalizados para el contenedor del menú scrollable */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 5px; /* Súper delgada */
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent; /* No se nota el fondo */
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #334155; /* Color slate-700 integrado al fondo oscuro */
+        border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #475569; /* Destaca levemente en hover */
+    }
+</style>
 
         <main class="flex-1 p-8">
             <header class="flex justify-between items-center mb-8">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Historial de Envíos Automáticos</h2>
-                    <p class="text-sm text-slate-500">Registro de correos masivos de invitación para la actualización de datos e indicadores institucionales.</p>
+                    <h2 class="text-2xl font-bold text-slate-900">Historial de Envíos Automáticos (Cron-Job)</h2>
+                    <p class="text-sm text-slate-500">Registro en tiempo real de notificaciones programadas enviadas a graduados según los criterios del CACES.</p>
                 </div>
-                <button onclick="forzarEnvioGlobal()" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl shadow-md text-sm font-semibold tracking-wide transition transform hover:-translate-y-0.5">
+                <button id="btn-forzar-envio-global" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl shadow-md text-sm font-semibold tracking-wide transition transform hover:-translate-y-0.5 active:scale-95">
                     <i class="fa-solid fa-paper-plane text-xs text-blue-400"></i>
                     <span>FORZAR ENVÍO AHORA</span>
                 </button>
             </header>
+
+            <div class="flex gap-4 mb-4">
+            <select id="filtroEstado" class="border p-2 rounded bg-white text-gray-700">
+                <option value="TODOS">Todos los Estados</option>
+                <option value="ENVIADO">Enviado</option>
+                <option value="LEÍDO">Leído</option>
+                <option value="FALLIDO">Fallido</option>
+            </select>
+
+            <select id="filtroTipo" class="border p-2 rounded bg-white text-gray-700">
+                <option value="TODOS">Todos los Tipos</option>
+                <option value="INICIAL">Inicial</option>
+                <option value="SEMESTRAL">Semestral</option>
+                <option value="ANUAL">Anual</option>
+            </select>
+            </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -56,50 +128,12 @@
                         <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
                             <th class="px-6 py-4">Fecha / Hora</th>
                             <th class="px-6 py-4">Graduado</th>
-                            <th class="px-6 py-4">Tipo</th>
-                            <th class="px-6 py-4">Estado</th>
+                            <th class="px-6 py-4">Tipo de Envío</th>
+                            <th class="px-6 py-4">Estado de Entrega</th>
                             <th class="px-6 py-4 text-center">Acción Manual</th>
                         </tr>
                     </thead>
                     <tbody id="log-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
-                            <td class="px-6 py-4 font-medium text-slate-900">juan.perez@uleam.edu.ec</td>
-                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-center text-slate-400">-</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
-                            <td class="px-6 py-4 font-medium text-slate-900">maria.gamma@uleam.edu.ec</td>
-                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-center text-slate-400">-</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-10 14:30</td>
-                            <td class="px-6 py-4 font-medium text-slate-900">carlos.rodriguez@uleam.edu.ec</td>
-                            <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
-                                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <button onclick="reenviarCorreoManual('carlos.rodriguez@uleam.edu.ec', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
-                                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
-                                    <span>Reenviar</span>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -107,199 +141,312 @@
     </div>
 
     <script>
-        // Función para cargar los logs desde Supabase en tiempo real
-async function cargarCronJobLogs() {
-    // Se asume que 'supabase' es tu cliente global inicializado de Supabase
-    const { data, error } = await supabase
-        .from('cronjob_log')
-        .select('*')
-        .order('fecha_envio', { ascending: false });
+        // =========================================================
+        // 1. CONFIGURACIÓN E INICIALIZACIÓN DE SUPABASE
+        // =========================================================
+        const CRON_SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
+        const CRON_SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M'; 
 
-    if (error) {
-        console.error("Error al extraer los registros de cronjob_log:", error);
-        alert("No se pudieron cargar los registros del historial de envíos.");
-        return;
-    }
-
-    const tbody = document.getElementById('log-table-body');
-    if (!tbody) {
-        console.error("Error: No se encontró el contenedor 'log-table-body' en el DOM.");
-        return;
-    }
-    
-    tbody.innerHTML = ''; // Limpiar las filas estáticas de muestra
-
-    // Renderizar cada registro de la base de datos de forma dinámica
-    data.forEach(log => {
-        // Formatear la marca de tiempo UTC a formato local de Ecuador (DD/MM/AAAA HH:MM)
-        const fecha = new Date(log.fecha_envio).toLocaleString('es-EC', { 
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit', 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false
-        });
-
-        // Inicializar variables de estructura interna
-        let estadoBadge = '';
-        let accionHtml = '<td class="px-6 py-4 text-center text-slate-400">-</td>';
-
-        // Evaluar el estado guardado en la columna 'estado'
-        if (log.estado === 'ENVIADO') {
-            estadoBadge = `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
-                </span>`;
-        } else if (log.estado === 'LEÍDO') {
-            estadoBadge = `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
-                </span>`;
-        } else if (log.estado === 'FALLIDO') {
-            estadoBadge = `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
-                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
-                </span>`;
-            
-            // Inyección del botón de reenvío manual apuntando a la columna 'graduado_email'
-            accionHtml = `
-                <td class="px-6 py-4 text-center">
-                    <button onclick="reenviarCorreoManual('${log.graduado_email}', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
-                        <i class="fa-solid fa-rotate-right text-[10px]"></i>
-                        <span>Reenviar</span>
-                    </button>
-                </td>`;
-        }
-
-        // Construir la fila completa estructurada con Tailwind CSS
-        tbody.innerHTML += `
-            <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
-                <td class="px-6 py-4 font-mono text-xs text-slate-500">${fecha}</td>
-                <td class="px-6 py-4 font-medium text-slate-900">${log.graduado_email}</td>
-                <td class="px-6 py-4">
-                    <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">
-                        ${log.tipo_envio || 'ANUAL'}
-                    </span>
-                </td>
-                <td class="px-6 py-4">${estadoBadge}</td>
-                ${accionHtml}
-            </tr>
-        `;
-    });
-}
-
-// Escuchar la carga del árbol DOM para inicializar la extracción de datos de forma segura
-// Asignar el evento al botón general al cargar el DOM
-document.addEventListener('DOMContentLoaded', () => {
-    // Ejecutar la lectura inicial de la tabla
-    cargarCronJobLogs();
-
-    // Vincular el botón superior de "Forzar Envío"
-    const btnForzar = document.querySelector('button:has(.fa-paper-plane), button:contains("FORZAR ENVÍO")') || document.getElementById('btn-forzar-envio');
-    
-    if (btnForzar) {
-        btnForzar.addEventListener('click', forzarCronJobGlobal);
-    }
-});
-
-// Función para ejecutar el barrido masivo del Cron-Job
-async function forzarCronJobGlobal() {
-    const confirmar = confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job ahora?\nEsto evaluará a todos los graduados pendientes y enviará los correos masivos correspondientes.");
-    if (!confirmar) return;
-
-    try {
-        // Aquí se conectaría con la lógica de tu servidor que busca graduados sin encuesta.
-        // Como muestra, insertaremos un nuevo registro directo a la tabla para validar el flujo dinámico.
-        
-        const { error } = await supabase
-            .from('cronjob_log')
-            .insert([
-                { 
-                    graduado_email: 'nuevo.graduado@uleam.edu.ec', 
-                    tipo_envio: 'ANUAL', 
-                    estado: 'ENVIADO' 
+        if (typeof window.supabase !== 'undefined') {
+            try {
+                if (!window.supabase.auth) {
+                    window.supabase = window.supabase.createClient(CRON_SUPABASE_URL, CRON_SUPABASE_ANON_KEY);
                 }
-            ]);
-
-        if (error) throw error;
-
-        alert("El proceso del Cron-Job global se ha ejecutado con éxito.");
-        await cargarCronJobLogs(); // Refrescar la vista con los nuevos envíos detectados
-
-    } catch (error) {
-        console.error("Error al forzar el Cron-Job:", error);
-        alert("Ocurrió un error al intentar procesar el envío global.");
-    }
-}
-
-
-
-        // CONTROL DE REENVÍO MANUAL DE UN LOG ESPECÍFICO
-        // Función para reenviar un correo de manera individual (Fila Fallida)
-async function reenviarCorreoManual(email, boton) {
-    // Guardar el contenido original del botón para restaurarlo si hay un error
-    const contenidoOriginal = boton.innerHTML;
-    
-    // 1. Cambiar el estado visual del botón a modo "Cargando..."
-    boton.disabled = true;
-    boton.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin text-[10px]"></i>
-        <span>Enviando...</span>
-    `;
-    boton.className = "inline-flex items-center space-x-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-not-allowed";
-
-    try {
-        // En un entorno de producción, aquí llamarías a tu Edge Function o servicio de Email (NodeMailer/Resend)
-        // Ejemplo: await enviarEmailAPI(email);
+            } catch (e) {
+                console.error("Error al inicializar cliente de Supabase:", e);
+            }
+        } else {
+            console.warn("La librería de Supabase no se detecta en el navegador.");
+        }
         
-        // Simulación de retraso de red (1.5 segundos) para asegurar una experiencia de usuario fluida
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const supabaseClient = window.supabase;
 
-        // 2. Actualizar el estado del registro en la base de datos de Supabase
-        const { error } = await supabase
-            .from('cronjob_log')
-            .update({ estado: 'ENVIADO', fecha_envio: new Date().toISOString() })
-            .eq('graduado_email', email)
-            .eq('estado', 'FALLIDO'); // Asegura que solo alteramos el registro erróneo
+        // Variable global para guardar los datos originales de la BD y poder filtrarlos localmente
+        let todosLosLogs = [];
 
-        if (error) throw error;
+        // =========================================================
+        // 2. EXTRAER Y FILTRAR REGISTROS
+        // =========================================================
+        async function cargarCronJobLogs() {
+            const tbody = document.getElementById('log-table-body');
+            if (!tbody) return;
+            
+            // Solo muestra el mensaje de carga la primera vez si no hay datos guardados
+            if (todosLosLogs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">
+                            <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Cargando registros desde Supabase...
+                        </td>
+                    </tr>`;
+            }
 
-        // 3. Notificación de éxito al usuario
-        alert(`Solicitud procesada: Invitación enviada exitosamente de forma manual a ${email}.`);
-        
-        // 4. Recargar los logs para actualizar la tabla y los colores de los badges automáticamente
-        await cargarCronJobLogs();
+            if (!supabaseClient || CRON_SUPABASE_ANON_KEY === "TU_CLAVE_ANON_REAL_AQUÍ") {
+                console.warn("Cliente de Supabase no configurado o en modo local. Cargando simulación.");
+                renderizarFilasEstaticas();
+                return;
+            }
+            
+            try {
+                // Si la lista global está vacía, hacemos la petición a Supabase una sola vez
+                if (todosLosLogs.length === 0) {
+                    const { data, error } = await supabaseClient
+                        .from('cronjob_log')
+                        .select('*')
+                        .order('fecha_envio', { ascending: false });
 
-    } catch (error) {
-        console.error("Error durante el reenvío manual:", error);
-        alert("No se pudo completar el reenvío del correo. Inténtelo nuevamente.");
-        
-        // Restaurar el botón a su estado original si ocurre un fallo en la red o base de datos
-        boton.disabled = false;
-        boton.innerHTML = contenidoOriginal;
-        boton.className = "inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95";
-    }
-}
+                    if (error) throw error;
+                    todosLosLogs = data || [];
+                }
 
-        // CONTROL DE ENVÍO AUTOMÁTICO FORZADO GLOBAL
-        function forzarEnvioGlobal() {
-            if(confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job para todos los graduados pendientes en este momento?")) {
-                alert("Proceso de sincronización masiva inicializado. El servidor está distribuyendo las colas de correo.");
+                // Capturar valores de los selectores de filtro
+                const filtroEstado = document.getElementById('filtroEstado').value;
+                const filtroTipo = document.getElementById('filtroTipo').value;
+
+                // Aplicar filtros en memoria
+                const datosFiltrados = todosLosLogs.filter(registro => {
+                    const cumpleEstado = filtroEstado === 'TODOS' || registro.estado === filtroEstado;
+                    const cumpleTipo = filtroTipo === 'TODOS' || (registro.tipo_envio || 'ANUAL') === filtroTipo;
+                    return cumpleEstado && cumpleTipo;
+                });
+
+                tbody.innerHTML = ''; 
+
+                if (datosFiltrados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No se encontraron registros con los filtros seleccionados.</td></tr>`;
+                    return;
+                }
+
+                // Renderizar las filas filtradas con sus respectivos estilos
+                datosFiltrados.forEach(log => {
+                    let fechaFormateada = "Sin fecha";
+                    if (log.fecha_envio) {
+                        fechaFormateada = new Date(log.fecha_envio).toLocaleString('es-EC', { 
+                            year: 'numeric', month: '2-digit', day: '2-digit', 
+                            hour: '2-digit', minute: '2-digit', hour12: false
+                        });
+                    }
+
+                    let estadoBadge = '';
+                    let accionHtml = '<td class="px-6 py-4 text-center text-slate-400">-</td>';
+                    const estadoActual = log.estado || 'ENVIADO';
+
+                    if (estadoActual === 'ENVIADO') {
+                        estadoBadge = `
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
+                            </span>`;
+                    } else if (estadoActual === 'LEIDO' || estadoActual === 'LEÍDO') {
+                        estadoBadge = `
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
+                            </span>`;
+                    } else if (estadoActual === 'FALLIDO') {
+                        estadoBadge = `
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
+                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
+                            </span>`;
+                        
+                        accionHtml = `
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="reenviarCorreoManual('${log.id}', '${log.graduado_email}', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
+                                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                                    <span>Reenviar</span>
+                                </button>
+                            </td>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
+                            <td class="px-6 py-4 font-mono text-xs text-slate-500">${fechaFormateada}</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">${log.graduado_email}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                                    ${log.tipo_envio || 'ANUAL'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">${estadoBadge}</td>
+                            ${accionHtml}
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error al extraer los registros de cronjob_log:", error);
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-rose-500 font-medium">Error de conexión con la base de datos.</td></tr>`;
             }
         }
 
-        // LÓGICA INTEGRADA DEL BOTÓN DE CERRAR SESIÓN
-        document.getElementById('btn-logout').onclick = function() {
-            if (confirm("¿Está seguro de que desea cerrar su sesión en el panel administrativo?")) {
-                // Aquí eliminas los tokens de autenticación guardados
-                localStorage.removeItem('session_token'); 
-                sessionStorage.clear();
-                
-                // Redirección directa a la pantalla de acceso principal
-                window.location.href = "../login.html"; 
+        // Escuchar los cambios en los selectores para volver a filtrar al instante
+        document.getElementById('filtroEstado').addEventListener('change', cargarCronJobLogs);
+        document.getElementById('filtroTipo').addEventListener('change', cargarCronJobLogs);
+
+        // =========================================================
+        // 3. CONTROL DE INTERFAZ: SUBMENÚ DE ADMINISTRADOR
+        // =========================================================
+        document.getElementById('btn-admin-menu').onclick = function() {
+            const submenu = document.getElementById('sub-menu-admin');
+            const arrow = document.getElementById('icon-arrow');
+            if (submenu && arrow) {
+                submenu.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
             }
         };
+
+        // =========================================================
+        // 4. FORZAR CRON-JOB GLOBAL
+        // =========================================================
+        async function forzarCronJobGlobal() {
+            const confirmar = confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job ahora?\nEsto leerá la lista de graduados reales y generará los registros de envío.");
+            if (!confirmar) return;
+
+            const btn = document.getElementById('btn-forzar-envio-global');
+            const textoOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>PROCESANDO...</span>`;
+
+            try {
+                if (supabaseClient && CRON_SUPABASE_ANON_KEY !== "TU_CLAVE_ANON_REAL_AQUÍ") {
+                    const { data: graduados, error: errorGraduados } = await supabaseClient
+                        .from('graduados')
+                        .select('correo_institucional'); 
+
+                    if (errorGraduados) throw errorGraduados;
+
+                    const fechaActualISO = new Date().toISOString();
+                    let registrosCreados = 0;
+
+                    if (graduados && graduados.length > 0) {
+                        const nuevosLogs = graduados.map(g => ({
+                            graduado_email: g.correo_institucional || 'sin-correo@uleam.edu.ec',
+                            tipo_envio: 'ANUAL', 
+                            estado: 'ENVIADO', 
+                            fecha_envio: fechaActualISO
+                        }));
+
+                        const { error: errorInsert } = await supabaseClient.from('cronjob_log').insert(nuevosLogs);
+                        if (errorInsert) throw errorInsert;
+                        registrosCreados = graduados.length;
+                    } else {
+                        const { data: solicitudes, error: errorSol } = await supabaseClient
+                            .from('solicitudes_registro')
+                            .select('correo');
+                        
+                        if (errorSol) throw errorSol;
+                        
+                        if (!solicitudes || solicitudes.length === 0) {
+                            alert("No hay datos ni en 'graduados' ni en 'solicitudes_registro'.");
+                            return;
+                        }
+
+                        const nuevosLogsSolicitudes = solicitudes.map(s => ({
+                            graduado_email: s.correo,
+                            tipo_envio: 'ANUAL', 
+                            estado: 'ENVIADO', 
+                            fecha_envio: fechaActualISO
+                        }));
+
+                        const { error: errorInsertSol } = await supabaseClient.from('cronjob_log').insert(nuevosLogsSolicitudes);
+                        if (errorInsertSol) throw errorInsertSol;
+                        registrosCreados = solicitudes.length;
+                    }
+
+                    alert(`¡Cron-Job completado con éxito!\nSe procesaron ${registrosCreados} registros desde la tabla maestra.`);
+                    todosLosLogs = []; // Forzamos la recarga limpiando el caché local
+                    await cargarCronJobLogs();
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    alert("Modo local activo.");
+                    renderizarFilasEstaticas();
+                }
+
+            } catch (error) {
+                console.error("Error detallado en el Cron-Job:", error);
+                alert("Ocurrió un error al procesar.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            }
+        }
+
+        // =========================================================
+        // 5. REENVÍO INDIVIDUAL PARA FILAS FALLIDAS
+        // =========================================================
+        async function reenviarCorreoManual(idLog, email, boton) {
+            const contenidoOriginal = boton.innerHTML;
+            boton.disabled = true;
+            boton.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> <span>Enviando...</span>`;
+            boton.className = "inline-flex items-center space-x-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-not-allowed";
+
+            try {
+                if (supabaseClient && CRON_SUPABASE_ANON_KEY !== "TU_CLAVE_ANON_REAL_AQUÍ") {
+                    const { error } = await supabaseClient
+                        .from('cronjob_log')
+                        .update({ estado: 'ENVIADO', fecha_envio: new Date().toISOString() }) 
+                        .eq('id', idLog);
+
+                    if (error) throw error;
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                }
+
+                alert(`Invitación reenviada con éxito a:\n${email}`);
+                
+                // === ¡ESTA ES LA LÍNEA CLAVE! ===
+                todosLosLogs = []; // Vaciamos la memoria vieja para que obligatoriamente traiga lo nuevo de Supabase
+                
+                await cargarCronJobLogs(); // Esto volverá a pintar la tabla ya actualizada
+
+            } catch (error) {
+                console.error("Error durante el reenvío manual:", error);
+                alert("No se pudo completar el reenvío.");
+                boton.disabled = false;
+                boton.innerHTML = contenidoOriginal;
+                boton.className = "inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95";
+            }
+        }
+
+        // =========================================================
+        // 6. RENDERIZADO DE RESPALDO (MOCK)
+        // =========================================================
+        function renderizarFilasEstaticas() {
+            const tbody = document.getElementById('log-table-body');
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
+                        <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-17 11:15</td>
+                        <td class="px-6 py-4 font-medium text-slate-900">simulacion.local@uleam.edu.ec</td>
+                        <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
+                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO</span></td>
+                        <td class="px-6 py-4 text-center text-slate-400">-</td>
+                    </tr>`;
+            }
+        }
+
+        // =========================================================
+        // 7. CONTROL DE INICIALIZACIÓN DEL DOM
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarCronJobLogs();
+            
+            const btnGlobal = document.getElementById('btn-forzar-envio-global');
+            if (btnGlobal) {
+                btnGlobal.addEventListener('click', forzarCronJobGlobal);
+            }
+        });
+
+        // =========================================================
+        // 8. MANEJO DE CIERRE DE SESIÓN
+        // =========================================================
+        const btnLogout = document.getElementById('btn-logout');
+        if (btnLogout) {
+            btnLogout.onclick = function() {
+                if (confirm("¿Está seguro de que desea cerrar su sesión?")) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = "../login.html"; 
+                }
+            };
+        }
     </script>
 </body>
 </html>
