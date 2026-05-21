@@ -1,19 +1,19 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"></head>
 <body>
     <form>
-        <input type="Button" value="Cambiar Color" onclick="campoColor = parent.Marco1.document.form1.color;
-            
-            if (campoColor.selectedIndex == 0) {
+        <input type="Button" value="Cambiar Color" onclick="
+            campoColor = parent.Marco1.document.form1.color;
+            if(campoColor.selectedIndex==0){
                 colorin = 'green';
-            } else {
+            }else{
                 colorin = 'blue';
             }
-
             campoFrame = parent.Marco1.document.form1.marcos;
-
-            if (campoFrame.selectedIndex == 0) {
+            if(campoFrame.selectedIndex==0){
                 window.parent.Marco1.document.bgColor = colorin;
-            } else {
+            }else{
                 window.parent.Marco2.document.bgColor = colorin;
             }">
     </form>

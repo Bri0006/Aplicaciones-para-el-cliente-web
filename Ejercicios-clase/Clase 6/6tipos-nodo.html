@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementación del Modelo de Nodos</title>
+    
+    <script>
+        // === CÓDIGO DE LA DIAPOSITIVA (Corregido y Organizado) ===
+        // Crear de forma explícita las constantes predefinidas si el navegador no las tiene
+        if (typeof Node == "undefined") {
+            var Node = {
+                ELEMENT_NODE: 1,
+                ATTRIBUTE_NODE: 2,
+                TEXT_NODE: 3,
+                CDATA_SECTION_NODE: 4,
+                ENTITY_REFERENCE_NODE: 5,
+                ENTITY_NODE: 6,
+                PROCESSING_INSTRUCTION_NODE: 7,
+                COMMENT_NODE: 8,
+                DOCUMENT_NODE: 9,
+                DOCUMENT_TYPE_NODE: 10,
+                DOCUMENT_FRAGMENT_NODE: 11,
+                NOTATION_NODE: 12
+            };
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            padding: 30px;
+            color: #333;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h2 { color: #0d47a1; }
+        ul { list-style-type: none; padding: 0; }
+        li { 
+            padding: 8px 12px; 
+            margin-bottom: 5px; 
+            background: #e3f2fd; 
+            border-left: 5px solid #2196f3;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Tipos de Nodo cargados</h2>
+        <p>A continuación se evalúan algunas constantes usando el objeto <code>Node</code> del script:</p>
+        
+        <ul>
+            <li id="res1">Evaluando ELEMENT_NODE...</li>
+            <li id="res2">Evaluando TEXT_NODE...</li>
+            <li id="res3">Evaluando DOCUMENT_NODE...</li>
+        </ul>
+    </div>
+
+    <script>
+        // Script de prueba para renderizar los valores en la interfaz corporativa de arriba
+        document.addEventListener("DOMContentLoaded", function() {
+            // Mostramos los valores numéricos de las constantes para verificar que todo mapea bien
+            document.getElementById("res1").innerHTML = `<strong>ELEMENT_NODE (Etiquetas):</strong> Valor de constante = ${Node.ELEMENT_NODE}`;
+            document.getElementById("res2").innerHTML = `<strong>TEXT_NODE (Textos sueltos):</strong> Valor de constante = ${Node.TEXT_NODE}`;
+            document.getElementById("res3").innerHTML = `<strong>DOCUMENT_NODE (Raíz):</strong> Valor de constante = ${Node.DOCUMENT_NODE}`;
+        });
+    </script>
+
+</body>
+</html>

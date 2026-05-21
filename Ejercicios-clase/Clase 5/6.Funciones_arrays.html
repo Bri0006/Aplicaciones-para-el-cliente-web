@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Funciones de Usuario y Arrays</title>
+    <script type="text/javascript">
+        // --- Funciones Definidas por el Usuario ---
+        // Calcula el precio final multiplicando el valor por el factor de IVA indicado
+        function aplicar_IVA(valorProducto, IVA){
+            var productoConIVA = valorProducto * IVA;
+            // Usamos .toFixed(2) para que el resultado solo muestre 2 decimales (opcional pero recomendado para dinero)
+            alert("El precio del producto, aplicando el IVA del " + IVA + " es: " + productoConIVA.toFixed(2));
+        }
+
+        // --- Nueva función para pedir los datos al usuario ---
+        function pedirDatos() {
+            // 1. Pedimos el precio base del producto
+            var precioInput = prompt("Introduce el precio base del producto:");
+            
+            // 2. Pedimos el factor del IVA (por ejemplo: 1.12 o 1.15)
+            var ivaInput = prompt("Introduce el factor de IVA (ejemplo: 1.15 para el 15%):");
+
+            // 3. Convertimos los textos ingresados a números decimales
+            var precio = parseFloat(precioInput);
+            var iva = parseFloat(ivaInput);
+
+            // 4. Validamos que el usuario haya ingresado números válidos antes de calcular
+            if (!isNaN(precio) && !isNaN(iva)) {
+                aplicar_IVA(precio, iva);
+            } else {
+                alert("Por favor, ingresa valores numéricos válidos.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Funciones y Arrays</h1>
+    
+    <h3>Prueba de la Función IVA con datos del usuario:</h3>
+    <button onclick="pedirDatos()">Ingresar datos y Calcular IVA</button>
+
+    <h3>Inicialización de Arrays (Ver consola de desarrollador o código):</h3>
+    <script type="text/javascript">
+        // --- Primera forma de inicializar un Array ---
+        var productos_alimenticios = new Array();
+        productos_alimenticios[0] = 'Pan';
+        productos_alimenticios[1] = 'Agua';
+        productos_alimenticios[2] = 'Lentejas';
+
+        document.write("<p>Primera forma (Índice 1): " + productos_alimenticios[1] + "</p>");
+
+        // --- Segunda forma de inicializar un Array ---
+        var productos_alimenticios2 = new Array('Pan', 'Agua', 'Lentejas');
+
+        document.write("<p>Segunda forma (Índice 2): " + productos_alimenticios2[2] + "</p>");
+    </script>
+</body>
+</html>

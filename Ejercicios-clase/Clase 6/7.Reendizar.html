@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Librerías de Terceros / AJAX</title>
+    <script>
+        function iniciarPeticion() {
+            var Xmlhttp;
+
+            // === CÓDIGO DE LA DIAPOSITIVA (Organizado y Corregido) ===
+            if (window.XMLHttpRequest) {
+                // Código para navegadores modernos (IE7+, Firefox, Chrome, Opera, Safari)
+                Xmlhttp = new XMLHttpRequest();
+                console.log("Objeto creado usando el estándar XMLHttpRequest.");
+            } else {
+                // Código para navegadores antiguos de Microsoft (IE6, IE5)
+                Xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                console.log("Objeto creado usando ActiveXObject (Internet Explorer antiguo).");
+            }
+
+            // Pequeña validación visual para verificar que el objeto se creó correctamente
+            if (Xmlhttp) {
+                alert("¡Objeto de comunicación asíncrona creado con éxito!");
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #eceff1;
+            padding: 40px;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-block;
+            max-width: 450px;
+        }
+        button {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Prueba de Conexión Asíncrona (AJAX)</h2>
+        <p>Presiona el botón para instanciar el objeto de comunicación de acuerdo a la compatibilidad de tu navegador actual.</p>
+        
+        <button onclick="iniciarPeticion()">Crear Objeto HTTP</button>
+    </div>
+
+</body>
+</html>

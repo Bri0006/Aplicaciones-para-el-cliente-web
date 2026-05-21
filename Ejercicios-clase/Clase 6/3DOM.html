@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Documento desde Código</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 40px;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1a237e;
+        }
+        p {
+            font-size: 1.1em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Acceso al Documento desde Código</h1>
+        <p>Al cargar esta página, el script de JavaScript verificará los tipos de nodo del DOM e interactuará mediante ventanas de alerta (alert).</p>
+    </div>
+
+    <script>
+        // Esperamos a que todo el DOM esté cargado antes de ejecutar las pruebas
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- PRUEBA 1: Verificar si 'document' es un nodo de tipo DOCUMENT_NODE ---
+            // En JavaScript puro se elimina el 'then' y se usan las comillas estándar ""
+            if (document.nodeType === Node.DOCUMENT_NODE) {
+                alert("Prueba 1: Verdadero (document es el nodo raíz del documento)");
+            }
+
+            // --- PRUEBA 2: Verificar el elemento raíz del documento (<html>) ---
+            // 'document.documentElement' hace referencia directa a la etiqueta <html>
+            if (document.documentElement.nodeType === Node.ELEMENT_NODE) {
+                alert("Prueba 2: Verdadero (document.documentElement, que es <html>, es un nodo de tipo ELEMENT_NODE)");
+            }
+
+        });
+    </script>
+
+</body>
+</html>

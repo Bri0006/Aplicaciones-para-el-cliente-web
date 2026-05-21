@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Ventanas</title>
+</head>
+<body>
+
+    <center>
+        <h1>Apertura de múltiples ventanas</h1>
+        <input type="Button" id="btnAbrir" value="Abre múltiples ventanas...">
+    </center>
+
+    <script type="text/javascript">
+        document.getElementById('btnAbrir').onclick = function() {
+            
+            for(var i = 0; i < 5; i++) {
+                var myWindow = window.open('', '', 'width=200,height=200');
+                
+                if (myWindow) {
+                    myWindow.document.write('<html>');
+                    myWindow.document.write('<head>');
+                    myWindow.document.write('<title>Ventana: ' + i + '</title>');
+                    myWindow.document.write('</head>');
+                    myWindow.document.write('<body>');
+                    myWindow.document.write('Ventana ' + i + '<br><br>');
+                    myWindow.document.write('<input type="button" value="Cerrar" onClick="window.close()">');
+                    myWindow.document.write('</body>'); 
+                    myWindow.document.write('</html>');
+                    myWindow.document.close();
+                }
+            }
+        };
+    </script>
+
+</body>
+</html>

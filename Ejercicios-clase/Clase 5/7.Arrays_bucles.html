@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Arrays en Bucles</title>
+</head>
+<body>
+
+    <h1>Ejemplo de Array de Códigos de Productos</h1>
+
+    <script type="text/javascript">
+        // 1. Declaramos un array vacío utilizando la sintaxis de tu diapositiva
+        var codigos_productos = new Array();
+
+        // 2. Iniciamos el bucle for para dar 10 vueltas (del 0 al 9)
+        for (var i = 0; i < 10; i++) {
+            // Asignamos a cada posición [i] el texto correspondiente concatenado con el número
+            codigos_productos[i] = "Codigo_producto_" + i;
+        }
+
+        // 3. Mostramos el resultado en el documento para verificar que funcionó
+        for (var i = 0; i < codigos_productos.length; i++) {
+            document.write(codigos_productos[i] + "<br>");
+        }
+    </script>
+
+</body>
+</html>

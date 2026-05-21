@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetos Nativos de JavaScript</title>
+</head>
+<body>
+    <h1>Prueba de Objetos Nativos</h1>
+
+    <script type="text/javascript">
+        // --- Objeto Date ---
+        // Crea un objeto con la fecha y hora actual
+        var fecha_actual = new Date(); 
+        // Crea un objeto con una fecha específica (Año, Mes [0-11], Día)
+        var fecha_maya = new Date(2012, 11, 21); 
+        
+        document.write("<p>Fecha actual: " + fecha_actual + "</p>");
+        document.write("<p>Fecha Maya: " + fecha_maya + "</p>");
+
+        // --- Objeto Math ---
+        var r = 5; // Definimos un radio para que la variable 'r' no de error
+        // Calcula el área usando la constante Pi y la función de potencia (pow)
+        var area = Math.PI * Math.pow(r, 2); 
+        document.write("<p>El área con radio " + r + " es: " + area + "</p>");
+
+        // --- Objeto Number ---
+        // Muestra alertas con los valores máximos y mínimos permitidos en JavaScript
+        alert("Propiedad MAX_VALUE: " + Number.MAX_VALUE);
+        alert("Propiedad MIN_VALUE: " + Number.MIN_VALUE);
+
+        // --- Objeto String ---
+        // Instancia un objeto de cadena de texto
+        var texto = new String("Prueba de texto ");
+        // Escribe en el documento la longitud de la cadena
+        document.write("Número de letras de la cadena de texto: " + texto.length + "<br>");
+    </script>
+</body>
+</html>

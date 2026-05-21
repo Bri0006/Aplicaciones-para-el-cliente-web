@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Arrays Multidimensionales</title>
+    <style>
+        /* Un poco de estilo simple para que tu tabla se vea ordenada */
+        table { border-collapse: collapse; width: 50%; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; font-family: sans-serif; }
+        b { color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <h1>Tabla de Palabras Más Buscadas</h1>
+
+    <script type="text/javascript">
+        // 1. Definimos la matriz (Array bidimensional) con datos de prueba de ejemplo
+        // Cada fila representa un grupo de palabras buscadas
+        var palabras_mas_buscadas = [
+            ["Google", "Facebook", "YouTube"], // Fila 0
+            ["Ecuador", "Manta", "Noticias"],   // Fila 1
+            ["JavaScript", "HTML", "CSS"]       // Fila 2
+        ];
+
+        // 2. Iniciamos la creación de la tabla HTML
+        document.write("<table border=1>");
+
+        // BUCLE EXTERIOR: Recorre cada una de las filas (i)
+        for (var i = 0; i < palabras_mas_buscadas.length; i++) {
+            document.write("<tr>"); // Abre la fila
+            
+            // Crea la primera celda que indica el "Estado" o número de fila
+            document.write("<td><b>Estado " + i + "</b></td>");
+            
+            // BUCLE INTERIOR: Recorre cada columna (j) dentro de la fila actual
+            for (var j = 0; j < palabras_mas_buscadas[i].length; j++) {
+                // Escribe la palabra que está en la posición [i][j]
+                document.write("<td>" + palabras_mas_buscadas[i][j] + "</td>");
+            }
+            
+            document.write("</tr>"); // Cierra la fila
+        }
+
+        // 3. Cerramos la etiqueta de la tabla al terminar los bucles
+        document.write("</table>");
+    </script>
+
+</body>
+</html>

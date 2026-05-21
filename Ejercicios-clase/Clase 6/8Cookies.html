@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Cookies en JavaScript</title>
+    <script type="text/javascript">
+        
+        // --- 1. FUNCIÓN PARA OBTENER UNA COOKIE ---
+        function getCookie(c_name) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                // Limpia espacios en blanco al inicio y al final usando RegEx
+                x = x.replace(/^\s+|\s+$/g, "");
+                
+                if (x == c_name) {
+                    return unescape(y);
+                }
+            }
+            return ""; // Retorna vacío si no encuentra la cookie
+        }
+
+        // --- 2. FUNCIÓN PARA CREAR/GUARDAR UNA COOKIE ---
+        function setCookie(c_name, value, exdays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            
+            // Corrige la sintaxis de expiración para que el navegador la procese bien
+            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+            document.cookie = c_name + "=" + c_value + "; path=/";
+        }
+
+        // --- 3. FUNCIÓN PARA VERIFICAR LA COOKIE ---
+        function checkCookie() {
+            var username = getCookie("username");
+            
+            // Si la cookie existe y no está vacía
+            if (username != null && username != "") {
+                alert("Bienvenido de nuevo, " + username);
+            } else {
+                // Si no existe, solicita el nombre al usuario
+                username = prompt("Por favor, introduzca su usuario:", "");
+                
+                if (username != null && username != "") {
+                    // Guarda el usuario en una cookie por 365 días
+                    setCookie("username", username, 365);
+                    alert("¡Hola " + username + "! Tu usuario ha sido guardado por 1 año.");
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fce4ec; /* Tono pastel suave */
+            color: #4a148c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 400px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #d81b60;
+        }
+        input[type="button"] {
+            background-color: #d81b60;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        input[type="button"]:hover {
+            background-color: #c2185b;
+            transform: translateY(-2px);
+        }
+        input[type="button"]:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Control de Sesión Local</h2>
+        <p>Este botón lee o registra tu nombre directamente en las cookies de tu navegador.</p>
+        <br>
+        <input type="button" name="chequeaCookie" value="Chequear las cookies" onclick="checkCookie();">
+    </div>
+
+</body>
+</html>

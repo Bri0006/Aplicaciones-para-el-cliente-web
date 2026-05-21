@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título DOM - Ejercicio 2</title>
+    <script>
+        // Se ejecuta cuando el puntero entra al área del DIV
+        function ratonEncima() {
+            // Busca el primer div [0], accede a su primer nodo hijo (el texto) y cambia su valor
+            document.getElementsByTagName("div")[0].childNodes[0].nodeValue = "EL RATON ESTA ENCIMA";
+        }
+
+        // Se ejecuta cuando el puntero sale del área del DIV
+        function ratonFuera() {
+            document.getElementsByTagName("div")[0].childNodes[0].nodeValue = "NO ESTA EL RATON ENCIMA";
+        }
+    </script>
+    <style>
+        /* Estilo básico para que puedas visualizar bien el área del DIV en tu pantalla */
+        .caja-interactiva {
+            width: 300px;
+            padding: 40px;
+            margin: 50px auto;
+            background-color: #ffe0b2;
+            border: 2px dashed #f57c00;
+            text-align: center;
+            font-family: sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .caja-interactiva:hover {
+            background-color: #ffb74d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="caja-interactiva" onmouseover="ratonEncima();" onmouseout="ratonFuera();">VALOR POR DEFECTO</div>
+
+</body>
+</html>

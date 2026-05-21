@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetos del Navegador (BOM)</title>
+</head>
+<body>
+    <h1>Información del Navegador y Entorno</h1>
+
+    <script type="text/javascript">
+        // --- Objeto Navigator ---
+        document.write("Navegador: " + navigator.appName + "<br>");
+        document.write("Versión: " + navigator.appVersion + "<br>");
+
+        // --- Objeto Screen (¡CORREGIDO!) ---
+        // Muestra las dimensiones reales de la pantalla del monitor/dispositivo
+        document.write(" Ancho total de pantalla: " + screen.width + "px<br>");
+        document.write(" Alto total de pantalla: " + screen.height + "px<br>");
+        document.write(" Alto disponible (sin barra de tareas): " + screen.availHeight + "px<br><br>");
+
+        // --- Objeto Document ---
+        document.write("Navegador: " + navigator.appName + "<br><br>");
+
+        // --- Objeto Location ---
+        // Muestra la dirección URL completa de la página actual
+        document.write("URL completa: " + location.href + "<br><br>");
+    </script>
+
+    <h3>Controles de Ventana:</h3>
+    <button onclick="window.print();">Imprimir Página</button>
+    <button onclick="window.close();">Cerrar Ventana</button>
+
+    <h3>Controles de Historial:</h3>
+    <input type="button" value="Atras" onClick="history.back();">
+</body>
+</html>

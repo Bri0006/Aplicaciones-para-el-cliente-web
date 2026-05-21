@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetos en JavaScript</title>
+</head>
+<body>
+
+    <h1>Ejemplo de objetos definidos por el usuario</h1>
+
+    <script type="text/javascript"> 
+        function Coche(marca_in, modelo_in, anyo_in){ 
+            this.marca = marca_in; 
+            this.modelo = modelo_in; 
+            this.anyo = anyo_in; 
+        } 
+    </script>
+
+    <script type="text/javascript">
+        // Creamos un objeto "miCoche" usando la función constructora de arriba
+        var miCoche = new Coche('Toyota', 'Corolla', 2024);
+
+        // Mostramos las propiedades en la pantalla para comprobarlo
+        document.write("<p><b>Marca del coche:</b> " + miCoche.marca + "</p>");
+        document.write("<p><b>Modelo del coche:</b> " + miCoche.modelo + "</p>");
+        document.write("<p><b>Año del coche:</b> " + miCoche.anyo + "</p>");
+    </script>
+
+</body>
+</html>

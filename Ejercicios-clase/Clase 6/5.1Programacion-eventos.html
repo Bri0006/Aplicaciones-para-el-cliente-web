@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título DOM</title>
+    <script>
+        // Variable global para rastrear de forma segura si el sitio ya cargó
+        let paginaCargada = false;
+
+        // El navegador cambia la variable a true automáticamente al finalizar la carga
+        window.onload = function() {
+            paginaCargada = true;
+        };
+
+        // Función que valida el estado de la carga
+        function cargada() {
+            if (paginaCargada) {
+                return true;
+            }
+            return false;
+        }
+
+        // Función que se ejecuta al hacer click en el párrafo
+        function pulsar() {
+            if (cargada()) {
+                alert("Se cargó la página correctamente");
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <p onclick="pulsar();" style="cursor: pointer; font-weight: bold;">
+        Primer párrafo (Haz click aquí)
+    </p>
+
+</body>
+</html>
