@@ -1,29 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
-<head> 
-     <meta charset="UTF-8"> 
-     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-     <title>Taller: Gestor de Tareas Semiestructurado</title> 
-     <link rel="stylesheet" href="estilos.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Estudiantes</title>
+    <link rel="stylesheet" href="estilos.css">
 </head>
-<body> 
-      <div class="contenedor"> 
-          <h1>Gestor de Tareas</h1> 
-          
-          <form id="formulario-tareas"> 
-              <input type="text" id="titulo-tarea" placeholder="Título de la tarea" required> 
-              <textarea id="descripcion-tarea" placeholder="Descripción de la tarea" required></textarea> 
-              <button type="submit">Agregar Tarea</button> 
-          </form> 
-          
-          <div class="acciones-datos"> 
-              <button id="btn-exportar-json" class="btn-secundario">Exportar a JSON</button> 
-              <button id="btn-exportar-xml" class="btn-secundario">Exportar a XML</button> 
-          </div> 
-          
-          <h2>Mis Tareas Activas</h2> 
-          <ul id="lista-tareas"></ul> 
-      </div> 
-      <script src="aplicacion.js"></script>
+
+<body>
+
+    <div class="contenedor">
+
+       <div class="banner">
+            <h3>Sistema Académico</h3>
+            <p>Registro de estudiantes universitarios</p>
+        </div>
+
+        <form id="formulario">
+
+            <div class="campo">
+                <label>Cédula</label>
+                <input type="text" id="cedula">
+                <small class="error" id="errorCedula"></small>
+            </div>
+
+            <div class="campo">
+                <label>Apellidos</label>
+                <input type="text" id="apellidos">
+                <small class="error" id="errorApellidos"></small>
+            </div>
+
+            <div class="campo">
+                <label>Nombres</label>
+                <input type="text" id="nombres">
+                <small class="error" id="errorNombres"></small>
+            </div>
+
+            <div class="campo">
+                <label>Dirección</label>
+                <input type="text" id="direccion">
+                <small class="error" id="errorDireccion"></small>
+            </div>
+
+            <div class="campo">
+                <label>Teléfono</label>
+                <input type="text" id="telefono">
+                <small class="error" id="errorTelefono"></small>
+            </div>
+
+            <div class="campo">
+                <label>Correo Electrónico</label>
+                <input type="email" id="correo">
+                <small class="error" id="errorCorreo"></small>
+            </div>
+
+            <div class="campo">
+                <label>Facultad</label>
+
+                <input
+                    type="text"
+                    id="facultad"
+                    list="listaFacultades">
+
+                <datalist id="listaFacultades">
+                    <option value="Ingeniería">
+                    <option value="Administración">
+                    <option value="Derecho">
+                    <option value="Educación">
+                </datalist>
+
+                    <small class="error" id="errorFacultad"></small>
+            </div>
+
+            <div class="campo">
+                        <label>Nivel</label>
+
+                <input
+                       type="text"
+                     id="nivel"
+                      list="listaNiveles">
+
+                <datalist id="listaNiveles">
+                    <option value="1er Nivel">
+                     <option value="2do Nivel">
+                    <option value="3er Nivel">
+                    <option value="4to Nivel">
+                    <option value="5to Nivel">
+                </datalist>
+
+                <small class="error" id="errorNivel"></small>
+            </div>
+
+            <div class="campo">
+                    <label>Paralelo</label>
+
+                <input
+                    type="text"
+                    id="paralelo"
+                    list="listaParalelos">
+
+                <datalist id="listaParalelos">
+                    <option value="A">
+                    <option value="B">
+                    <option value="C">
+                    <option value="D">
+                </datalist>
+
+                <small class="error" id="errorParalelo"></small>
+            </div>
+
+            <button type="submit">Guardar</button>
+
+        </form>
+
+        <h2>Lista de Estudiantes</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Cédula</th>
+                    <th>Apellidos</th>
+                    <th>Nombres</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Facultad</th>
+                    <th>Nivel</th>
+                    <th>Paralelo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody id="tablaEstudiantes"></tbody>
+
+        </table>
+
+    </div>
+
+    <script src="script.js"></script>
+
 </body>
+
 </html>
