@@ -1,116 +1,144 @@
 // src/usuario/js/perfil.js
-import { supabase } from '../../config/supabaseClient.js';
+import { createApp, ref, reactive, onMounted } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+const supabase = window.supabase;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const graduadoId = localStorage.getItem('session_graduado_id');
-    let graduadoNombre = localStorage.getItem('session_graduado_nombre');
+createApp({
+    setup() {
+        // Obtenemos el ID del graduado que inició sesión guardado en el navegador
+        const graduadoId = localStorage.getItem('session_graduado_id');
+        
+        // --- ESTADO REACTIVO ---
+        const lblNombreUsuario = ref('Cargando...');
+        const editando = ref(false);
 
-    if (!graduadoId) {
-        window.location.href = '../auth/login.html';
-        return;
+        const form = reactive({
+            nombre_completo: '',
+            cedula: '',
+            fecha_nacimiento: '',
+            ano_graduacion: '',
+            periodo_academico: '',
+            correo_institucional: '',
+            correo_personal: '',
+            celular: ''
+        });
+
+        const alerta = reactive({
+            visible: false,
+            texto: '',
+            bg: '',
+            color: ''
+        });
+
+        // --- MÉTODOS ---
+        const mostrarAlerta = (texto, tipo) => {
+            alerta.texto = texto;
+            alerta.visible = true;
+            if (tipo === 'error') {
+                alerta.bg = '#fef2f2';
+                alerta.color = '#dc2626';
+            } else {
+                alerta.bg = '#ecfdf5';
+                alerta.color = '#059669';
+            }
+        };
+
+        // NUEVA FUNCIÓN: Trae la información real del graduado desde Supabase
+        const cargarDatosPerfil = async () => {
+            if (!graduadoId) {
+                mostrarAlerta("No se detectó una sesión activa. Redirigiendo...", "error");
+                setTimeout(() => cerrarSesion(), 2000);
+                return;
+            }
+
+            try {
+                const { data: graduado, error } = await supabase
+                    .from('graduados')
+                    .select('*')
+                    .eq('id', graduadoId)
+                    .single(); // Trae un único objeto en lugar de un arreglo
+
+                if (error) throw error;
+
+                if (graduado) {
+                    // Unimos nombres y apellidos para la visualización estética
+                    const nombreCompleto = `${graduado.nombres} ${graduado.apellidos}`.trim();
+                    
+                    localStorage.setItem('session_graduado_nombre', nombreCompleto);
+                    lblNombreUsuario.value = nombreCompleto;
+                    
+                    // Asignación directa al estado reactivo del formulario
+                    form.nombre_completo = nombreCompleto;
+                    form.cedula = graduado.cedula;
+                    form.fecha_nacimiento = graduado.fecha_nacimiento;
+                    form.ano_graduacion = graduado.ano_graduacion;
+                    form.periodo_academico = graduado.periodo_academico;
+                    form.correo_personal = graduado.correo_personal;
+                    form.celular = graduado.celular || '';
+
+                    // Generación dinámica de su correo institucional según tu regla de negocio
+                    form.correo_institucional = graduado.correo_institucional || `e${graduado.cedula}@live.uleam.edu.ec`;
+                }
+            } catch (err) {
+                console.error("Error cargando perfil:", err);
+                mostrarAlerta("Error al conectar con el servidor para obtener tus datos.", "error");
+            }
+        };
+
+        const activarEdicion = () => {
+            editando.value = true;
+            alerta.visible = false;
+        };
+
+        const guardarCambios = async () => {
+            const nuevoCorreoPers = form.correo_personal.trim();
+            const nuevoCelular = form.celular.trim();
+
+            alerta.visible = false;
+
+            if (!nuevoCorreoPers || !nuevoCelular) {
+                mostrarAlerta("El correo personal y el celular no pueden estar vacíos.", "error");
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('graduados')
+                    .update({
+                        correo_personal: nuevoCorreoPers,
+                        celular: nuevoCelular
+                    })
+                    .eq('id', graduadoId);
+
+                if (error) throw error;
+
+                mostrarAlerta("¡Datos guardados y actualizados con éxito!", "exito");
+                editando.value = false;
+
+            } catch (err) {
+                console.error(err);
+                mostrarAlerta("Error al intentar guardar los cambios.", "error");
+            }
+        };
+
+        const cerrarSesion = () => {
+            localStorage.clear();
+            window.location.href = '../auth/login.html';
+        };
+
+        // CICLO DE VIDA: Gatilla la consulta inmediatamente al cargar la página
+        onMounted(() => {
+            cargarDatosPerfil();
+        });
+
+        // Retornamos todo al HTML
+        return {
+            lblNombreUsuario,
+            editando,
+            form,
+            alerta,
+            activarEdicion,
+            guardarCambios,
+            cerrarSesion
+        };
     }
-
-    // Elementos del formulario
-    const txtNombreCompleto = document.getElementById('txt-nombre-completo');
-    const txtCedula = document.getElementById('txt-cedula');
-    const txtFechaNac = document.getElementById('txt-fecha-nac');
-    const txtAnoGrad = document.getElementById('txt-ano-grad');
-    const txtPeriodo = document.getElementById('txt-periodo');
-    const txtCorreoInst = document.getElementById('txt-correo-inst');
-    const txtCorreoPers = document.getElementById('txt-correo-pers');
-    const txtCelular = document.getElementById('txt-celular');
-
-    const btnEditar = document.getElementById('btn-editar');
-    const btnGuardar = document.getElementById('btn-guardar');
-    const alertPerfil = document.getElementById('alert-perfil');
-
-    // CARGAR DATOS DESDE SUPABASE
-    try {
-        const { data: graduado, error } = await supabase
-            .from('graduados')
-            .select('*')
-            .eq('id', graduadoId)
-            .single();
-
-        if (error) throw error;
-
-        if (graduado) {
-            const nombreCompleto = `${graduado.nombres} ${graduado.apellidos}`;
-            
-            // Actualizar la sesión si antes estaba vacía
-            localStorage.setItem('session_graduado_nombre', nombreCompleto);
-            document.getElementById('lbl-nombre-usuario').textContent = nombreCompleto;
-            
-            // Asignar a los inputs
-            txtNombreCompleto.value = nombreCompleto;
-            txtCedula.value = graduado.cedula;
-            txtFechaNac.value = graduado.fecha_nacimiento;
-            txtAnoGrad.value = graduado.ano_graduacion;
-            txtPeriodo.value = graduado.periodo_academico;
-            txtCorreoInst.value = graduado.correo_institucional;
-            txtCorreoPers.value = graduado.correo_personal;
-            txtCelular.value = graduado.celular || '';
-        }
-    } catch (err) {
-        console.error("Error cargando perfil:", err);
-    }
-
-    // BOTÓN EDITAR
-    btnEditar.addEventListener('click', () => {
-        txtCorreoPers.disabled = false;
-        txtCelular.disabled = false;
-        btnEditar.style.display = 'none';
-        btnGuardar.style.display = 'block';
-    });
-
-    // BOTÓN GUARDAR
-    btnGuardar.addEventListener('click', async () => {
-        const nuevoCorreoPers = txtCorreoPers.value.trim();
-        const nuevoCelular = txtCelular.value.trim();
-
-        alertPerfil.style.display = 'none';
-
-        if (!nuevoCorreoPers || !nuevoCelular) {
-            alertPerfil.textContent = "El correo personal y celular no pueden estar vacíos.";
-            alertPerfil.style.backgroundColor = "#fef2f2";
-            alertPerfil.style.color = "#dc2626";
-            alertPerfil.style.display = 'block';
-            return;
-        }
-
-        try {
-            const { error } = await supabase
-                .from('graduados')
-                .update({
-                    correo_personal: nuevoCorreoPers,
-                    celular: nuevoCelular
-                })
-                .eq('id', graduadoId);
-
-            if (error) throw error;
-
-            alertPerfil.textContent = "¡Datos guardados y actualizados con éxito!";
-            alertPerfil.style.backgroundColor = "#ecfdf5";
-            alertPerfil.style.color = "#059669";
-            alertPerfil.style.display = 'block';
-
-            txtCorreoPers.disabled = true;
-            txtCelular.disabled = true;
-            btnGuardar.style.display = 'none';
-            btnEditar.style.display = 'block';
-
-        } catch (err) {
-            console.error(err);
-            alertPerfil.textContent = "Error al intentar guardar los cambios.";
-            alertPerfil.style.backgroundColor = "#fef2f2";
-            alertPerfil.style.color = "#dc2626";
-            alertPerfil.style.display = 'block';
-        }
-    });
-
-    // CERRAR SESIÓN
-    document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
-        localStorage.clear();
-        window.location.href = '../auth/login.html';
-    });
-});
+}).mount('#app');

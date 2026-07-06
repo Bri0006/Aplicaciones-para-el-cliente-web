@@ -1,143 +1,148 @@
 // src/usuario/js/encuesta.js
-import { supabase } from '../../config/supabaseClient.js';
+import { createApp, ref, reactive, onMounted } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const graduadoId = localStorage.getItem('session_graduado_id');
-    const graduadoNombre = localStorage.getItem('session_graduado_nombre');
+// Configuración directa y segura del cliente de Supabase
+const SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M'; // Pon aquí tu clave real anon fija
 
-    // 1. Validar sesión inmediatamente
-    if (!graduadoId) {
-        window.location.href = '../auth/login.html';
-        return;
-    }
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Colocar el nombre de usuario de forma segura
-    document.getElementById('lbl-nombre-usuario').textContent = graduadoNombre || "Graduado ULEAM";
+createApp({
+    setup() {
+        const graduadoId = localStorage.getItem('session_graduado_id');
+        const lblNombreUsuario = ref(localStorage.getItem('session_graduado_nombre') || 'Graduado ULEAM');
+        
+        // Manejo de pantallas: 'cargando', 'intro', 'form', 'success'
+        const estadoVista = ref('cargando'); 
+        const procesando = ref(false);
+        const lblFechaEnvio = ref('');
 
-    // Elementos de las 3 Vistas
-    const viewIntro = document.getElementById('view-intro');
-    const viewForm = document.getElementById('view-form');
-    const viewSuccess = document.getElementById('view-success');
+        // Formulario reactivo estructurado
+        const form = reactive({
+            p1: '', p2: '', p3: '', p4: '',
+            p5: '', p6: '', p7: '', // Nuevas Likert
+        p8: '', p9: ''           // Las de texto anterior (Sugerencias)
+});
 
-    // Botones y Alertas
-    const btnComenzar = document.getElementById('btn-comenzar-encuesta');
-    const btnVolver = document.getElementById('btn-volver-inicio');
-    const formCaces = document.getElementById('form-caces');
-    const lblFechaEnvio = document.getElementById('lbl-fecha-envio');
-    const alertMsg = document.getElementById('alert-caces');
+        // Alerta de errores
+        const alerta = reactive({
+            visible: false,
+            texto: ''
+        });
 
-    // Asegurar estado oculto inicial controlado por JS
-    viewIntro.style.display = 'none';
-    viewForm.style.display = 'none';
-    viewSuccess.style.display = 'none';
+        // Validar sesión antes de renderizar
+        if (!graduadoId) {
+            window.location.href = '../auth/login.html';
+        }
 
-    // 2. COMPROBAR SI YA EXISTE LA RESPUESTA EN SUPABASE
-    async function verificarEstadoEncuesta() {
-        try {
-            const { data, error } = await supabase
-                .from('encuestas_caces')
-                .select('fecha_envio')
-                .eq('graduado_id', graduadoId)
-                .maybeSingle();
+        // VERIFICAR SI EL GRADUADO YA LLENÓ LA ENCUESTA ANTES
+        const verificarEstadoEncuesta = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('encuestas_caces')
+                    .select('fecha_envio')
+                    .eq('graduado_id', graduadoId)
+                    .maybeSingle();
 
-            if (error) throw error;
+                if (error) throw error;
 
-            if (data) {
-                // Si ya la llenó: Salta directo a la pantalla de éxito (Imagen 1)
-                const fecha = new Date(data.fecha_envio).toLocaleDateString('es-ES', {
-                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                });
-                lblFechaEnvio.textContent = `Enviada con éxito el: ${fecha}.`;
-                
-                viewIntro.style.display = 'none';
-                viewForm.style.display = 'none';
-                viewSuccess.style.display = 'block';
-            } else {
-                // Si no la ha llenado: Muestra la presentación limpia (Imagen 2)
-                viewIntro.style.display = 'block';
-                viewForm.style.display = 'none';
-                viewSuccess.style.display = 'none';
+                if (data) {
+                    // Si ya existe registro, salta directo a la vista de éxito
+                    const fecha = new Date(data.fecha_envio).toLocaleDateString('es-ES', {
+                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    lblFechaEnvio.value = `Enviada con éxito el: ${fecha}.`;
+                    estadoVista.value = 'success';
+                } else {
+                    // Si no la ha llenado, muestra la introducción limpia
+                    estadoVista.value = 'intro';
+                }
+            } catch (err) {
+                console.error("Error al validar el estado del CACES:", err);
+                // Fallback de contingencia: mostrar introducción por defecto
+                estadoVista.value = 'intro';
             }
-        } catch (err) {
-            console.error("Error al validar el estado inicial del CACES:", err);
-            // Fallback seguro por si falla la red: mostrar intro
-            viewIntro.style.display = 'block';
-        }
-    }
+        };
 
-    // 3. ACCIÓN: BOTÓN "RESPONDER ENCUESTA" (Abre el cuestionario)
-    btnComenzar.addEventListener('click', () => {
-        viewIntro.style.display = 'none';
-        viewSuccess.style.display = 'none';
-        viewForm.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+        // PASAR A RESPONDER EL CUESTIONARIO
+        const comenzarEncuesta = () => {
+            estadoVista.value = 'form';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
-    // 4. ACCIÓN: ENVIAR FORMULARIO (INSERT EN BASE DE DATOS)
-    formCaces.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        alertMsg.style.display = 'none';
+        // ENVIAR ENCUESTA A SUPABASE
+        const enviarEncuesta = async () => {
+            alerta.visible = false;
 
-        // CAPTURA SEGURA: Se realiza SOLO al dar clic en Enviar
-        const radioP1 = document.querySelector('input[name="p1"]:checked');
-        const radioP2 = document.querySelector('input[name="p2"]:checked');
-        const radioP3 = document.querySelector('input[name="p3"]:checked');
-        const radioP4 = document.querySelector('input[name="p4"]:checked');
+            // Validación extra de seguridad (Vue obliga con el require, pero esto dobla el blindaje)
+            if (!form.p1 || !form.p2 || !form.p3 || !form.p4) {
+                alert("Por favor, responda todas las preguntas de la escala de valoración.");
+                return;
+            }
 
-        const p5_competencias_faltantes = document.getElementById('txt-p5').value.trim();
-        const p6_sugerencias_mejora = document.getElementById('txt-p6').value.trim();
+            if (!confirm('¿Estás seguro de enviar la encuesta? No podrás modificar tus respuestas posteriormente.')) {
+                return;
+            }
 
-        // Validación extra por seguridad
-        if (!radioP1 || !radioP2 || !radioP3 || !radioP4) {
-            alert("Por favor, responda todas las preguntas del Bloque 1.");
-            return;
-        }
+            procesando.value = true;
 
-        if (confirm('¿Estás seguro de enviar la encuesta? No podrás modificar tus respuestas posteriormente.')) {
             try {
                 const { error } = await supabase
                     .from('encuestas_caces')
                     .insert([{
                         graduado_id: graduadoId,
-                        p1_aplicabilidad_conocimientos: parseInt(radioP1.value),
-                        p2_actualizacion_malla: parseInt(radioP2.value),
-                        p3_calidad_infraestructura: parseInt(radioP3.value),
-                        p4_desempeno_docente: parseInt(radioP4.value),
-                        p5_competencias_faltantes,
-                        p6_sugerencias_mejora,
+                        p1_aplicabilidad_conocimientos: parseInt(form.p1),
+                        p2_actualizacion_malla: parseInt(form.p2),
+                        p3_calidad_infraestructura: parseInt(form.p3),
+                        p4_desempeno_docente: parseInt(form.p4),
+                        p5_vinculacion_practicas: parseInt(form.p5),     // Nueva
+                        p6_recursos_tecnologicos: parseInt(form.p6),     // Nueva
+                        p7_perfil_egreso_coherencia: parseInt(form.p7),  // Nueva
+                        p8_competencias_faltantes: form.p8.trim(),
+                        p9_sugerencias_mejora: form.p9.trim(),
                         finalizada: true
                     }]);
 
                 if (error) throw error;
 
-                // Salto visual inmediato al estado de éxito (Imagen 1)
-                lblFechaEnvio.textContent = `Procesado con éxito hoy de forma correcta.`;
-                viewForm.style.display = 'none';
-                viewIntro.style.display = 'none';
-                viewSuccess.style.display = 'block';
+                lblFechaEnvio.value = `Procesado con éxito hoy de forma correcta.`;
+                estadoVista.value = 'success';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (err) {
                 console.error("Error al guardar en Supabase:", err);
-                alertMsg.textContent = "Error al conectar con la base de datos. Vuelve a intentarlo.";
-                alertMsg.style.backgroundColor = "#fef2f2";
-                alertMsg.style.color = "#dc2626";
-                alertMsg.style.display = 'block';
+                alerta.texto = "Error al conectar con la base de datos. Vuelve a intentarlo.";
+                alerta.visible = true;
+            } finally {
+                procesando.value = false;
             }
-        }
-    });
+        };
 
-    // 5. ACCIÓN: BOTÓN VOLVER AL INICIO
-    btnVolver.addEventListener('click', () => {
-        window.location.href = 'inicio.html';
-    });
+        const volverInicio = () => {
+            window.location.href = 'inicio.html';
+        };
 
-    // Arrancar la verificación
-    verificarEstadoEncuesta();
+        const cerrarSesion = () => {
+            localStorage.clear();
+            window.location.href = '../auth/login.html';
+        };
 
-    // Botón Cerrar Sesión
-    document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
-        localStorage.clear();
-        window.location.href = '../auth/login.html';
-    });
-});
+        // Ciclo de vida: Inicialización
+        onMounted(async () => {
+            await verificarEstadoEncuesta();
+        });
+
+        return {
+            lblNombreUsuario,
+            estadoVista,
+            procesando,
+            lblFechaEnvio,
+            form,
+            alerta,
+            comenzarEncuesta,
+            enviarEncuesta,
+            volverInicio,
+            cerrarSesion
+        };
+    }
+}).mount('#app');

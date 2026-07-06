@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Dependencias externas esenciales -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -26,146 +28,42 @@
             --amarillo: #f59e0b;
             --rojo: #ef4444;
         }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        /* Estilos personalizados para el contenedor del menú scrollable */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 9999px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-
-        /* FILTROS Y CONTROLES MANTENIDOS */
-        .filtro-carrera {
-            background-color: var(--blanco);
-            border: 2px solid var(--azul-uleam);
-            color: var(--azul-uleam);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            outline: none;
-            cursor: pointer;
-        }
-
-        /* BOTONES EXPORTAR MANTENIDOS */
-        .btn-exportar {
-            color: var(--blanco);
-            border: none;
-            padding: 0.55rem 1.2rem;
-            border-radius: 20px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: opacity 0.2s;
-        }
-
+        body { font-family: 'Poppins', sans-serif; }
+        [v-cloak] { display: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+        .filtro-carrera { background-color: var(--blanco); border: 2px solid var(--azul-uleam); color: var(--azul-uleam); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer; }
+        .btn-exportar { color: var(--blanco); padding: 0.55rem 1.2rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: opacity 0.2s; }
         .btn-exportar:hover { opacity: 0.9; }
         .bg-csv { background-color: var(--verde-exito); }
         .bg-pdf { background-color: var(--rojo); }
-
-        .descarga-info {
-            font-size: 0.75rem;
-            color: var(--texto-mutado);
-            background: #f1f5f9;
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        /* GRIDS E INDICADORES MANTENIDOS */
-        .cobertura-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .cobertura-card {
-            background: var(--blanco);
-            padding: 1.2rem;
-            border-radius: 10px;
-            border: 1px solid var(--borde);
-        }
-
+        .descarga-info { font-size: 0.75rem; color: var(--texto-mutado); background: #f1f5f9; padding: 4px 10px; border-radius: 4px; display: inline-block; }
+        .cobertura-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
+        .cobertura-card { background: var(--blanco); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--borde); }
         .cobertura-label { font-size: 0.8rem; color: var(--texto-mutado); font-weight: 500; }
         .cobertura-val { font-size: 1.5rem; font-weight: 700; margin-top: 4px; display: block; }
-
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: 1.8fr 1.2fr;
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .chart-card {
-            background: var(--blanco);
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--borde);
-        }
-
-        .chart-card h3, .list-panel h3 {
-            margin-top: 0;
-            margin-bottom: 1.2rem;
-            font-size: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 0.5rem;
-        }
-
+        .analytics-grid { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+        .chart-card, .list-panel { background: var(--blanco); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--borde); }
+        .chart-card h3, .list-panel h3 { margin-top: 0; margin-bottom: 1.2rem; font-size: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem; }
         .canvas-container { position: relative; width: 100%; height: 260px; }
-
-        /* TABLAS DE AUDITORÍA MANTENIDAS */
-        .list-panel {
-            background: var(--blanco);
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--borde);
-            margin-bottom: 2rem;
-        }
         .tabla-auditoria-wrapper { max-height: 250px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { background: #f8fafc; padding: 0.75rem 1rem; color: var(--texto-mutado); border-bottom: 1px solid var(--borde); text-align: left;}
         td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--borde); }
-
         .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
         .badge-si { background: #d1fae5; color: #065f46; }
         .badge-no { background: #fee2e2; color: #991b1b; }
-
         .feedback-container { display: flex; flex-direction: column; gap: 1rem; max-height: 260px; overflow-y: auto; }
-        .feedback-card { page-break-inside: avoid; break-inside: avoid; }
         .feedback-meta { font-size: 0.75rem; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600;}
         .feedback-text { font-size: 0.82rem; margin: 0 0 2px 0; }
-
-        /* ÁREA IMPRESIÓN DOCUMENTO OFICIAL */
-        #render-informe-pdf {
-            display: none;
-            width: 190mm;
-            background: #ffffff;
-            padding: 20px;
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-    <div class="flex min-h-screen">
+    <div id="app" class="flex min-h-screen" v-cloak>
         
+        <!-- Sidebar Izquierdo -->
         <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0 h-screen sticky top-0">
             <div>
                 <div class="mb-6 px-2 py-1 border-b border-slate-800 pb-4">
@@ -174,113 +72,99 @@
                 </div>
                 
                 <nav class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-190px)] pr-1 custom-scrollbar">
-                    
                     <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <i class="fa-solid fa-chart-pie w-5 text-center"></i>
                         <span>Estadísticas</span>
                     </a>
-
                     <a href="solicitudes.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <i class="fa-solid fa-file-circle-check w-5 text-center"></i>
                         <span>Solicitudes</span>
                     </a>
-
                     <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <i class="fa-solid fa-user-graduate w-5 text-center"></i>
                         <span>Graduados</span>
                     </a>
-                    
                     <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md transition">
                         <i class="fa-solid fa-file-invoice w-5 text-center"></i>
                         <span>Reportes CACES</span>
                     </a>
-                    
                     <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <i class="fa-solid fa-history w-5 text-center"></i>
                         <span>Cron-Job Log</span>
                     </a>
-
-                    <hr class="border-slate-800 my-2">
-
-                    <div>
-                        <button id="btn-admin-menu" class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition focus:outline-none">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-shield-halved w-5 text-center"></i>
-                                <span>Administrador</span>
-                            </div>
-                            <i id="icon-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
-                        </button>
-                        
-                        <div id="sub-menu-admin" class="hidden mt-1 mb-2 space-y-0.5 border-l-2 border-slate-800 ml-6 pl-4">
-                            <a href="admin-usuarios.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Usuarios</a>
-                            <a href="admin-profesionales.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Profesionales</a>
-                            <a href="admin-roles.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Roles</a>
-                            <a href="admin-carreras.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Carreras</a>
-                            <a href="admin-facultades.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Facultades</a>
-                            <a href="admin-instituciones.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Instituciones</a>
-                            <a href="admin-encuestas.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Encuestas</a>
-                            <a href="admin-menus.html" class="block py-2 px-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-r-md border-l border-transparent hover:border-blue-500 transition">Menús</a>
-                        </div>
-                    </div>
                 </nav>
             </div>
             
-            <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
+            <button @click="mostrarModalLogout = true" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
                 <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
                 <span class="font-medium">Cerrar Sesión</span>
             </button>
         </aside>
 
+        <!-- Contenido Principal -->
         <main class="flex-grow overflow-y-auto flex flex-col h-screen">
-            
             <div class="bg-white px-10 py-4 flex justify-between items-center border-b border-slate-200 shrink-0">
                 <span class="font-semibold text-slate-700">Acreditación y Aseguramiento de la Calidad</span>
-                <span id="txt-ultima-descarga" class="descarga-info">Última descarga: Nunca</span>
+                <span class="descarga-info">{{ textoUltimaDescarga }}</span>
             </div>
 
             <div class="p-10 space-y-6">
-                
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Auditoría de Encuestas CACES</h2>
-                        <p class="text-sm text-slate-500 mt-1">Análisis por Cohortes y Descarga de Evidencias Técnicas.</p>
+                <!-- Encabezado Limpio con los Botones Arriba y los Filtros Abajo -->
+                <div class="flex flex-col gap-4">
+                    <!-- Fila Superior: Título y Botones de Acción -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Auditoría de Encuestas CACES</h2>
+                            <p class="text-sm text-slate-500 mt-1">Análisis por Cohortes y Descarga de Evidencias Técnicas.</p>
+                        </div>
+                        
+                        <!-- Botones de Acción Rápidos Alineados a la Derecha -->
+                        <div class="flex items-center gap-2 self-end sm:self-auto">
+                            <button @click="exportarCSV" class="btn-exportar bg-csv shadow-sm">
+                                <i class="fa-solid fa-file-csv"></i> Excel (.csv)
+                            </button>
+                            <button @click="exportarPDF" class="btn-exportar bg-pdf shadow-sm">
+                                <i class="fa-solid fa-file-pdf"></i> Informe (.pdf)
+                            </button>
+                        </div>
                     </div>
-                    <div class="controles-header">
-                        <select id="filtroPeriodo" class="filtro-carrera !border-purple-600 !text-purple-600">
+
+                    <!-- Fila Inferior: Contenedor de Filtros Limpio y Dedicado -->
+                    <div class="flex flex-wrap items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider pl-2 mr-1">Filtros:</span>
+                        <select v-model="filtroPeriodo" class="filtro-carrera !border-purple-600 !text-purple-600">
                             <option value="TODOS">📅 Todas las Cohortes</option>
+                            <option v-for="periodo in periodosUnicos" :key="periodo" :value="periodo">Cohorte {{ periodo }}</option>
                         </select>
-                        <select id="filtroCarrera" class="filtro-carrera">
+                        <select v-model="filtroCarrera" class="filtro-carrera">
                             <option value="TODAS">🎓 Todas las Carreras</option>
+                            <option v-for="carrera in carreras" :key="carrera.nombre" :value="carrera.nombre">{{ carrera.nombre }}</option>
                         </select>
-                        <select id="filtroRespuesta" class="filtro-carrera !border-slate-400 !text-slate-700">
+                        <select v-model="filtroRespuesta" class="filtro-carrera !border-slate-400 !text-slate-700">
                             <option value="TODOS">🔍 Todos los Estados</option>
                             <option value="SI">Respondieron</option>
                             <option value="NO">Pendientes</option>
                         </select>
-                        <button class="btn-exportar bg-csv shadow-sm" id="btnExportarCsv">
-                            <i class="fa-solid fa-file-csv"></i> Excel (.csv)
-                        </button>
-                        <button class="btn-exportar bg-pdf shadow-sm" id="btnExportarPdf">
-                            <i class="fa-solid fa-file-pdf"></i> Informe (.pdf)
-                        </button>
                     </div>
                 </div>
 
+                <!-- Tarjetas de Métricas Directas -->
                 <div class="cobertura-grid">
                     <div class="cobertura-card !border-t-4 !border-t-blue-600">
                         <span class="cobertura-label">Universo de Egresados</span>
-                        <span class="cobertura-val text-slate-800" id="cob-total">0</span>
+                        <span class="cobertura-val text-slate-800">{{ metricas.total }}</span>
                     </div>
                     <div class="cobertura-card !border-t-4 !border-t-emerald-500">
                         <span class="cobertura-label">Encuestas Contestadas</span>
-                        <span class="cobertura-val !text-emerald-500" id="cob-si">0</span>
+                        <span class="cobertura-val !text-emerald-500">{{ metricas.respondidos }}</span>
                     </div>
                     <div class="cobertura-card !border-t-4 !border-t-amber-500">
                         <span class="cobertura-label">Porcentaje de Cumplimiento</span>
-                        <span class="cobertura-val !text-amber-500" id="cob-pct">0%</span>
+                        <span class="cobertura-val !text-amber-500">{{ metricas.porcentaje }}%</span>
                     </div>
                 </div>
 
+                <!-- Listado Principal Reactivo -->
                 <div class="list-panel">
                     <h3 class="font-semibold text-slate-700">Listado de Control y Estado de Respuestas</h3>
                     <div class="tabla-auditoria-wrapper custom-scrollbar">
@@ -294,12 +178,32 @@
                                     <th>Estado</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-auditoria-body">
-                                </tbody>
+                            <tbody>
+                                <tr v-if="loadingTable">
+                                    <td colspan="5" class="text-center py-4 text-slate-500">
+                                        <i class="fa-solid fa-spinner fa-spin mr-2"></i>Sincronizando información...
+                                    </td>
+                                </tr>
+                                <tr v-else-if="matrizAuditoria.length === 0">
+                                    <td colspan="5" class="text-center py-4 text-slate-400">Ningún registro coincide con los filtros especificados.</td>
+                                </tr>
+                                <tr v-else v-for="m in matrizAuditoria" :key="m.id">
+                                    <td class="font-semibold">{{ m.cedula }}</td>
+                                    <td>{{ m.apellidos }} {{ m.nombres }}</td>
+                                    <td>{{ m.carrera }}</td>
+                                    <td><span class="text-purple-600 font-medium">{{ m.periodo_academico || 'N/A' }}</span></td>
+                                    <td>
+                                        <span class="badge" :class="m.respondio === 'SI' ? 'badge-si' : 'badge-no'">
+                                            {{ m.respondio === 'SI' ? '🟢 Respondido' : '🔴 Pendiente' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- Gráfico y Retroalimentación Directa -->
                 <div class="analytics-grid">
                     <div class="chart-card">
                         <h3 class="font-semibold text-slate-700">Evaluación de Criterios (Promedios Likert)</h3>
@@ -309,406 +213,85 @@
                     </div>
                     <div class="chart-card">
                         <h3 class="font-semibold text-slate-700">Sugerencias Cualitativas</h3>
-                        <div class="feedback-container custom-scrollbar" id="comentarios-container">
+                        <div class="feedback-container custom-scrollbar">
+                            <div v-for="comentario in comentariosFiltrados" :key="comentario.id" class="border-b border-slate-100 pb-2 mb-2 last:border-0">
+                                <div class="feedback-meta">
+                                    <span>👤 {{ comentario.nombre }}</span>
+                                    <span>📅 {{ comentario.periodo || 'N/A' }}</span>
+                                </div>
+                                <p class="feedback-text"><strong>Faltantes:</strong> {{ comentario.texto }}</p>
                             </div>
+                            <p v-if="comentariosFiltrados.length === 0" class="text-center text-sm text-slate-400 py-10">Sin sugerencias registradas en este bloque.</p>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </main>
+
+        <!-- Modal Estético de Confirmación de Cierre de Sesión -->
+        <div v-if="mostrarModalLogout" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center" @click.self="mostrarModalLogout = false">
+            <div class="bg-white p-6 rounded-xl max-w-sm w-full shadow-2xl border border-slate-100 mx-4 text-center">
+                <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">¿Cerrar Sesión?</h3>
+                <p class="text-sm text-slate-500 mt-1">Tendrás que volver a ingresar tus credenciales para acceder al panel administrativo.</p>
+                <div class="flex items-center justify-center space-x-3 mt-5">
+                    <button @click="mostrarModalLogout = false" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">Cancelar</button>
+                    <button @click="ejecutarLogout" class="px-4 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 text-white font-semibold text-sm transition shadow-sm">Sí, salir</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Plantilla de impresión limpia e invisible para html2pdf -->
     <div id="render-informe-pdf" style="display: none; width: 700px; margin: 0 auto; box-sizing: border-box;">
         <div style="padding: 15px; color:#1e293b; font-family: 'Arial', sans-serif; width: 100%; box-sizing: border-box;">
-            
             <div style="text-align: center; border-bottom: 3px solid #004a99; padding-bottom: 12px; margin-bottom: 20px;">
                 <h1 style="font-size: 18px; color: #004a99; margin: 0; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Universidad Laica Eloy Alfaro de Manabí</h1>
                 <h2 style="font-size: 13px; color: #64748b; margin: 5px 0 0 0; font-weight: normal;">Dirección de Aseguramiento de la Calidad y Evaluación Institucional</h2>
                 <h3 style="font-size: 11px; background: #f1f5f9; display: inline-block; padding: 4px 15px; border-radius: 4px; margin-top: 8px; font-weight: bold; color: #1e293b;">REPORTE OFICIAL DE AUDITORÍA - CRITERIOS CACES</h3>
             </div>
-
-            <div style="text-align: right; font-size: 10px; color: #64748b; margin-bottom: 8px; padding-right: 2px;">
-                Reporte generado el: <span id="pdf-fecha-emision" style="font-weight: 500;">-</span>
-            </div>
-
-            <table style="width: 100%; table-layout: fixed; font-size: 11px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-collapse: collapse;">
+            <div style="text-align: right; font-size: 10px; color: #64748b; margin-bottom: 8px;" id="pdf-fecha-emision"></div>
+            <table style="width: 100%; font-size: 11px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-collapse: collapse;">
                 <tr>
-                    <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9; width: 22%;">Carrera Auditada:</td>
-                    <td style="padding: 8px; border: 1px solid #e2e8f0; width: 28%; word-wrap: break-word;" id="pdf-lbl-carrera">-</td>
-                    <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9; width: 22%;">Fecha de Emisión:</td>
-                    <td style="padding: 8px; border: 1px solid #e2e8f0; width: 28%; font-weight: 500;" id="pdf-fecha-emision-row">-</td>
+                    <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9; width: 25%;">Carrera Auditada:</td>
+                    <td style="padding: 8px; border: 1px solid #e2e8f0; width: 25%;" id="pdf-lbl-carrera"></td>
+                    <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9; width: 25%;">Cohorte / Periodo:</td>
+                    <td style="padding: 8px; border: 1px solid #e2e8f0; width: 25%;" id="pdf-lbl-cohorte"></td>
                 </tr>
                 <tr>
                     <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9;">Universo Evaluado:</td>
-                    <td style="padding: 8px; border: 1px solid #e2e8f0;" id="pdf-lbl-total">-</td>
-                    <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9;">Cohorte / Periodo:</td>
-                    <td style="padding: 8px; border: 1px solid #e2e8f0; word-wrap: break-word;" id="pdf-lbl-cohorte">-</td>
-                </tr>
-                <tr>
+                    <td style="padding: 8px; border: 1px solid #e2e8f0;" id="pdf-lbl-total"></td>
                     <td style="padding: 8px; font-weight: bold; border: 1px solid #e2e8f0; background: #f1f5f9;">Cobertura General:</td>
-                    <td style="padding: 8px; border: 1px solid #e2e8f0; font-weight: bold; color: #10b981;" id="pdf-lbl-pct" colspan="3">-</td>
+                    <td style="padding: 8px; border: 1px solid #e2e8f0; font-weight: bold; color: #10b981;" id="pdf-lbl-pct"></td>
                 </tr>
             </table>
-
-            <h4 style="color: #004a99; border-left: 4px solid #004a99; padding-left: 6px; font-size: 13px; margin: 20px 0 10px 0; font-weight: bold;">1. Resultados Cuantitativos de Malla e Infraestructura</h4>
-            <table style="width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 11px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+            <h4 style="color: #004a99; border-left: 4px solid #004a99; padding-left: 6px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">1. Resultados Cuantitativos de Malla e Infraestructura</h4>
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
                 <thead>
-                    <tr>
-                        <th style="padding: 0; margin: 0; border: 1px solid #004a99; text-align: left; width: 75%;">
-                            <div style="background-color: #004a99; color: #ffffff; padding: 10px; font-weight: bold;">
-                                Indicador Evaluado (Escala 1-5)
-                            </div>
-                        </th>
-                        <th style="padding: 0; margin: 0; border: 1px solid #004a99; text-align: center; width: 25%;">
-                            <div style="background-color: #004a99; color: #ffffff; padding: 10px; font-weight: bold; text-align: center;">
-                                Puntuación Promedio
-                            </div>
-                        </th>
+                    <tr style="background: #004a99; color: #fff;">
+                        <th style="padding: 8px; text-align: left; color:#fff;">Indicador Evaluado (Escala 1-5)</th>
+                        <th style="padding: 8px; text-align: center; color:#fff; width: 25%;">Puntuación Promedio</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #1e293b;">P1. Aplicabilidad de conocimientos en el entorno real laboral</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; background-color: #ffffff; color: #1e293b;" id="pdf-p1">-</td></tr>
-                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #1e293b;">P2. Nivel de actualización y pertinencia de la malla curricular</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; background-color: #ffffff; color: #1e293b;" id="pdf-p2">-</td></tr>
-                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #1e293b;">P3. Calidad de la infraestructura, aulas y laboratorios prácticos</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; background-color: #ffffff; color: #1e293b;" id="pdf-p3">-</td></tr>
-                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #1e293b;">P4. Desempeño pedagógico y dominio científico docente</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; background-color: #ffffff; color: #1e293b;" id="pdf-p4">-</td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P1. Aplicabilidad de conocimientos en el entorno real laboral</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p1"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P2. Nivel de actualización y pertinencia de la malla curricular</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p2"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P3. Calidad de la infraestructura, aulas y laboratorios prácticos</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p3"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P4. Desempeño pedagógico y dominio científico docente</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p4"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P5. Vinculación con la sociedad y prácticas preprofesionales</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p5"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P6. Disponibilidad y calidad de recursos tecnológicos</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p6"></td></tr>
+                    <tr><td style="padding: 8px; border: 1px solid #e2e8f0;">P7. Coherencia del perfil de egreso con las demandas del entorno</td><td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold;" id="pdf-p7"></td></tr>
                 </tbody>
             </table>
-
-            <h4 style="color: #004a99; border-left: 4px solid #004a99; padding-left: 6px; font-size: 13px; margin: 20px 0 10px 0; font-weight: bold;">2. Evidencias Cualitativas y Retroalimentación Directa</h4>
-            <div id="pdf-contenedor-comentarios" style="font-size: 10px; width: 100%; box-sizing: border-box;"></div>
-
-            <div style="margin-top: 60px; text-align: center; page-break-inside: avoid;">
-                <div style="border-top: 1px solid #64748b; width: 240px; padding-top: 6px; font-size: 11px; margin: 0 auto; color: #1e293b;">
-                    <strong>Firma de Responsable</strong><br>
-                    <span style="color: #64748b; font-size: 10px;">Comisión de Evaluación Interna</span>
-                </div>
-            </div>
+            <h4 style="color: #004a99; border-left: 4px solid #004a99; padding-left: 6px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">2. Evidencias Cualitativas y Retroalimentación Directa</h4>
+            <div id="pdf-contenedor-comentarios" style="font-size: 10px;"></div>
         </div>
     </div>
 
-    <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    const SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let chartInstance = null;
-    let datosEncuestasGlobal = [];
-    let datosGraduadosGlobal = [];
-
-    async function inicializarPagina() {
-        try {
-            // 1. Obtener carreras registradas
-            const { data: carreras } = await supabase.from('carreras').select('nombre');
-            const selectCarrera = document.getElementById('filtroCarrera');
-            if (selectCarrera) {
-                (carreras || []).forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.nombre; opt.textContent = c.nombre;
-                    selectCarrera.appendChild(opt);
-                });
-            }
-
-            // 2. Traer tablas maestras
-            const { data: encuestas } = await supabase.from('encuestas_caces').select('*');
-            const { data: graduados } = await supabase.from('graduados').select('id, cedula, nombres, apellidos, carrera, ano_graduacion, periodo_academico').eq('estado_registro', 'aprobado');
-
-            datosEncuestasGlobal = encuestas || [];
-            datosGraduadosGlobal = graduados || [];
-
-            // 3. Poblar Filtro de Periodos/Cohortes de manera única
-            const selectPeriodo = document.getElementById('filtroPeriodo');
-            if (selectPeriodo) {
-                const periodosUnicos = [...new Set(datosGraduadosGlobal.map(g => g.periodo_academico).filter(Boolean))].sort();
-                periodosUnicos.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p; opt.textContent = `Cohorte ${p}`;
-                    selectPeriodo.appendChild(opt);
-                });
-            }
-
-            // 4. Asignar los escuchadores de eventos de forma segura
-            const fCarrera = document.getElementById('filtroCarrera');
-            const fPeriodo = document.getElementById('filtroPeriodo');
-            const fRespuesta = document.getElementById('filtroRespuesta');
-
-            if (fCarrera) fCarrera.onchange = procesarYRenderizarTodo;
-            if (fPeriodo) fPeriodo.onchange = procesarYRenderizarTodo;
-            if (fRespuesta) fRespuesta.onchange = procesarYRenderizarTodo;
-
-            mostrarUltimaDescargaLog();
-            procesarYRenderizarTodo();
-
-        } catch (error) {
-            console.error("Error al arrancar el módulo CACES:", error);
-        }
-    }
-
-    function procesarYRenderizarTodo() {
-        const elementoCarrera = document.getElementById('filtroCarrera');
-        const elementoPeriodo = document.getElementById('filtroPeriodo');
-        const elementoRespuesta = document.getElementById('filtroRespuesta');
-
-        if (!elementoCarrera || !elementoPeriodo || !elementoRespuesta) return;
-
-        const carreraSel = elementoCarrera.value;
-        const periodoSel = elementoPeriodo.value;
-        const respuestaSel = elementoRespuesta.value;
-
-        // Filtro Cruzado Completo
-        let graduadosFiltrados = datosGraduadosGlobal.filter(g => {
-            const cumpleCarrera = (carreraSel === "TODAS" || g.carrera === carreraSel);
-            const cumplePeriodo = (periodoSel === "TODOS" || g.periodo_academico === periodoSel);
-            return cumpleCarrera && cumplePeriodo;
-        });
-
-        let matrizAuditoria = graduadosFiltrados.map(g => {
-            const encuesta = datosEncuestasGlobal.find(e => String(e.graduado_id).trim() === String(g.id).trim());
-            return { ...g, respondio: encuesta ? 'SI' : 'NO', detallesEncuesta: encuesta || null };
-        });
-
-        if (respuestaSel !== "TODOS") {
-            matrizAuditoria = matrizAuditoria.filter(m => m.respondio === respuestaSel);
-        }
-
-        // Actualizar Tarjetas Estadísticas
-        const totalEgresados = graduadosFiltrados.length;
-        const totalRespondidos = graduadosFiltrados.filter(g => datosEncuestasGlobal.some(e => String(e.graduado_id).trim() === String(g.id).trim())).length;
-        const porcentaje = totalEgresados > 0 ? Math.round((totalRespondidos / totalEgresados) * 100) : 0;
-
-        document.getElementById('cob-total').textContent = totalEgresados;
-        document.getElementById('cob-si').textContent = totalRespondidos;
-        document.getElementById('cob-pct').textContent = `${porcentaje}%`;
-
-        // Pintar Tabla Web
-        const tbody = document.getElementById('tabla-auditoria-body');
-        if (tbody) {
-            tbody.innerHTML = '';
-            matrizAuditoria.forEach(m => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight:600;">${m.cedula}</td>
-                    <td>${m.apellidos} ${m.nombres}</td>
-                    <td>${m.carrera}</td>
-                    <td><span style="color:var(--purpura); font-weight:500;">${m.periodo_academico || 'N/A'}</span></td>
-                    <td><span class="badge ${m.respondio === 'SI' ? 'badge-si' : 'badge-no'}">${m.respondio === 'SI' ? '🟢 Respondido' : '🔴 Pendiente'}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Procesar Gráficos y Feedback
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0, validas = 0;
-        const contenedorFeedback = document.getElementById('comentarios-container');
-        if (contenedorFeedback) {
-            contenedorFeedback.innerHTML = '';
-
-            matrizAuditoria.forEach(m => {
-                if (m.respondio === 'SI' && m.detallesEncuesta) {
-                    const e = m.detallesEncuesta;
-                    p1 += Number(e.p1_aplicabilidad_conocimientos || 0);
-                    p2 += Number(e.p2_actualizacion_malla || 0);
-                    p3 += Number(e.p3_calidad_infraestructura || 0);
-                    p4 += Number(e.p4_desempeno_docente || 0);
-                    validas++;
-
-                    const card = document.createElement('div');
-                    card.className = 'feedback-card';
-                    card.innerHTML = `
-                        <div class="feedback-meta"><span>👤 ${m.apellidos} ${m.nombres}</span><span>📅 ${m.periodo_academico || 'N/A'}</span></div>
-                        <p class="feedback-text"><strong>Faltantes:</strong> ${e.p5_competencias_faltantes || 'Ninguna'}</p>
-                    `;
-                    contenedorFeedback.appendChild(card);
-                }
-            });
-        }
-
-        const promP1 = validas > 0 ? (p1 / validas).toFixed(1) : "0.0";
-        const promP2 = validas > 0 ? (p2 / validas).toFixed(1) : "0.0";
-        const promP3 = validas > 0 ? (p3 / validas).toFixed(1) : "0.0";
-        const promP4 = validas > 0 ? (p4 / validas).toFixed(1) : "0.0";
-
-        renderizarGraficoCaces([promP1, promP2, promP3, promP4]);
-    }
-
-    function renderizarGraficoCaces(valores) {
-        const canvas = document.getElementById('chartCaces');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Aplicabilidad', 'Malla', 'Infraestructura', 'Docentes'],
-                datasets: [{ label: 'Promedio', data: valores, backgroundColor: ['#004a99', '#8b5cf6', '#10b981', '#f59e0b'], borderRadius: 5, maxBarThickness: 40 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 } } }
-        });
-    }
-
-    function registrarDescargaLog(carrera, periodo) {
-        const marcaTiempo = new Date().toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
-        localStorage.setItem('caces_last_down', `${marcaTiempo} (Filtro: ${carrera} | Cohorte: ${periodo})`);
-        mostrarUltimaDescargaLog();
-    }
-
-    function mostrarUltimaDescargaLog() {
-        const log = localStorage.getItem('caces_last_down');
-        const txtElemento = document.getElementById('txt-ultima-descarga');
-        if (txtElemento) {
-            txtElemento.textContent = log ? `Última descarga: ${log}` : "Última descarga: Nunca";
-        }
-    }
-
-    document.getElementById('btnExportarCsv').onclick = () => {
-        const carreraSeleccionada = document.getElementById('filtroCarrera').value;
-        const periodoSeleccionado = document.getElementById('filtroPeriodo').value;
-        const encuestasAAeroportar = [];
-
-        datosEncuestasGlobal.forEach(e => {
-            const alu = datosGraduadosGlobal.find(g => String(g.id).trim() === String(e.graduado_id).trim());
-            if (alu) {
-                const cumpleCarrera = (carreraSeleccionada === "TODAS" || alu.carrera === carreraSeleccionada);
-                const cumplePeriodo = (periodoSeleccionado === "TODOS" || alu.periodo_academico === periodoSeleccionado);
-                if (cumpleCarrera && cumplePeriodo) {
-                    const compFaltantes = e.p5_competencias_faltantes ? e.p5_competencias_faltantes.replace(/,/g, " ").replace(/\n/g, " ") : "";
-                    encuestasAAeroportar.push({
-                        Cedula: alu.cedula || "",
-                        Graduado: `${alu.apellidos || ""} ${alu.nombres || ""}`.trim(),
-                        Carrera: alu.carrera || "",
-                        Periodo_Cohorte: alu.periodo_academico || "",
-                        P1_Aplicabilidad: e.p1_aplicabilidad_conocimientos || 0,
-                        P2_Malla: e.p2_actualizacion_malla || 0,
-                        P3_Infraestructura: e.p3_calidad_infraestructura || 0,
-                        P4_Docentes: e.p4_desempeno_docente || 0,
-                        P5_Competencias_Faltantes: compFaltantes,
-                        Fecha_Envio: e.fecha_envio || ""
-                    });
-                }
-            }
-        });
-
-        if (encuestasAAeroportar.length === 0) {
-            alert(`No se encontraron registros completados para:\nCarrera: ${carreraSeleccionada}\nCohorte: ${periodoSeleccionado}`);
-            return;
-        }
-
-        const headers = Object.keys(encuestasAAeroportar[0]).join(",");
-        const rows = encuestasAAeroportar.map(row => Object.values(row).join(","));
-        const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers, ...rows].join("\n");
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `REPORTE_CACES_${carreraSeleccionada.replace(/ /g, "_")}_${periodoSeleccionado.replace(/ /g, "_")}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        registrarDescargaLog(carreraSeleccionada, periodoSeleccionado);
-    };
-
-    document.getElementById('btnExportarPdf').onclick = () => {
-        const carrera = document.getElementById('filtroCarrera').value;
-        const periodo = document.getElementById('filtroPeriodo').value;
-
-        const elementoTarget = document.getElementById('render-informe-pdf');
-        if (!elementoTarget) {
-            alert("Error: El contenedor 'render-informe-pdf' no existe.");
-            return;
-        }
-
-        // 1. Mostrar contenedor temporalmente
-        elementoTarget.style.display = 'block';
-        elementoTarget.style.position = 'relative';
-
-        // 2. Cargar textos en los metadatos
-        document.getElementById('pdf-lbl-carrera').textContent = carrera === "TODAS" ? "Todas las Carreras" : carrera;
-        document.getElementById('pdf-lbl-cohorte').textContent = periodo === "TODOS" ? "Todos los periodos históricos" : periodo;
-        document.getElementById('pdf-lbl-total').textContent = document.getElementById('cob-total').textContent + " graduados";
-        document.getElementById('pdf-lbl-pct').textContent = document.getElementById('cob-pct').textContent;
-        
-        // Generar fecha dinámica corta en formato DD/MM/AAAA
-        const f = new Date();
-        const fechaFormateada = `${f.getDate()}/${f.getMonth() + 1}/${f.getFullYear()}`;
-        
-        // Inyectar en la celda correspondiente
-        document.getElementById('pdf-fecha-emision').textContent = fechaFormateada;
-
-        // 3. Copiar promedios del gráfico
-        if (chartInstance && chartInstance.data.datasets[0].data) {
-            document.getElementById('pdf-p1').textContent = `${chartInstance.data.datasets[0].data[0]} / 5.0`;
-            document.getElementById('pdf-p2').textContent = `${chartInstance.data.datasets[0].data[1]} / 5.0`;
-            document.getElementById('pdf-p3').textContent = `${chartInstance.data.datasets[0].data[2]} / 5.0`;
-            document.getElementById('pdf-p4').textContent = `${chartInstance.data.datasets[0].data[3]} / 5.0`;
-        }
-
-        // 4. Copiar los comentarios cualitativos de forma limpia para impresión
-        const pdfComentarios = document.getElementById('pdf-contenedor-comentarios');
-        if (pdfComentarios) {
-            pdfComentarios.innerHTML = document.getElementById('comentarios-container').innerHTML;
-            
-            // Forzar un estilo limpio en las tarjetas de comentarios dentro del PDF
-            const cards = pdfComentarios.getElementsByClassName('feedback-card');
-            for (let card of cards) {
-                card.style.border = '1px solid #e2e8f0';
-                card.style.padding = '8px';
-                card.style.marginBottom = '5px';
-                card.style.background = '#ffffff';
-                card.style.borderRadius = '4px';
-            }
-        }
-
-        // 5. Opciones estables para html2pdf
-        const opciones = {
-            margin: [15, 15, 15, 15],
-            filename: `INFORME_CACES_${carrera.replace(/ /g, "_")}_${periodo.replace(/ /g, "_")}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, logging: false, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        // 6. Renderizar y volver a ocultar
-        setTimeout(() => {
-            html2pdf().from(elementoTarget).set(opciones).save().then(() => {
-                elementoTarget.style.display = 'none';
-                registrarDescargaLog(carrera, periodo);
-            }).catch(err => {
-                console.error("Error al compilar el PDF institucional:", err);
-                elementoTarget.style.display = 'none';
-                alert("Error al compilar el PDF.");
-            });
-        }, 150);
-    };
-    // --- EL GRAN SALVADOR: ESCUCHAR LA CARGA DEL DOM PARA TRAER LOS DATOS ---
-    document.addEventListener('DOMContentLoaded', inicializarPagina);
-
-    // =========================================================
-        // 3. CONTROL DE INTERFAZ: SUBMENÚ DE ADMINISTRADOR
-        // =========================================================
-        document.getElementById('btn-admin-menu').onclick = function() {
-            const submenu = document.getElementById('sub-menu-admin');
-            const arrow = document.getElementById('icon-arrow');
-            if (submenu && arrow) {
-                submenu.classList.toggle('hidden');
-                arrow.classList.toggle('rotate-180');
-            }
-        };
-
-
-        // =========================================================
-        // 8. MANEJO DE CIERRE DE SESIÓN
-        // =========================================================
-        const btnLogout = document.getElementById('btn-logout');
-        if (btnLogout) {
-            btnLogout.onclick = function() {
-                if (confirm("¿Está seguro de que desea cerrar su sesión?")) {
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = "../login.html"; 
-                }
-            };
-        }
-</script>
+    <!-- Carga del módulo Javascript desacoplado -->
+    <script type="module" src="js/encuestas.js"></script>
 </body>
 </html>

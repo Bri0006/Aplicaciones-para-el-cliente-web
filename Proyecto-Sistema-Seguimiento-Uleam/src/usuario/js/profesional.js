@@ -1,183 +1,228 @@
 // src/usuario/js/profesional.js
-import { supabase } from '../../config/supabaseClient.js';
+import { createApp, ref, reactive, onMounted } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const graduadoId = localStorage.getItem('session_graduado_id');
-    const graduadoNombre = localStorage.getItem('session_graduado_nombre');
+const supabase = window.supabase;
 
-    if (!graduadoId) {
-        window.location.href = '../auth/login.html';
-        return;
-    }
-
-    document.getElementById('lbl-nombre-usuario').textContent = graduadoNombre;
-
-    const form = document.getElementById('form-laboral');
-    const chkActual = document.getElementById('chk-actual');
-    const txtFechaFin = document.getElementById('txt-fecha-fin');
-    const tbodyHistorial = document.getElementById('tbody-historial');
-    const alertMsg = document.getElementById('alert-profesional');
-    const lblRelacion = document.getElementById('lbl-relacion-carrera');
-
-    // ==========================================
-    // NUEVO: OBTENER LA CARRERA REAL DEL USUARIO
-    // ==========================================
-    try {
-        const { data: usuario, error: errUser } = await supabase
-            .from('graduados')
-            .select('carrera')
-            .eq('id', graduadoId)
-            .single();
-
-        if (usuario && usuario.carrera) {
-            // Reemplaza dinámicamente el texto del checkbox con su carrera real
-            lblRelacion.textContent = `¿Tiene relación con tu carrera de ${usuario.carrera}?`;
-        }
-    } catch (e) {
-        console.error("No se pudo personalizar el texto de la carrera:", e);
-    }
-
-    // 1. CONTROL DE FECHA FINALIZACIÓN
-    chkActual.addEventListener('change', () => {
-        if (chkActual.checked) {
-            txtFechaFin.value = '';
-            txtFechaFin.disabled = true;
-            txtFechaFin.removeAttribute('required');
-        } else {
-            txtFechaFin.disabled = false;
-        }
-    });
-
-    // 2. FUNCIÓN PARA CARGAR EL HISTORIAL DESDE SUPABASE
-    async function cargarHistorial() {
-        tbodyHistorial.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando historial...</td></tr>';
+createApp({
+    setup() {
+        const graduadoId = localStorage.getItem('session_graduado_id');
+        const lblNombreUsuario = ref(localStorage.getItem('session_graduado_nombre') || 'Graduado');
+        const carreraUsuario = ref('');
         
-        try {
-            const { data, error } = await supabase
-                .from('historial_laboral')
-                .select('*')
-                .eq('graduado_id', graduadoId)
-                .order('fecha_inicio', { ascending: false });
+        const cargandoHistorial = ref(true);
+        const procesando = ref(false);
+        const historial = ref([]);
 
-            if (error) throw error;
+        // Estructura reactiva del formulario
+        const form = reactive({
+            cargo: '',
+            empresa: '',
+            area_desarrollo: '',
+            area_otro_texto: '', // Campo para cuando eligen 'Otro'
+            salario_aproximado: '',
+            fecha_inicio: '',
+            fecha_finalizacion: '',
+            es_trabajo_actual: false,
+            relacion_con_carrera: true
+        });
 
-            if (!data || data.length === 0) {
-                tbodyHistorial.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">No tienes registros laborales ingresados.</td></tr>';
+        const alerta = reactive({
+            visible: false,
+            texto: '',
+            bg: '',
+            color: ''
+        });
+
+        if (!graduadoId) {
+            window.location.href = '../auth/login.html';
+        }
+
+        // VALIDACIÓN EN TIEMPO REAL: Solo letras y espacios
+        const validarSoloLetras = (campo) => {
+            // Reemplaza cualquier cosa que NO sea letra (incluyendo eñes y acentos) o espacio
+            form[campo] = form[campo].replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '');
+        };
+
+        const obtenerCarreraUsuario = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('graduados')
+                    .select('carrera')
+                    .eq('id', graduadoId)
+                    .single();
+
+                if (data && data.carrera) {
+                    carreraUsuario.value = data.carrera;
+                }
+            } catch (e) {
+                console.error("No se pudo personalizar el texto de la carrera:", e);
+            }
+        };
+
+        const cargarHistorial = async () => {
+            cargandoHistorial.value = true;
+            try {
+                const { data, error } = await supabase
+                    .from('historial_laboral')
+                    .select('*')
+                    .eq('graduado_id', graduadoId)
+                    .order('fecha_inicio', { ascending: false });
+
+                if (error) throw error;
+                historial.value = data || [];
+            } catch (err) {
+                console.error("Error al cargar historial:", err);
+                mostrarAlerta("Error al recuperar el historial laboral.", "#fef2f2", "#dc2626");
+            } finally {
+                cargandoHistorial.value = false;
+            }
+        };
+
+        const cambioTrabajoActual = () => {
+            if (form.es_trabajo_actual) {
+                form.fecha_finalizacion = '';
+            }
+        };
+
+        // GUARDAR REGISTRO CON TODAS LAS VALIDACIONES DE FECHAS Y TEXTO
+        // GUARDAR REGISTRO CON CORRECCIÓN DE UUID Y TODAS LAS VALIDACIONES DE FECHAS
+        const guardarRegistro = async () => {
+            alerta.visible = false;
+            
+            // 1. Validar área personalizada
+            let areaFinal = form.area_desarrollo;
+            if (form.area_desarrollo === 'Otro') {
+                if (!form.area_otro_texto.trim()) {
+                    mostrarAlerta("Por favor, especifique el área de trabajo.", "#fef2f2", "#dc2626");
+                    return;
+                }
+                areaFinal = form.area_otro_texto.trim();
+            }
+
+            // 2. Obtener fecha actual en formato local YYYY-MM-DD
+            const hoy = new Date().toISOString().split('T')[0];
+            
+            // Validación: Inicio no mayor al día de hoy
+            if (form.fecha_inicio > hoy) {
+                mostrarAlerta("La fecha de inicio no puede ser una fecha futura a la actual.", "#fef2f2", "#dc2626");
                 return;
             }
 
-            tbodyHistorial.innerHTML = '';
-            data.forEach(item => {
-                const tr = document.createElement('tr');
-                
-                const finStr = item.es_trabajo_actual ? '<span class="badge badge-actual">Actualidad</span>' : item.fecha_finalizacion;
-                const duracion = `${item.fecha_inicio} a ${finStr}`;
-                
-                const relacionBadge = item.relacion_con_carrera 
-                    ? '<span class="badge badge-relacion">Sí</span>' 
-                    : '<span class="badge badge-no-relacion">No</span>';
+            // Validaciones para la fecha de finalización si no es el trabajo actual
+            if (!form.es_trabajo_actual) {
+                if (!form.fecha_finalizacion) {
+                    mostrarAlerta("Por favor, ingresa una fecha de finalización.", "#fef2f2", "#dc2626");
+                    return;
+                }
+                // NUEVA VALIDACIÓN: Finalización no mayor a hoy
+                if (form.fecha_finalizacion > hoy) {
+                    mostrarAlerta("La fecha de finalización no puede ser una fecha futura a la actual.", "#fef2f2", "#dc2626");
+                    return;
+                }
+                // Validación: Finalización no menor al inicio
+                if (form.fecha_finalizacion < form.fecha_inicio) {
+                    mostrarAlerta("La fecha de finalización no puede ser anterior a la fecha de inicio.", "#fef2f2", "#dc2626");
+                    return;
+                }
+            }
 
-                tr.innerHTML = `
-                    <td><strong>${item.cargo}</strong></td>
-                    <td>${item.empresa}</td>
-                    <td>${item.area_desarrollo}</td>
-                    <td>${duracion}</td>
-                    <td>${relacionBadge}</td>
-                    <td><button class="btn-delete" data-id="${item.id}">❌ Eliminar</button></td>
-                `;
-                tbodyHistorial.appendChild(tr);
-            });
+            procesando.value = true;
 
-            const botonesEliminar = document.querySelectorAll('.btn-delete');
-            botonesEliminar.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const idRegistro = e.target.getAttribute('data-id');
-                    if (confirm('¿Estás seguro de eliminar este registro laboral?')) {
-                        await eliminarRegistro(idRegistro);
-                    }
+            try {
+                // CORRECCIÓN CLAVE: Enviamos graduadoId directamente como texto (UUID), sin parseInt
+                const registroAPersistir = {
+                    graduado_id: graduadoId, 
+                    cargo: form.cargo.trim(),
+                    empresa: form.empresa.trim(),
+                    area_desarrollo: areaFinal, 
+                    salario_aproximado: form.salario_aproximado,
+                    fecha_inicio: form.fecha_inicio,
+                    fecha_finalizacion: form.es_trabajo_actual ? null : form.fecha_finalizacion,
+                    es_trabajo_actual: form.es_trabajo_actual,
+                    relacion_con_carrera: form.relacion_con_carrera
+                };
+
+                const { data, error } = await supabase
+                    .from('historial_laboral')
+                    .insert([registroAPersistir])
+                    .select();
+
+                if (error) throw error;
+
+                mostrarAlerta("¡Experiencia laboral guardada exitosamente!", "#ecfdf5", "#059669");
+                
+                // Resetear formulario de forma limpia
+                Object.assign(form, {
+                    cargo: '',
+                    empresa: '',
+                    area_desarrollo: '',
+                    area_otro_texto: '',
+                    salario_aproximado: '',
+                    fecha_inicio: '',
+                    fecha_finalizacion: '',
+                    es_trabajo_actual: false,
+                    relacion_con_carrera: true
                 });
-            });
 
-        } catch (err) {
-            console.error("Error al cargar historial:", err);
-            tbodyHistorial.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error al recuperar los datos.</td></tr>';
-        }
+                // Recargar el historial visual instantáneamente
+                await cargarHistorial();
+
+            } catch (err) {
+                console.error("Error crítico al insertar en Supabase:", err);
+                mostrarAlerta(`Error al guardar: ${err.message || 'Verifica la conexión.'}`, "#fef2f2", "#dc2626");
+            } finally {
+                procesando.value = false;
+            }
+        };
+
+        const eliminarRegistro = async (id) => {
+            if (!confirm('¿Estás seguro de eliminar este registro laboral?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('historial_laboral')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                await cargarHistorial();
+                mostrarAlerta("Registro eliminado correctamente.", "#f1f5f9", "#475569");
+            } catch (err) {
+                console.error("Error al eliminar:", err);
+                alert("No se pudo eliminar el registro.");
+            }
+        };
+
+        const mostrarAlerta = (texto, fondo, colorTexto) => {
+            alerta.texto = texto;
+            alerta.bg = fondo;
+            alerta.color = colorTexto;
+            alerta.visible = true;
+        };
+
+        const cerrarSesion = () => {
+            localStorage.clear();
+            window.location.href = '../auth/login.html';
+        };
+
+        onMounted(async () => {
+            await obtenerCarreraUsuario();
+            await cargarHistorial();
+        });
+
+        return {
+            lblNombreUsuario,
+            carreraUsuario,
+            cargandoHistorial,
+            procesando,
+            historial,
+            form,
+            alerta,
+            validarSoloLetras,
+            cambioTrabajoActual,
+            guardarRegistro,
+            eliminarRegistro,
+            cerrarSesion
+        };
     }
-
-    // 3. FUNCIÓN PARA ELIMINAR UN REGISTRO
-    async function eliminarRegistro(id) {
-        try {
-            const { error } = await supabase
-                .from('historial_laboral')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw error;
-            cargarHistorial();
-        } catch (err) {
-            console.error("Error al eliminar:", err);
-            alert("No se pudo eliminar el registro.");
-        }
-    }
-
-    // 4. EVENTO SUBMIT PARA GUARDAR
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        alertMsg.style.display = 'none';
-
-        const cargo = document.getElementById('txt-cargo').value.trim();
-        const empresa = document.getElementById('txt-empresa').value.trim();
-        const area_desarrollo = document.getElementById('cmb-area').value;
-        const salario_aproximado = document.getElementById('cmb-salario').value;
-        const fecha_inicio = document.getElementById('txt-fecha-inicio').value;
-        const es_trabajo_actual = chkActual.checked;
-        const relacion_con_carrera = document.getElementById('chk-relacion').checked;
-        const fecha_finalizacion = es_trabajo_actual ? null : txtFechaFin.value;
-
-        if (!es_trabajo_actual && !fecha_finalizacion) {
-            mostrarAlerta("Por favor, ingresa una fecha de finalización o marca que es tu trabajo actual.", "#fef2f2", "#dc2626");
-            return;
-        }
-
-        try {
-            const { error } = await supabase
-                .from('historial_laboral')
-                .insert([{
-                    graduado_id: graduadoId,
-                    cargo,
-                    empresa,
-                    area_desarrollo, // Guarda el área corporativa seleccionada
-                    salario_aproximado,
-                    fecha_inicio,
-                    fecha_finalizacion,
-                    es_trabajo_actual,
-                    relacion_con_carrera
-                }]);
-
-            if (error) throw error;
-
-            mostrarAlerta("¡Experiencia laboral guardada exitosamente!", "#ecfdf5", "#059669");
-            form.reset();
-            txtFechaFin.disabled = false;
-            cargarHistorial();
-
-        } catch (err) {
-            console.error("Error al insertar:", err);
-            mostrarAlerta("Ocurrió un error al intentar guardar los datos en Supabase.", "#fef2f2", "#dc2626");
-        }
-    });
-
-    function mostrarAlerta(texto, fondo, colorTexto) {
-        alertMsg.textContent = texto;
-        alertMsg.style.backgroundColor = fondo;
-        alertMsg.style.color = colorTexto;
-        alertMsg.style.display = 'block';
-    }
-
-    cargarHistorial();
-
-    document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
-        localStorage.clear();
-        window.location.href = '../auth/login.html';
-    });
-});
+}).mount('#app');

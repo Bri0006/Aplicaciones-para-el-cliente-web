@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso al Sistema - Seguimiento Graduados ULEAM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <style>
         :root {
             --azul-institucional: #004a99;
+            --azul-hover: #003670;
             --celeste-claro: #e6f0fa;
             --rojo-alerta: #dc2626;
             --blanco: #ffffff;
             --gris-fondo: #f4f7fa;
+            --texto-mutado: #64748b;
         }
-
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--gris-fondo);
@@ -24,56 +29,52 @@
             height: 100vh;
             margin: 0;
         }
-
         .login-card {
             background: var(--blanco);
             padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .logo-container {
             text-align: center;
+            margin-bottom: 0.5rem;
         }
-
-        .logo-container img {
-            width: 140px;
-            margin-bottom: 1rem;
-        }
-
         h2 {
-            color: var(--azul-institucional);
+            color: #1e293b;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            text-align: center;
             font-size: 1.4rem;
+        }
+        .form-group {
             margin-bottom: 1.5rem;
         }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 1.2rem;
-        }
-
         label {
-            font-size: 0.85rem;
-            color: #4b5563;
-            font-weight: 500;
             display: block;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
-
         input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1.5px solid #d1d5db;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             box-sizing: border-box;
+            font-family: inherit;
             transition: border-color 0.2s;
         }
-
         input:focus {
             outline: none;
             border-color: var(--azul-institucional);
+            box-shadow: 0 0 0 3px rgba(0, 74, 153, 0.1);
         }
-
         .btn {
             width: 100%;
             padding: 0.8rem;
@@ -83,27 +84,28 @@
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-family: inherit;
         }
-
         .btn-primary {
             background-color: var(--azul-institucional);
             color: var(--blanco);
         }
-
         .btn-primary:hover {
-            background-color: #003670;
+            background-color: var(--azul-hover);
         }
-
+        .btn-primary:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
         .info-msg {
             margin-top: 1rem;
             font-size: 0.85rem;
-            color: #059669;
+            color: #065f46;
             background-color: #ecfdf5;
             padding: 0.6rem;
             border-radius: 6px;
-            display: none;
+            border: 1px solid #a7f3d0;
         }
-
         .error-msg {
             margin-top: 1rem;
             font-size: 0.85rem;
@@ -111,35 +113,72 @@
             background-color: #fef2f2;
             padding: 0.6rem;
             border-radius: 6px;
-            display: none;
+            border: 1px solid #fca5a5;
+        }
+        .register-redirect {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--texto-mutado);
+        }
+        .register-redirect a {
+            color: var(--azul-institucional);
+            font-weight: 600;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
-<div class="login-card">
+<div id="app" class="login-card">
     <div class="logo-container">
         <div style="font-weight: 600; color: var(--azul-institucional); font-size: 1.5rem; margin-bottom: 0.5rem;">ULEAM</div>
     </div>
     <h2>Seguimiento a Graduados</h2>
     
-    <div id="step-cedula">
+    <form @submit.prevent="solicitarClave">
         <div class="form-group">
             <label for="cedula-input">Número de Cédula</label>
-            <input type="text" id="cedula-input" placeholder="Ej. 131XXXXXXX" maxlength="10">
+            <input 
+                type="text" 
+                v-model="cedula" 
+                placeholder="Ej. 131XXXXXXX" 
+                maxlength="10" 
+                required
+            >
         </div>
-        <button type="button" class="btn btn-primary" id="btn-solicitar">SOLICITAR CLAVE</button>
+        
+        <button 
+            type="submit" 
+            class="btn btn-primary" 
+            :disabled="procesando || cedula.length !== 10"
+        >
+            {{ procesando ? 'VALIDANDO...' : 'SOLICITAR CLAVE' }}
+        </button>
+    </form>
+
+    <div v-if="msgExito" class="info-msg">
+        {{ msgExito }}
     </div>
 
-    <div id="msg-exito" class="info-msg"></div>
-    <div id="msg-error" class="error-msg"></div>
-    
-    <div class="register-redirect" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
-    ¿Eres graduado y no estás registrado? 
-    <a href="registro.html" style="color: var(--azul-sidebar); font-weight: 600; text-decoration: none;">Solicitar acceso aquí</a>
-</div>
+    <div v-if="msgError" class="error-msg">
+        {{ msgError }}
+    </div>
+
+    <div class="register-redirect">
+        ¿Aún no tienes cuenta? <a href="registro.html">Solicita tu acceso aquí</a>
+    </div>
+
+    <!--  Enlace discreto para el administrador -->
+    <div style="text-align: center; margin-top: 1rem; font-size: 0.8rem;">
+        <a href="login_admin.html" style="color: #64748b; text-decoration: none; font-weight: 500;">
+            <i class="fa-solid fa-lock"></i> Acceso Administrativo
+        </a>
+    </div>
 </div>
 
-<script type="module" src="auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config/supabaseClient.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="auth.js"></script>
 </body>
-</html>

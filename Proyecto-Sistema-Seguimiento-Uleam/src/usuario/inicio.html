@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Seguimiento Graduados ULEAM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CDN de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Agregamos el CDN oficial de Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <style>
         :root {
             --azul-sidebar: #004a99;
@@ -206,6 +212,9 @@
 </head>
 <body>
 
+<!-- ENVOLVEMOS TODO EL BODY EN EL ID APP DE VUE -->
+<div id="app" style="display: flex; width: 100vw; height: 100vh;">
+
     <div class="sidebar">
         <div>
             <div class="sidebar-brand">Panel del Graduado</div>
@@ -217,7 +226,8 @@
                 <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
             </ul>
         </div>
-        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+        <!-- @click llama a la función de cerrar sesión -->
+        <div class="btn-logout" @click="cerrarSesion">🚪 Cerrar Sesión</div>
     </div>
 
     <div class="main-content">
@@ -227,8 +237,9 @@
                 <p>Portal del Graduado</p>
             </div>
             <div class="user-profile">
-                <p class="user-name" id="lbl-nombre-usuario">Cargando...</p>
-                <p class="user-meta" id="lbl-meta-usuario">Graduado</p>
+                <!-- Interpolación {{ nombreUsuario }} para cambiar el texto 'Cargando...' por el real -->
+                <p class="user-name">{{ nombreUsuario }}</p>
+                <p class="user-meta">Graduado</p>
             </div>
         </div>
 
@@ -258,6 +269,9 @@
         </div>
     </div>
 
-    <script type="module" src="js/dashboard.js?v=2"></script>
+</div>
+
+<!-- Apuntamos a tu archivo modular de JS -->
+<script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

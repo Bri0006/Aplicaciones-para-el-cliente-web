@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Académico - ULEAM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CDNs Requeridos -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../config/supabaseClient.js"></script>
+
     <style>
         :root {
             --azul-sidebar: #004a99;
@@ -23,6 +28,11 @@
             display: flex;
             height: 100vh;
             color: var(--texto-oscuro);
+        }
+
+        /* Previene el parpadeo de las llaves de Vue antes de cargar */
+        [v-cloak] {
+            display: none !important;
         }
 
         /* SIDEBAR */
@@ -176,7 +186,6 @@
             border-radius: 6px;
             font-weight: 500;
             cursor: pointer;
-            display: none;
             font-family: 'Poppins', sans-serif;
         }
 
@@ -185,84 +194,100 @@
             padding: 0.75rem;
             border-radius: 6px;
             font-size: 0.85rem;
-            display: none;
+        }
+        .user-meta {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            margin: 0;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <div class="sidebar-brand">Panel del Graduado</div>
-            <ul class="sidebar-menu">
-                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
-                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
-                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
-                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
-                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
-            </ul>
+    <!-- El contenedor principal monta la app de Vue y usa v-cloak -->
+    <div id="app" v-cloak style="display: flex; width: 100vw; height: 100vh;">
+
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand">Panel del Graduado</div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                    <li class="menu-item active"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                    <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                    <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                    <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+                </ul>
+            </div>
+            <div class="btn-logout" @click="cerrarSesion">🚪 Cerrar Sesión</div>
         </div>
-        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Información Personal</span>
+                </div>
+                <div>
+                    <p style="margin:0; font-size:0.9rem; font-weight:600;">{{ lblNombreUsuario }}</p>
+                    <p class="user-meta">Graduado</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <h2>Datos de Registro Universitarios</h2>
+                        <!-- Botones controlados dinámicamente por la variable "editando" -->
+                        <button v-if="!editando" class="btn-edit" @click="activarEdicion">Editar Datos</button>
+                        <button v-else class="btn-save" @click="guardarCambios">Guardar Cambios</button>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-group" style="grid-column: span 2;">
+                            <label>Nombre Completo</label>
+                            <input type="text" v-model="form.nombre_completo" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Número de Cédula</label>
+                            <input type="text" v-model="form.cedula" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="date" v-model="form.fecha_nacimiento" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Año de Graduación</label>
+                            <input type="number" v-model="form.ano_graduacion" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Período Académico</label>
+                            <input type="text" v-model="form.periodo_academico" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Correo Institucional</label>
+                            <input type="email" v-model="form.correo_institucional" disabled>
+                        </div>
+                        <div class="info-group">
+                            <label>Correo Personal</label>
+                            <input type="email" v-model="form.correo_personal" :disabled="!editando">
+                        </div>
+                        <div class="info-group" style="grid-column: span 2;">
+                            <label>Número de Celular / Contacto</label>
+                            <input type="text" v-model="form.celular" placeholder="Ej: 09XXXXXXXX" :disabled="!editando">
+                        </div>
+                    </div>
+
+                    <!-- Alerta de Vue -->
+                    <div v-if="alerta.visible" class="alert-msg" :style="{ backgroundColor: alerta.bg, color: alerta.color }">
+                        {{ alerta.texto }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="main-content">
-        <div class="topbar">
-            <div>
-                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Información Personal</span>
-            </div>
-            <div>
-                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="profile-card">
-                <div class="profile-header">
-                    <h2>Datos de Registro Universitarios</h2>
-                    <button class="btn-edit" id="btn-editar">Editar Datos</button>
-                    <button class="btn-save" id="btn-guardar">Guardar Cambios</button>
-                </div>
-
-                <div class="info-grid">
-                    <div class="info-group" style="grid-column: span 2;">
-                        <label>Nombre Completo</label>
-                        <input type="text" id="txt-nombre-completo" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Número de Cédula</label>
-                        <input type="text" id="txt-cedula" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Fecha de Nacimiento</label>
-                        <input type="date" id="txt-fecha-nac" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Año de Graduación</label>
-                        <input type="number" id="txt-ano-grad" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Período Académico</label>
-                        <input type="text" id="txt-periodo" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Correo Institucional</label>
-                        <input type="email" id="txt-correo-inst" disabled>
-                    </div>
-                    <div class="info-group">
-                        <label>Correo Personal</label>
-                        <input type="email" id="txt-correo-pers" disabled>
-                    </div>
-                    <div class="info-group" style="grid-column: span 2;">
-                        <label>Número de Celular / Contacto</label>
-                        <input type="text" id="txt-celular" placeholder="Ej: 09XXXXXXXX" disabled>
-                    </div>
-                </div>
-
-                <div id="alert-perfil" class="alert-msg"></div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Script de inicialización de la app -->
     <script type="module" src="js/perfil.js"></script>
 </body>
 </html>

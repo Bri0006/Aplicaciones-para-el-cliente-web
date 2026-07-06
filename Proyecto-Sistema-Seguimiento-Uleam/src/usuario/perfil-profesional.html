@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Profesional - ULEAM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CDNs Requeridos -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config/supabaseClient.js"></script>
+
     <style>
         :root {
             --azul-sidebar: #004a99;
@@ -25,7 +29,11 @@
             color: var(--texto-oscuro);
         }
 
-        /* SIDEBAR (Idéntico para navegación fluida) */
+        [v-cloak] {
+            display: none !important;
+        }
+
+        /* SIDEBAR */
         .sidebar {
             width: 260px;
             background-color: var(--blanco);
@@ -240,125 +248,172 @@
             border-radius: 6px;
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
-            display: none;
+        }
+        .user-meta {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            margin: 0;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <div class="sidebar-brand">Panel del Graduado</div>
-            <ul class="sidebar-menu">
-                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
-                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
-                <li class="menu-item active"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
-                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
-                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
-            </ul>
-        </div>
-        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
-    </div>
+    <div id="app" v-cloak style="display: flex; width: 100vw; height: 100vh;">
 
-    <div class="main-content">
-        <div class="topbar">
+        <div class="sidebar">
             <div>
-                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Historial Profesional</span>
+                <div class="sidebar-brand">Panel del Graduado</div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                    <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                    <li class="menu-item active"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                    <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                    <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+                </ul>
             </div>
-            <div>
-                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
-            </div>
+            <div class="btn-logout" @click="cerrarSesion">🚪 Cerrar Sesión</div>
         </div>
 
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Registrar Nueva Experiencia Laboral</h2>
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Historial Profesional</span>
                 </div>
-                
-                <div id="alert-profesional" class="alert-msg"></div>
-
-                <form id="form-laboral" class="form-grid">
-                    <div class="form-group">
-                        <label>Cargo / Puesto de Trabajo</label>
-                        <input type="text" id="txt-cargo" placeholder="Ej: Desarrollador Frontend" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Empresa / Institución</label>
-                        <input type="text" id="txt-empresa" placeholder="Ej: CNEL EP" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Área de Trabajo / Departamento</label>
-                        <select id="cmb-area" required>
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
-                            <option value="Operaciones / Producción">Operaciones / Producción</option>
-                            <option value="Recursos Humanos">Recursos Humanos</option>
-                            <option value="Administración / Finanzas">Administración / Finanzas</option>
-                            <option value="Comercial / Ventas / Marketing">Comercial / Ventas / Marketing</option>
-                            <option value="Dirección / Gerencia">Dirección / Gerencia</option>
-                            <option value="Consultoría / Asesoría Independiente">Consultoría / Asesoría Independiente</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Rango Salarial Aproximado</label>
-                        <select id="cmb-salario" required>
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Menos de $460 (Menos del básico)">Menos de $460</option>
-                            <option value="$460 - $600">$460 - $600</option>
-                            <option value="$601 - $1000">$601 - $1000</option>
-                            <option value="$1001 - $1500">$1001 - $1500</option>
-                            <option value="Más de $1500">Más de $1500</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Inicio</label>
-                            <input type="date" id="txt-fecha-inicio" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Finalización</label>
-                        <input type="date" id="txt-fecha-fin">
-                    </div>
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="chk-actual">
-                        <label for="chk-actual">Trabajo en esta empresa actualmente</label>
-                    </div>
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="chk-relacion" checked>
-                        <label for="chk-relacion" id="lbl-relacion-carrera">¿Tiene relación con tu carrera profesional?</label>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <button type="submit" class="btn-submit">Guardar Registro</button>
-                    </div>
-                </form>
+                <div>
+                    <p style="margin:0; font-size:0.9rem; font-weight:600;">{{ lblNombreUsuario }}</p>
+                    <p class="user-meta">Graduado</p>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Tu Historial Laboral Registrado</h2>
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Registrar Nueva Experiencia Laboral</h2>
+                    </div>
+                    
+                    <!-- Alerta Reactiva de Vue -->
+                    <div v-if="alerta.visible" class="alert-msg" :style="{ backgroundColor: alerta.bg, color: alerta.color }">
+                        {{ alerta.texto }}
+                    </div>
+
+                    <form @submit.prevent="guardarRegistro" class="form-grid">
+                        <div class="form-group">
+                            <label>Cargo / Puesto de Trabajo</label>
+                            <!-- @input intercepta la escritura eliminando números y caracteres especiales -->
+                            <input type="text" v-model="form.cargo" @input="validarSoloLetras('cargo')" placeholder="Ej: Desarrollador Frontend" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Empresa / Institución</label>
+                            <input type="text" v-model="form.empresa" placeholder="Ej: CNEL EP" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Área de Trabajo / Departamento</label>
+                            <select v-model="form.area_desarrollo" required>
+                                <option value="">Seleccione una opción...</option>
+                                <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
+                                <option value="Operaciones / Production">Operaciones / Producción</option>
+                                <option value="Recursos Humanos">Recursos Humanos</option>
+                                <option value="Administración / Finanzas">Administración / Finanzas</option>
+                                <option value="Comercial / Ventas / Marketing">Comercial / Ventas / Marketing</option>
+                                <option value="Dirección / Gerencia">Dirección / Gerencia</option>
+                                <option value="Consultoría / Asesoría Independiente">Consultoría / Asesoría Independiente</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <!-- NUEVO: Campo dinámico que aparece SOLO si seleccionan 'Otro' -->
+                        <div class="form-group" v-if="form.area_desarrollo === 'Otro'">
+                            <label>Especifique el Área de Trabajo</label>
+                            <input type="text" v-model="form.area_otro_texto" @input="validarSoloLetras('area_otro_texto')" placeholder="Ej: Control de Calidad" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Rango Salarial Aproximado</label>
+                            <select v-model="form.salario_aproximado" required>
+                                <option value="">Seleccione una opción...</option>
+                                <option value="Menos de $460 (Menos del básico)">Menos de $460</option>
+                                <option value="$460 - $600">$460 - $600</option>
+                                <option value="$601 - $1000">$601 - $1000</option>
+                                <option value="$1001 - $1500">$1001 - $1500</option>
+                                <option value="Más de $1500">Más de $1500</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Inicio</label>
+                            <input type="date" v-model="form.fecha_inicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Finalización</label>
+                            <input type="date" v-model="form.fecha_finalizacion" :disabled="form.es_trabajo_actual" :required="!form.es_trabajo_actual">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="chk-actual" v-model="form.es_trabajo_actual" @change="cambioTrabajoActual">
+                            <label for="chk-actual">Trabajo en esta empresa actualmente</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="chk-relacion" v-model="form.relacion_con_carrera">
+                            <label for="chk-relacion">¿Tiene relación con tu carrera de {{ carreraUsuario || 'tu especialidad' }}?</label>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn-submit" :disabled="procesando">
+                                {{ procesando ? 'GUARDANDO...' : 'Guardar Registro' }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cargo</th>
-                                <th>Empresa</th>
-                                <th>Área</th>
-                                <th>Duración</th>
-                                <th>Relación</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-historial">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Tu Historial Laboral Registrado</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cargo</th>
+                                    <th>Empresa</th>
+                                    <th>Área</th>
+                                    <th>Duración</th>
+                                    <th>Relación</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="cargandoHistorial">
+                                    <td colspan="6" style="text-align:center;">Cargando historial...</td>
+                                </tr>
+                                <tr v-else-if="historial.length === 0">
+                                    <td colspan="6" style="text-align:center; color:#64748b;">No tienes registros laborales ingresados.</td>
+                                </tr>
+                                <tr v-else v-for="item in historial" :key="item.id">
+                                    <td><strong>{{ item.cargo }}</strong></td>
+                                    <td>{{ item.empresa }}</td>
+                                    <td>{{ item.area_desarrollo }}</td>
+                                    <td>
+                                        {{ item.fecha_inicio }} a 
+                                        <span v-if="item.es_trabajo_actual" class="badge badge-actual">Actualidad</span>
+                                        <span v-else>{{ item.fecha_finalizacion }}</span>
+                                    </td>
+                                    <td>
+                                        <span v-if="item.relacion_con_carrera" class="badge badge-relacion">Sí</span>
+                                        <span v-else class="badge badge-no-relacion">No</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn-delete" @click="eliminarRegistro(item.id)">❌ Eliminar</button>
+                                    </td>
+                                </tr>
                             </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
+    <!-- Inicialización del módulo de Vue -->
     <script type="module" src="js/profesional.js"></script>
 </body>
 </html>

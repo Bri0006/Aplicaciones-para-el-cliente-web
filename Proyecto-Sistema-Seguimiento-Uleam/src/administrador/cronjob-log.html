@@ -4,449 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Envíos Automáticos - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Dependencias Esenciales -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        [v-cloak] { display: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+        .filtro-cron { background-color: #ffffff; border: 1px solid #e2e8f0; color: #334155; padding: 0.5rem 1rem; border-radius: 10px; font-weight: 500; font-size: 0.85rem; outline: none; cursor: pointer; transition: all 0.2s; }
+        .filtro-cron:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800">
+<body class="bg-slate-50 text-slate-800">
 
-    <div class="flex min-h-screen">
-        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0 h-screen sticky top-0">
-    <div>
-        <div class="mb-6 px-2 py-1 border-b border-slate-800 pb-4">
-            <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
-            <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
-        </div>
+    <div id="app" class="flex min-h-screen" v-cloak>
         
-        <nav class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-190px)] pr-1 custom-scrollbar">
-            
-            <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                <span>Estadísticas</span>
-            </a>
-
-            <a href="solicitudes.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fa-solid fa-file-circle-check w-5 text-center"></i>
-                <span>Solicitudes</span>
-            </a>
-
-            <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fa-solid fa-user-graduate w-5 text-center"></i>
-                <span>Graduados</span>
-            </a>
-            
-            <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fa-solid fa-file-invoice w-5 text-center"></i>
-                <span>Reportes CACES</span>
-            </a>
-            
-            <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md transition">
+        <!-- Sidebar Izquierdo (Sin la sección Administrador) -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0 h-screen sticky top-0">
+            <div>
+                <div class="mb-6 px-2 py-1 border-b border-slate-800 pb-4">
+                    <h1 class="text-xl font-bold tracking-wider text-blue-400">ULEAM</h1>
+                    <p class="text-xs text-slate-400">Sistema de Seguimiento</p>
+                </div>
+                
+                <nav class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-190px)] pr-1 custom-scrollbar">
+                    <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>Estadísticas</span>
+                    </a>
+                    <a href="solicitudes.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-circle-check w-5 text-center"></i>
+                        <span>Solicitudes</span>
+                    </a>
+                    <a href="graduados.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-user-graduate w-5 text-center"></i>
+                        <span>Graduados</span>
+                    </a>
+                    <a href="encuestas.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-invoice w-5 text-center"></i>
+                        <span>Reportes CACES</span>
+                    </a>
+                    <a href="cronjob-log.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium shadow-md transition">
                         <i class="fa-solid fa-history w-5 text-center"></i>
                         <span>Cron-Job Log</span>
                     </a>
+                </nav>
+            </div>
+            
+            <!-- Botón de Logout dispara el modal reactivo de Vue -->
+            <button @click="mostrarModalLogout = true" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
+                <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                <span class="font-medium">Cerrar Sesión</span>
+            </button>
+        </aside>
 
-            <hr class="border-slate-800 my-2">
+        <!-- Contenido Principal -->
+        <main class="flex-grow overflow-y-auto flex flex-col h-screen">
+            <div class="bg-white px-10 py-4 flex justify-between items-center border-b border-slate-200 shrink-0">
+                <span class="font-semibold text-slate-700">Automatizaciones y Alertas de Sistema</span>
+                <span class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded">Estado: Conectado</span>
+            </div>
 
-            <div>
-                <button id="btn-admin-menu" class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition focus:outline-none">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-shield-halved w-5 text-center"></i>
-                        <span>Administrador</span>
+            <div class="p-10 space-y-6">
+                <!-- Encabezado Limpio -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Historial de Envíos Automáticos (Cron-Job)</h2>
+                        <p class="text-sm text-slate-500 mt-1">Registro en tiempo real de notificaciones programadas enviadas a graduados según los criterios del CACES.</p>
                     </div>
-                    <i id="icon-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
-                </button>
-                
-                <div id="sub-menu-admin" class="hidden pl-9 mt-1 space-y-1 border-l border-slate-800 ml-6">
-                    <a href="admin-usuarios.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Usuarios</a>
-                    <a href="admin-profesionales.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Profesionales</a>
-                    <a href="admin-roles.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Roles</a>
-                    <a href="admin-carreras.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Carreras</a>
-                    <a href="admin-facultades.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Facultades</a>
-                    <a href="admin-instituciones.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Instituciones</a>
-                    <a href="admin-encuestas.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Encuestas</a>
-                    <a href="admin-menus.html" class="block py-1.5 px-3 text-sm text-slate-400 hover:text-white rounded transition">Menús</a>
+                    <button @click="forzarCronJobGlobal" :disabled="procesandoGlobal" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl shadow-md text-sm font-semibold tracking-wide transition disabled:opacity-50">
+                        <i v-if="procesandoGlobal" class="fa-solid fa-spinner fa-spin text-xs text-blue-400"></i>
+                        <i v-else class="fa-solid fa-paper-plane text-xs text-blue-400"></i>
+                        <span>{{ procesandoGlobal ? 'PROCESANDO...' : 'FORZAR ENVÍO AHORA' }}</span>
+                    </button>
                 </div>
-            </div>
-        </nav>
-    </div>
-    
-    <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition border border-transparent hover:border-rose-900/50 w-full text-left shrink-0 mt-auto">
-        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-        <span class="font-medium">Cerrar Sesión</span>
-    </button>
-</aside>
 
-<style>
-    /* Estilos personalizados para el contenedor del menú scrollable */
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 5px; /* Súper delgada */
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent; /* No se nota el fondo */
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #334155; /* Color slate-700 integrado al fondo oscuro */
-        border-radius: 9999px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #475569; /* Destaca levemente en hover */
-    }
-</style>
+                <!-- Barra Dinámica de Filtros -->
+                <div class="flex flex-wrap items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider pl-2 mr-1">Filtros de Auditoría:</span>
+                    <select v-model="filtroEstado" class="filtro-cron">
+                        <option value="TODOS">🔍 Todos los Estados</option>
+                        <option value="ENVIADO">🟢 Enviado</option>
+                        <option value="LEÍDO">🔵 Leído</option>
+                        <option value="FALLIDO">🔴 Fallido</option>
+                    </select>
 
-        <main class="flex-1 p-8">
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Historial de Envíos Automáticos (Cron-Job)</h2>
-                    <p class="text-sm text-slate-500">Registro en tiempo real de notificaciones programadas enviadas a graduados según los criterios del CACES.</p>
+                    <select v-model="filtroTipo" class="filtro-cron">
+                        <option value="TODOS">📅 Todos los Tipos</option>
+                        <option value="INICIAL">Inicial</option>
+                        <option value="SEMESTRAL">Semestral</option>
+                        <option value="ANUAL">Anual</option>
+                    </select>
                 </div>
-                <button id="btn-forzar-envio-global" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl shadow-md text-sm font-semibold tracking-wide transition transform hover:-translate-y-0.5 active:scale-95">
-                    <i class="fa-solid fa-paper-plane text-xs text-blue-400"></i>
-                    <span>FORZAR ENVÍO AHORA</span>
-                </button>
-            </header>
 
-            <div class="flex gap-4 mb-4">
-            <select id="filtroEstado" class="border p-2 rounded bg-white text-gray-700">
-                <option value="TODOS">Todos los Estados</option>
-                <option value="ENVIADO">Enviado</option>
-                <option value="LEÍDO">Leído</option>
-                <option value="FALLIDO">Fallido</option>
-            </select>
-
-            <select id="filtroTipo" class="border p-2 rounded bg-white text-gray-700">
-                <option value="TODOS">Todos los Tipos</option>
-                <option value="INICIAL">Inicial</option>
-                <option value="SEMESTRAL">Semestral</option>
-                <option value="ANUAL">Anual</option>
-            </select>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
-                            <th class="px-6 py-4">Fecha / Hora</th>
-                            <th class="px-6 py-4">Graduado</th>
-                            <th class="px-6 py-4">Tipo de Envío</th>
-                            <th class="px-6 py-4">Estado de Entrega</th>
-                            <th class="px-6 py-4 text-center">Acción Manual</th>
-                        </tr>
-                    </thead>
-                    <tbody id="log-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
-                    </tbody>
-                </table>
+                <!-- Tabla de Datos Integrada en Vue -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                    <th class="px-6 py-4">Fecha / Hora</th>
+                                    <th class="px-6 py-4">Graduado</th>
+                                    <th class="px-6 py-4">Tipo de Envío</th>
+                                    <th class="px-6 py-4">Estado de Entrega</th>
+                                    <th class="px-6 py-4 text-center">Acción Manual</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <tr v-if="loadingTable">
+                                    <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                        <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Cargando registros desde Supabase...
+                                    </td>
+                                </tr>
+                                <tr v-else-if="logsFiltrados.length === 0">
+                                    <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                        No se encontraron registros con los filtros seleccionados.
+                                    </td>
+                                </tr>
+                                <tr v-else v-for="log in logsFiltrados" :key="log.id" class="hover:bg-slate-50/80 transition">
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-500">{{ formatearFecha(log.fecha_envio) }}</td>
+                                    <td class="px-6 py-4 font-medium text-slate-900">{{ log.graduado_email }}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                                            {{ log.tipo_envio || 'ANUAL' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span v-if="log.estado === 'ENVIADO'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
+                                        </span>
+                                        <span v-else-if="log.estado === 'LEIDO' || log.estado === 'LEÍDO'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                            <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
+                                        </span>
+                                        <span v-else-if="log.estado === 'FALLIDO'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
+                                            <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button v-if="log.estado === 'FALLIDO'" @click="reenviarCorreoManual(log)" :disabled="log.reenviando" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition disabled:opacity-50">
+                                            <i class="fa-solid fa-rotate-right text-[10px]" :class="{'fa-spin': log.reenviando}"></i>
+                                            <span>{{ log.reenviando ? 'Enviando...' : 'Reenviar' }}</span>
+                                        </button>
+                                        <span v-else class="text-slate-400">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
+
+        <!-- Modal de Confirmación Estética de Cierre de Sesión -->
+        <div v-if="mostrarModalLogout" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center" @click.self="mostrarModalLogout = false">
+            <div class="bg-white p-6 rounded-xl max-w-sm w-full shadow-2xl border border-slate-100 mx-4 text-center">
+                <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">¿Cerrar Sesión?</h3>
+                <p class="text-sm text-slate-500 mt-1">Tendrás que volver a ingresar tus credenciales para acceder al panel administrativo.</p>
+                <div class="flex items-center justify-center space-x-3 mt-5">
+                    <button @click="mostrarModalLogout = false" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">Cancelar</button>
+                    <button @click="ejecutarLogout" class="px-4 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 text-white font-semibold text-sm transition shadow-sm">Sí, salir</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <script>
-        // =========================================================
-        // 1. CONFIGURACIÓN E INICIALIZACIÓN DE SUPABASE
-        // =========================================================
-        const CRON_SUPABASE_URL = 'https://qzorfhvrqvgcwedxekil.supabase.co'; 
-        const CRON_SUPABASE_ANON_KEY = 'sb_publishable_RefPqk6wa5QFtAGHFnJTiw_CvIHZx0M'; 
-
-        if (typeof window.supabase !== 'undefined') {
-            try {
-                if (!window.supabase.auth) {
-                    window.supabase = window.supabase.createClient(CRON_SUPABASE_URL, CRON_SUPABASE_ANON_KEY);
-                }
-            } catch (e) {
-                console.error("Error al inicializar cliente de Supabase:", e);
-            }
-        } else {
-            console.warn("La librería de Supabase no se detecta en el navegador.");
-        }
-        
-        const supabaseClient = window.supabase;
-
-        // Variable global para guardar los datos originales de la BD y poder filtrarlos localmente
-        let todosLosLogs = [];
-
-        // =========================================================
-        // 2. EXTRAER Y FILTRAR REGISTROS
-        // =========================================================
-        async function cargarCronJobLogs() {
-            const tbody = document.getElementById('log-table-body');
-            if (!tbody) return;
-            
-            // Solo muestra el mensaje de carga la primera vez si no hay datos guardados
-            if (todosLosLogs.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">
-                            <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Cargando registros desde Supabase...
-                        </td>
-                    </tr>`;
-            }
-
-            if (!supabaseClient || CRON_SUPABASE_ANON_KEY === "TU_CLAVE_ANON_REAL_AQUÍ") {
-                console.warn("Cliente de Supabase no configurado o en modo local. Cargando simulación.");
-                renderizarFilasEstaticas();
-                return;
-            }
-            
-            try {
-                // Si la lista global está vacía, hacemos la petición a Supabase una sola vez
-                if (todosLosLogs.length === 0) {
-                    const { data, error } = await supabaseClient
-                        .from('cronjob_log')
-                        .select('*')
-                        .order('fecha_envio', { ascending: false });
-
-                    if (error) throw error;
-                    todosLosLogs = data || [];
-                }
-
-                // Capturar valores de los selectores de filtro
-                const filtroEstado = document.getElementById('filtroEstado').value;
-                const filtroTipo = document.getElementById('filtroTipo').value;
-
-                // Aplicar filtros en memoria
-                const datosFiltrados = todosLosLogs.filter(registro => {
-                    const cumpleEstado = filtroEstado === 'TODOS' || registro.estado === filtroEstado;
-                    const cumpleTipo = filtroTipo === 'TODOS' || (registro.tipo_envio || 'ANUAL') === filtroTipo;
-                    return cumpleEstado && cumpleTipo;
-                });
-
-                tbody.innerHTML = ''; 
-
-                if (datosFiltrados.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No se encontraron registros con los filtros seleccionados.</td></tr>`;
-                    return;
-                }
-
-                // Renderizar las filas filtradas con sus respectivos estilos
-                datosFiltrados.forEach(log => {
-                    let fechaFormateada = "Sin fecha";
-                    if (log.fecha_envio) {
-                        fechaFormateada = new Date(log.fecha_envio).toLocaleString('es-EC', { 
-                            year: 'numeric', month: '2-digit', day: '2-digit', 
-                            hour: '2-digit', minute: '2-digit', hour12: false
-                        });
-                    }
-
-                    let estadoBadge = '';
-                    let accionHtml = '<td class="px-6 py-4 text-center text-slate-400">-</td>';
-                    const estadoActual = log.estado || 'ENVIADO';
-
-                    if (estadoActual === 'ENVIADO') {
-                        estadoBadge = `
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO
-                            </span>`;
-                    } else if (estadoActual === 'LEIDO' || estadoActual === 'LEÍDO') {
-                        estadoBadge = `
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-indigo-500"></span>LEÍDO
-                            </span>`;
-                    } else if (estadoActual === 'FALLIDO') {
-                        estadoBadge = `
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
-                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span>FALLIDO
-                            </span>`;
-                        
-                        accionHtml = `
-                            <td class="px-6 py-4 text-center">
-                                <button onclick="reenviarCorreoManual('${log.id}', '${log.graduado_email}', this)" class="inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95">
-                                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
-                                    <span>Reenviar</span>
-                                </button>
-                            </td>`;
-                    }
-
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
-                            <td class="px-6 py-4 font-mono text-xs text-slate-500">${fechaFormateada}</td>
-                            <td class="px-6 py-4 font-medium text-slate-900">${log.graduado_email}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">
-                                    ${log.tipo_envio || 'ANUAL'}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">${estadoBadge}</td>
-                            ${accionHtml}
-                        </tr>
-                    `;
-                });
-            } catch (error) {
-                console.error("Error al extraer los registros de cronjob_log:", error);
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-rose-500 font-medium">Error de conexión con la base de datos.</td></tr>`;
-            }
-        }
-
-        // Escuchar los cambios en los selectores para volver a filtrar al instante
-        document.getElementById('filtroEstado').addEventListener('change', cargarCronJobLogs);
-        document.getElementById('filtroTipo').addEventListener('change', cargarCronJobLogs);
-
-        // =========================================================
-        // 3. CONTROL DE INTERFAZ: SUBMENÚ DE ADMINISTRADOR
-        // =========================================================
-        document.getElementById('btn-admin-menu').onclick = function() {
-            const submenu = document.getElementById('sub-menu-admin');
-            const arrow = document.getElementById('icon-arrow');
-            if (submenu && arrow) {
-                submenu.classList.toggle('hidden');
-                arrow.classList.toggle('rotate-180');
-            }
-        };
-
-        // =========================================================
-        // 4. FORZAR CRON-JOB GLOBAL
-        // =========================================================
-        async function forzarCronJobGlobal() {
-            const confirmar = confirm("¿Está seguro de que desea forzar la ejecución del Cron-Job ahora?\nEsto leerá la lista de graduados reales y generará los registros de envío.");
-            if (!confirmar) return;
-
-            const btn = document.getElementById('btn-forzar-envio-global');
-            const textoOriginal = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>PROCESANDO...</span>`;
-
-            try {
-                if (supabaseClient && CRON_SUPABASE_ANON_KEY !== "TU_CLAVE_ANON_REAL_AQUÍ") {
-                    const { data: graduados, error: errorGraduados } = await supabaseClient
-                        .from('graduados')
-                        .select('correo_institucional'); 
-
-                    if (errorGraduados) throw errorGraduados;
-
-                    const fechaActualISO = new Date().toISOString();
-                    let registrosCreados = 0;
-
-                    if (graduados && graduados.length > 0) {
-                        const nuevosLogs = graduados.map(g => ({
-                            graduado_email: g.correo_institucional || 'sin-correo@uleam.edu.ec',
-                            tipo_envio: 'ANUAL', 
-                            estado: 'ENVIADO', 
-                            fecha_envio: fechaActualISO
-                        }));
-
-                        const { error: errorInsert } = await supabaseClient.from('cronjob_log').insert(nuevosLogs);
-                        if (errorInsert) throw errorInsert;
-                        registrosCreados = graduados.length;
-                    } else {
-                        const { data: solicitudes, error: errorSol } = await supabaseClient
-                            .from('solicitudes_registro')
-                            .select('correo');
-                        
-                        if (errorSol) throw errorSol;
-                        
-                        if (!solicitudes || solicitudes.length === 0) {
-                            alert("No hay datos ni en 'graduados' ni en 'solicitudes_registro'.");
-                            return;
-                        }
-
-                        const nuevosLogsSolicitudes = solicitudes.map(s => ({
-                            graduado_email: s.correo,
-                            tipo_envio: 'ANUAL', 
-                            estado: 'ENVIADO', 
-                            fecha_envio: fechaActualISO
-                        }));
-
-                        const { error: errorInsertSol } = await supabaseClient.from('cronjob_log').insert(nuevosLogsSolicitudes);
-                        if (errorInsertSol) throw errorInsertSol;
-                        registrosCreados = solicitudes.length;
-                    }
-
-                    alert(`¡Cron-Job completado con éxito!\nSe procesaron ${registrosCreados} registros desde la tabla maestra.`);
-                    todosLosLogs = []; // Forzamos la recarga limpiando el caché local
-                    await cargarCronJobLogs();
-                } else {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    alert("Modo local activo.");
-                    renderizarFilasEstaticas();
-                }
-
-            } catch (error) {
-                console.error("Error detallado en el Cron-Job:", error);
-                alert("Ocurrió un error al procesar.");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = textoOriginal;
-            }
-        }
-
-        // =========================================================
-        // 5. REENVÍO INDIVIDUAL PARA FILAS FALLIDAS
-        // =========================================================
-        async function reenviarCorreoManual(idLog, email, boton) {
-            const contenidoOriginal = boton.innerHTML;
-            boton.disabled = true;
-            boton.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> <span>Enviando...</span>`;
-            boton.className = "inline-flex items-center space-x-1.5 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-not-allowed";
-
-            try {
-                if (supabaseClient && CRON_SUPABASE_ANON_KEY !== "TU_CLAVE_ANON_REAL_AQUÍ") {
-                    const { error } = await supabaseClient
-                        .from('cronjob_log')
-                        .update({ estado: 'ENVIADO', fecha_envio: new Date().toISOString() }) 
-                        .eq('id', idLog);
-
-                    if (error) throw error;
-                } else {
-                    await new Promise(resolve => setTimeout(resolve, 1200));
-                }
-
-                alert(`Invitación reenviada con éxito a:\n${email}`);
-                
-                // === ¡ESTA ES LA LÍNEA CLAVE! ===
-                todosLosLogs = []; // Vaciamos la memoria vieja para que obligatoriamente traiga lo nuevo de Supabase
-                
-                await cargarCronJobLogs(); // Esto volverá a pintar la tabla ya actualizada
-
-            } catch (error) {
-                console.error("Error durante el reenvío manual:", error);
-                alert("No se pudo completar el reenvío.");
-                boton.disabled = false;
-                boton.innerHTML = contenidoOriginal;
-                boton.className = "inline-flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg border border-rose-200 text-xs font-semibold transition transform active:scale-95";
-            }
-        }
-
-        // =========================================================
-        // 6. RENDERIZADO DE RESPALDO (MOCK)
-        // =========================================================
-        function renderizarFilasEstaticas() {
-            const tbody = document.getElementById('log-table-body');
-            if (tbody) {
-                tbody.innerHTML = `
-                    <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
-                        <td class="px-6 py-4 font-mono text-xs text-slate-500">2026-05-17 11:15</td>
-                        <td class="px-6 py-4 font-medium text-slate-900">simulacion.local@uleam.edu.ec</td>
-                        <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase">Anual</span></td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>ENVIADO</span></td>
-                        <td class="px-6 py-4 text-center text-slate-400">-</td>
-                    </tr>`;
-            }
-        }
-
-        // =========================================================
-        // 7. CONTROL DE INICIALIZACIÓN DEL DOM
-        // =========================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarCronJobLogs();
-            
-            const btnGlobal = document.getElementById('btn-forzar-envio-global');
-            if (btnGlobal) {
-                btnGlobal.addEventListener('click', forzarCronJobGlobal);
-            }
-        });
-
-        // =========================================================
-        // 8. MANEJO DE CIERRE DE SESIÓN
-        // =========================================================
-        const btnLogout = document.getElementById('btn-logout');
-        if (btnLogout) {
-            btnLogout.onclick = function() {
-                if (confirm("¿Está seguro de que desea cerrar su sesión?")) {
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = "../login.html"; 
-                }
-            };
-        }
-    </script>
+    <!-- Carga del archivo JavaScript Modular -->
+    <script type="module" src="js/cronjob-log.js"></script>
 </body>
 </html>

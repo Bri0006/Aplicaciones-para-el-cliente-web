@@ -25,7 +25,7 @@
             color: var(--texto-oscuro);
         }
 
-        /* SIDEBAR (Idéntico para mantener la navegación uniforme) */
+        /* SIDEBAR */
         .sidebar {
             width: 260px;
             background-color: var(--blanco);
@@ -210,7 +210,6 @@
             font-weight: 600;
         }
 
-        /* Badges personalizados para los tipos de estudio */
         .badge-maestria { background-color: #e0f2fe; color: #0369a1; }
         .badge-certificacion { background-color: #ecfdf5; color: #047857; }
         .badge-diplomado { background-color: #fef3c7; color: #b45309; }
@@ -230,103 +229,140 @@
             border-radius: 6px;
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
-            display: none;
+        }
+        .user-meta {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            margin: 0;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <div class="sidebar-brand">Panel del Graduado</div>
-            <ul class="sidebar-menu">
-                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
-                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
-                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
-                <li class="menu-item active"><a href="formacion-continua.html">👤 Formación Continua</a></li>
-                <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
-            </ul>
-        </div>
-        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
-    </div>
-
-    <div class="main-content">
-        <div class="topbar">
+    <!-- Inicializamos la aplicación de Vue en toda la interfaz -->
+    <div id="app" style="display: flex; width: 100vw; height: 100vh;">
+        
+        <div class="sidebar">
             <div>
-                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Formación Continua y Posgrados</span>
+                <div class="sidebar-brand">Panel del Graduado</div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                    <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                    <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                    <li class="menu-item active"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                    <li class="menu-item"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+                </ul>
             </div>
-            <div>
-                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
-            </div>
+            <div class="btn-logout" id="btn-cerrar-sesion" @click="cerrarSesion">🚪 Cerrar Sesión</div>
         </div>
 
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Registrar Estudio, Curso o Certificación</h2>
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Formación Continua y Posgrados</span>
                 </div>
-                
-                <div id="alert-formacion" class="alert-msg"></div>
-
-                <form id="form-formacion" class="form-grid">
-                    <div class="form-group">
-                        <label>Tipo de Formación</label>
-                        <select id="cmb-tipo" required>
-                            <option value="">Seleccione el tipo...</option>
-                            <option value="Maestría">Maestría</option>
-                            <option value="Diplomado">Diplomado</option>
-                            <option value="Certificación">Certificación</option>
-                            <option value="Doctorado">Doctorado</option>
-                            <option value="Curso Corto">Curso Corto</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre del Título / Certificado / Curso</label>
-                        <input type="text" id="txt-titulo" placeholder="Ej: Maestría en Ciencia de Datos o Scrum Master" required>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Institución / Universidad</label>
-                        <input type="text" id="txt-institucion" placeholder="Ej: Universidad Laica Eloy Alfaro de Manabí" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Inicio</label>
-                        <input type="date" id="txt-fecha-inicio" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Finalización</label>
-                        <input type="date" id="txt-fecha-fin" required>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <button type="submit" class="btn-submit">Guardar Formación</button>
-                    </div>
-                </form>
+                <div>
+                    <!-- Nombre reactivo cargado del localStorage -->
+                    <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">{{ lblNombreUsuario }}</p>
+                    <p class="user-meta">Graduado</p>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Tus Estudios Registrados</h2>
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Registrar Estudio, Curso o Certificación</h2>
+                    </div>
+                    
+                    <!-- Alerta de validaciones controlada con Vue -->
+                    <div class="alert-msg" v-if="alerta.visible" :style="{ backgroundColor: alerta.bg, color: alerta.color }">
+                        {{ alerta.texto }}
+                    </div>
+
+                    <form @submit.prevent="guardarFormacion" class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo de Formación</label>
+                            <select v-model="form.tipo" required>
+                                <option value="">Seleccione el tipo...</option>
+                                <option value="Maestría">Maestría</option>
+                                <option value="Diplomado">Diplomado</option>
+                                <option value="Certificación">Certificación</option>
+                                <option value="Doctorado">Doctorado</option>
+                                <option value="Curso Corto">Curso Corto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre del Título / Certificado / Curso</label>
+                            <input type="text" v-model="form.titulo_nombre" placeholder="Ej: Maestría en Ciencia de Datos o Scrum Master" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Institución / Universidad</label>
+                            <input type="text" v-model="form.institucion" placeholder="Ej: Universidad Laica Eloy Alfaro de Manabí" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Inicio</label>
+                            <input type="date" v-model="form.fecha_inicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Finalización</label>
+                            <input type="date" v-model="form.fecha_finalizacion" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn-submit" :disabled="procesando">
+                                {{ procesando ? 'GUARDANDO...' : 'Guardar Formación' }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tipo</th>
-                                <th>Título / Programa</th>
-                                <th>Institución</th>
-                                <th>Fecha Inicio</th>
-                                <th>Fecha Fin</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-formacion">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Tus Estudios Registrados</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Título / Programa</th>
+                                    <th>Institución</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Indicador de carga -->
+                                <tr v-if="cargandoHistorial">
+                                    <td colspan="6" style="text-align:center;">Cargando tus estudios...</td>
+                                </tr>
+                                <!-- Mensaje si la tabla está vacía -->
+                                <tr v-else-if="estudios.length === 0">
+                                    <td colspan="6" style="text-align:center; color:#64748b;">No tienes registros de formación continua ingresados.</td>
+                                </tr>
+                                <!-- Renderizado dinámico de filas con v-for -->
+                                <tr v-for="item in estudios" :key="item.id" v-else>
+                                    <td><span class="badge" :class="obtenerClaseBadge(item.tipo)">{{ item.tipo }}</span></td>
+                                    <td><strong>{{ item.titulo_nombre }}</strong></td>
+                                    <td>{{ item.institucion }}</td>
+                                    <td>{{ item.fecha_inicio }}</td>
+                                    <td>{{ item.fecha_finalizacion }}</td>
+                                    <td>
+                                        <button class="btn-delete" @click="eliminarEstudio(item.id)">❌ Eliminar</button>
+                                    </td>
+                                </tr>
                             </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
+    <!-- Cargamos el script modular -->
     <script type="module" src="js/formacion.js"></script>
 </body>
 </html>

@@ -7,511 +7,547 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-    :root {
-        --azul-sidebar: #004a99;
-        --azul-hover: #003670;
-        --gris-fondo: #f8fafc;
-        --blanco: #ffffff;
-        --texto-oscuro: #1e293b;
-        --texto-mutado: #64748b;
-        --verde-exito: #10b981;
-        --verde-fondo: #ecfdf5;
-    }
+        :root {
+            --azul-sidebar: #004a99;
+            --azul-hover: #003670;
+            --gris-fondo: #f8fafc;
+            --blanco: #ffffff;
+            --texto-oscuro: #1e293b;
+            --texto-mutado: #64748b;
+            --verde-exito: #10b981;
+            --verde-fondo: #ecfdf5;
+        }
 
-    body {
-        font-family: 'Poppins', sans-serif;
-        background-color: var(--gris-fondo);
-        margin: 0;
-        display: flex;
-        height: 100vh;
-        color: var(--texto-oscuro);
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--texto-oscuro);
+        }
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 260px;
-        background-color: var(--blanco);
-        border-right: 1px solid #e2e8f0;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 2rem 0;
-        box-sizing: border-box;
-    }
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background-color: var(--blanco);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+            box-sizing: border-box;
+        }
 
-    .sidebar-brand {
-        padding: 0 1.5rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--azul-sidebar);
-        margin-bottom: 2rem;
-    }
+        .sidebar-brand {
+            padding: 0 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-sidebar);
+            margin-bottom: 2rem;
+        }
 
-    .sidebar-menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .menu-item a {
-        display: flex;
-        align-items: center;
-        padding: 0.85rem 1.5rem;
-        color: var(--texto-oscuro);
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
 
-    .menu-item.active a {
-        background-color: var(--azul-sidebar);
-        color: var(--blanco);
-        border-radius: 0 25px 25px 0;
-        margin-right: 1rem;
-    }
+        .menu-item.active a {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
 
-    .menu-item:not(.active) a:hover {
-        background-color: #f1f5f9;
-        color: var(--azul-sidebar);
-    }
+        .menu-item:not(.active) a:hover {
+            background-color: #f1f5f9;
+            color: var(--azul-sidebar);
+        }
 
-    .btn-logout {
-        padding: 0.85rem 1.5rem;
-        color: #dc2626;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        border-top: 1px solid #e2e8f0;
-        cursor: pointer;
-    }
+        .btn-logout {
+            padding: 0.85rem 1.5rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-top: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
 
-    /* CONTENIDO */
-    .main-content {
-        flex-grow: 1;
-        overflow-y: auto;
-    }
+        /* CONTENIDO */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
 
-    .topbar {
-        background-color: var(--blanco);
-        padding: 1rem 2.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e2e8f0;
-    }
+        .topbar {
+            background-color: var(--blanco);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-    .container {
-        padding: 2.5rem;
-        max-width: 850px;
-        margin: 0 auto;
-    }
+        .container {
+            padding: 2.5rem;
+            max-width: 850px;
+            margin: 0 auto;
+        }
 
-    .card {
-        background: var(--blanco);
-        padding: 2.5rem;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
+        .card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
 
-    /* 1. VISTA INICIAL (PRESENTACIÓN) */
-    .intro-state {
-        text-align: center;
-        padding: 2rem 1rem;
-    }
+        /* 1. VISTA INICIAL */
+        .intro-state {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
 
-    .intro-icon {
-        font-size: 3.5rem;
-        color: var(--azul-sidebar);
-        margin-bottom: 1rem;
-    }
+        .intro-icon {
+            font-size: 3.5rem;
+            color: var(--azul-sidebar);
+            margin-bottom: 1rem;
+        }
 
-    .intro-state h2 {
-        color: var(--azul-sidebar);
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
+        .intro-state h2 {
+            color: var(--azul-sidebar);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
 
-    .intro-state p {
-        color: var(--texto-mutado);
-        line-height: 1.6;
-        margin-bottom: 2rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+        .intro-state p {
+            color: var(--texto-mutado);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    .btn-start {
-        background-color: var(--azul-sidebar);
-        color: var(--blanco);
-        border: none;
-        padding: 0.9rem 2.5rem;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-        transition: background 0.2s, transform 0.1s;
-        box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2);
-    }
+        .btn-start {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2);
+        }
 
-    .btn-start:hover {
-        background-color: var(--azul-hover);
-        transform: translateY(-1px);
-    }
+        .btn-start:hover {
+            background-color: var(--azul-hover);
+            transform: translateY(-1px);
+        }
 
-    /* 2. VISTA FORMULARIO (ESTILO MATRIZ MATRICIAL LIKERT) */
-    .form-state {
-        display: none; /* Controlado por JS */
-    }
+        /* 2. VISTA FORMULARIO */
+        .form-state h2 {
+            margin: 0 0 0.5rem 0;
+            color: var(--azul-sidebar);
+            font-size: 1.4rem;
+        }
 
-    .form-state h2 {
-        margin: 0 0 0.5rem 0;
-        color: var(--azul-sidebar);
-        font-size: 1.4rem;
-    }
+        .form-subtitle {
+            margin: 0 0 2rem 0;
+            color: var(--texto-mutado);
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
 
-    .form-subtitle {
-        margin: 0 0 2rem 0;
-        color: var(--texto-mutado);
-        font-size: 0.9rem;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 1rem;
-    }
+        .likert-matrix-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: var(--blanco);
+        }
 
-    /* Contenedor responsivo de la matriz */
-    .likert-matrix-container {
-        width: 100%;
-        overflow-x: auto;
-        margin-bottom: 2.5rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        background-color: var(--blanco);
-    }
+        .likert-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
 
-    .likert-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-    }
+        .likert-table th, .likert-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+        }
 
-    .likert-table th, .likert-table td {
-        padding: 1rem 0.75rem;
-        border-bottom: 1px solid #e2e8f0;
-        font-size: 0.9rem;
-    }
+        .likert-table th {
+            background-color: #f8fafc;
+            color: var(--texto-oscuro);
+            font-weight: 600;
+        }
 
-    .likert-table th {
-        background-color: #f8fafc;
-        color: var(--texto-oscuro);
-        font-weight: 600;
-    }
+        .txt-pregunta {
+            text-align: left;
+            font-weight: 500;
+            color: #334155;
+            padding-left: 1.2rem !important;
+            line-height: 1.5;
+        }
 
-    .col-pregunta {
-        text-align: left;
-        width: 45%;
-        padding-left: 1.2rem !important;
-    }
+        .col-opcion {
+            width: 11%;
+            font-size: 1rem;
+            line-height: 1.2;
+        }
 
-    .txt-pregunta {
-        text-align: left;
-        font-weight: 500;
-        color: #334155;
-        padding-left: 1.2rem !important;
-        line-height: 1.5;
-    }
+        .lbl-nivel {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            font-weight: 500;
+            display: block;
+            margin-top: 0.2rem;
+        }
 
-    .col-opcion {
-        width: 11%;
-        font-size: 1rem;
-        line-height: 1.2;
-    }
+        .likert-table tbody tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
 
-    .lbl-nivel {
-        font-size: 0.75rem;
-        color: var(--texto-mutado);
-        font-weight: 500;
-        display: block;
-        margin-top: 0.2rem;
-    }
+        .likert-table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
 
-    .likert-table tbody tr:nth-child(even) {
-        background-color: #fdfdfd;
-    }
+        .likert-table input[type="radio"] {
+            width: 19px;
+            height: 19px;
+            cursor: pointer;
+            margin: 0;
+            accent-color: var(--azul-sidebar);
+        }
 
-    .likert-table tbody tr:hover {
-        background-color: #f1f5f9;
-    }
+        .text-question {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .likert-table input[type="radio"] {
-        width: 19px;
-        height: 19px;
-        cursor: pointer;
-        margin: 0;
-        accent-color: var(--azul-sidebar);
-    }
+        .text-question label {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #334155;
+        }
 
-    /* SECCIÓN DE TEXTAREAS */
-    .text-question {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
+        .text-question textarea {
+            width: 100%;
+            height: 100px;
+            padding: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+        }
 
-    .text-question label {
-        font-weight: 500;
-        font-size: 0.95rem;
-        color: #334155;
-    }
+        .text-question textarea:focus {
+            border-color: var(--azul-sidebar);
+        }
 
-    .text-question textarea {
-        width: 100%;
-        height: 100px;
-        padding: 0.75rem;
-        border: 1.5px solid #cbd5e1;
-        border-radius: 6px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.9rem;
-        resize: vertical;
-        box-sizing: border-box;
-        outline: none;
-    }
+        .btn-submit {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2);
+        }
 
-    .text-question textarea:focus {
-        border-color: var(--azul-sidebar);
-    }
+        .btn-submit:hover {
+            background-color: var(--azul-hover);
+            transform: translateY(-1px);
+        }
 
-    /* BOTÓN DE ENVÍO ACTUALIZADO (Mismo estilo que .btn-start) */
-    .btn-submit {
-        background-color: var(--azul-sidebar);
-        color: var(--blanco);
-        border: none;
-        padding: 0.9rem 2.5rem;
-        border-radius: 30px; /* Bordes completamente redondeados */
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-        transition: background 0.2s, transform 0.1s;
-        box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2); /* Sombra azul elegante */
-    }
+        /* 3. VISTA DE ÉXITO */
+        .success-state {
+            text-align: center;
+            padding: 1rem 0;
+        }
 
-    .btn-submit:hover {
-        background-color: var(--azul-hover);
-        transform: translateY(-1px);
-    }
+        .success-banner {
+            background-color: var(--verde-fondo);
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
 
-    /* 3. VISTA DE ÉXITO */
-    .success-state {
-        display: none; /* Controlado por JS */
-        text-align: center;
-        padding: 1rem 0;
-    }
+        .success-circle {
+            width: 70px;
+            height: 70px;
+            background-color: var(--verde-exito);
+            color: var(--blanco);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
 
-    .success-banner {
-        background-color: var(--verde-fondo);
-        border: 1px solid #a7f3d0;
-        border-radius: 12px;
-        padding: 2.5rem 1.5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 2rem;
-    }
+        .success-banner h2 {
+            color: #065f46;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
 
-    .success-circle {
-        width: 70px;
-        height: 70px;
-        background-color: var(--verde-exito);
-        color: var(--blanco);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        font-weight: bold;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
+        .success-banner p {
+            color: #047857;
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
 
-    .success-banner h2 {
-        color: #065f46;
-        margin: 0 0 0.5rem 0;
-        font-size: 1.6rem;
-        font-weight: 600;
-    }
+        .success-info-text {
+            color: var(--texto-mutado);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    .success-banner p {
-        color: #047857;
-        margin: 0;
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
+        .btn-return {
+            background-color: var(--azul-sidebar);
+            color: var(--blanco);
+            border: none;
+            padding: 0.85rem 2.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.2s;
+        }
 
-    .success-info-text {
-        color: var(--texto-mutado);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-        max-width: 550px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+        .btn-return:hover {
+            background-color: var(--azul-hover);
+        }
 
-    .btn-return {
-        background-color: var(--azul-sidebar);
-        color: var(--blanco);
-        border: none;
-        padding: 0.85rem 2.5rem;
-        border-radius: 6px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-        transition: background 0.2s;
-    }
-
-    .btn-return:hover {
-        background-color: var(--azul-hover);
-    }
-
-    .alert-msg {
-        padding: 1rem;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-        display: none;
-    }
-</style>
+        .alert-msg {
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+        .user-meta {
+            font-size: 0.75rem;
+            color: var(--texto-mutado);
+            margin: 0;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <div class="sidebar-brand">Panel del Graduado</div>
-            <ul class="sidebar-menu">
-                <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
-                <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
-                <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
-                <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
-                <li class="menu-item active"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
-            </ul>
-        </div>
-        <div class="btn-logout" id="btn-cerrar-sesion">🚪 Cerrar Sesión</div>
-    </div>
+    <div id="app" style="display: flex; width: 100vw; height: 100vh;">
 
-    <div class="main-content">
-        <div class="topbar">
+        <div class="sidebar">
             <div>
-                <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Evaluación Institucional</span>
+                <div class="sidebar-brand">Panel del Graduado</div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item"><a href="inicio.html">🏠 Inicio</a></li>
+                    <li class="menu-item"><a href="perfil-academico.html">🎓 Perfil Académico</a></li>
+                    <li class="menu-item"><a href="perfil-profesional.html">💼 Perfil Profesional</a></li>
+                    <li class="menu-item"><a href="formacion-continua.html">👤 Formación Continua</a></li>
+                    <li class="menu-item active"><a href="encuesta-caces.html">📄 Encuestas CACES</a></li>
+                </ul>
             </div>
-            <div>
-                <p id="lbl-nombre-usuario" style="margin:0; font-size:0.9rem; font-weight:600;">Cargando...</p>
-            </div>
+            <div class="btn-logout" @click="cerrarSesion">🚪 Cerrar Sesión</div>
         </div>
 
-        <div class="container">
-            <div id="alert-caces" class="alert-msg"></div>
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <span style="font-size: 1.15rem; font-weight: 600; color: var(--azul-sidebar);">Evaluación Institucional</span>
+                </div>
+                <div>
+                    <p style="margin:0; font-size:0.9rem; font-weight:600;">{{ lblNombreUsuario }}</p>
+                    <p class="user-meta">Graduado</p>
+                </div>
+            </div>
 
-            <div class="card">
-                
-                <div id="view-intro" class="intro-state">
-                    <div class="intro-icon">📋</div>
-                    <h2>Encuesta Obligatoria CACES</h2>
-                    <p>Estimado graduado, el Consejo de Aseguramiento de la Calidad de la Educación Superior requiere conocer su criterio sobre la formación recibida en la ULEAM. Sus respuestas son anónimas y fundamentales para los procesos de acreditación.</p>
-                    <button id="btn-comenzar-encuesta" class="btn-start">Responder Encuesta</button>
+            <div class="container">
+                <!-- Alerta controlado dinámicamente -->
+                <div class="alert-msg" v-if="alerta.visible">
+                    {{ alerta.texto }}
                 </div>
 
-                <div id="view-form" class="form-state">
-                    <h2>Cuestionario de Satisfacción Institucional</h2>
-                    <p class="form-subtitle">Responda marcando el nivel de valoración en cada criterio del Bloque 1 y completando las cajas de texto del Bloque 2.</p>
-
-                    <form id="form-caces">
-                        <h3 style="color: var(--azul-sidebar); font-size: 1.1rem; margin-bottom: 1.5rem;">Bloque 1: Evaluación de Calidad (Escala 1-5)</h3>
-
-                        <div class="likert-matrix-container">
-                            <table class="likert-table">
-                                <thead>
-                                    <tr>
-                                        <th class="col-pregunta">Criterio a Evaluar</th>
-                                        <th class="col-opcion">1<br><span class="lbl-nivel">Deficiente</span></th>
-                                        <th class="col-opcion">2<br><span class="lbl-nivel">Regular</span></th>
-                                        <th class="col-opcion">3<br><span class="lbl-nivel">Bueno</span></th>
-                                        <th class="col-opcion">4<br><span class="lbl-nivel">Muy Bueno</span></th>
-                                        <th class="col-opcion">5<br><span class="lbl-nivel">Excelente</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="txt-pregunta">1. ¿Qué tan aplicables han sido los conocimientos adquiridos en la carrera dentro de tu entorno laboral real?</td>
-                                        <td><input type="radio" name="p1" value="1" required></td>
-                                        <td><input type="radio" name="p1" value="2"></td>
-                                        <td><input type="radio" name="p1" value="3"></td>
-                                        <td><input type="radio" name="p1" value="4"></td>
-                                        <td><input type="radio" name="p1" value="5"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="txt-pregunta">2. ¿Consideras que la malla curricular que cursaste se encuentra actualizada frente a las demandas del sector?</td>
-                                        <td><input type="radio" name="p2" value="1" required></td>
-                                        <td><input type="radio" name="p2" value="2"></td>
-                                        <td><input type="radio" name="p2" value="3"></td>
-                                        <td><input type="radio" name="p2" value="4"></td>
-                                        <td><input type="radio" name="p2" value="5"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="txt-pregunta">3. ¿Cómo evalúas la calidad de la infraestructura de la universidad (laboratorios, aulas, plataformas virtuales)?</td>
-                                        <td><input type="radio" name="p3" value="1" required></td>
-                                        <td><input type="radio" name="p3" value="2"></td>
-                                        <td><input type="radio" name="p3" value="3"></td>
-                                        <td><input type="radio" name="p3" value="4"></td>
-                                        <td><input type="radio" name="p3" value="5"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="txt-pregunta">4. ¿Cómo calificarías el desempeño pedagógico y el dominio técnico de la planta docente?</td>
-                                        <td><input type="radio" name="p4" value="1" required></td>
-                                        <td><input type="radio" name="p4" value="2"></td>
-                                        <td><input type="radio" name="p4" value="3"></td>
-                                        <td><input type="radio" name="p4" value="4"></td>
-                                        <td><input type="radio" name="p4" value="5"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h3 style="color: var(--azul-sidebar); font-size: 1.1rem; margin-top: 3rem; margin-bottom: 1.5rem;">Bloque 2: Análisis y Sugerencias</h3>
-
-                        <div class="text-question">
-                            <label for="txt-p5">5. En tu experiencia profesional actual, ¿qué competencias o temáticas consideras que le faltaron a la carrera enseñarte?</label>
-                            <textarea id="txt-p5" placeholder="Ej: Mayor enfoque en despliegues Cloud, metodologías ágiles, etc." required></textarea>
-                        </div>
-
-                        <div class="text-question">
-                            <label for="txt-p6">6. ¿Qué sugerencias puntuales le darías a la facultad para mejorar la formación de las futuras generaciones?</label>
-                            <textarea id="txt-p6" placeholder="Escribe aquí tus sugerencias de mejora institucional..." required></textarea>
-                        </div>
-
-                        <div style="margin-top: 2.5rem; text-align: center;">
-                            <button type="submit" class="btn-submit">Finalizar yEnviar Encuesta</button>
-                        </div>
-                    </form>
+                <!-- Estado: Cargando inicial de red -->
+                <div class="card" v-if="estadoVista === 'cargando'" style="text-align: center; padding: 3rem 0;">
+                    <p style="color: var(--texto-mutado); font-weight: 500;">Validando estado de la encuesta institucional...</p>
                 </div>
 
-                <div id="view-success" class="success-state">
-                    <div class="success-banner">
-                        <div class="success-circle">✓</div>
-                        <h2>¡Encuesta Completada!</h2>
-                        <p id="lbl-fecha-envio">Procesado de forma exitosa.</p>
+                <div class="card" v-else>
+                    
+                    <!-- 1. VISTA INICIAL (PRESENTACIÓN) -->
+                    <div class="intro-state" v-if="estadoVista === 'intro'">
+                        <div class="intro-icon">📋</div>
+                        <h2>Encuesta Obligatoria CACES</h2>
+                        <p>Estimado graduado, el Consejo de Aseguramiento de la Calidad de la Educación Superior requiere conocer su criterio sobre la formación recibida en la ULEAM. Sus respuestas son anónimas y fundamentales para los procesos de acreditación.</p>
+                        <button class="btn-start" @click="comenzarEncuesta">Responder Encuesta</button>
                     </div>
-                    <p class="success-info-text">Muchas gracias por tu valioso tiempo. Tus respuestas han sido firmadas digitalmente y enviadas al repositorio central para el proceso de autoevaluación institucional.</p>
-                    <button id="btn-volver-inicio" class="btn-return">Volver al Inicio</button>
-                </div>
 
+                    <!-- 2. VISTA FORMULARIO (MATRIZ LIKERT) -->
+                    <div class="form-state" v-if="estadoVista === 'form'">
+                        <h2>Cuestionario de Satisfacción Institucional</h2>
+                        <p class="form-subtitle">Responda marcando el nivel de valoración en cada criterio del Bloque 1 y completando las cajas de texto del Bloque 2.</p>
+
+                        <form @submit.prevent="enviarEncuesta">
+                            <h3 style="color: var(--azul-sidebar); font-size: 1.1rem; margin-bottom: 1.5rem;">Bloque 1: Evaluación de Calidad (Escala 1-5)</h3>
+
+                            <div class="likert-matrix-container">
+                                <table class="likert-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-pregunta">Criterio a Evaluar</th>
+                                            <th class="col-opcion">1<br><span class="lbl-nivel">Deficiente</span></th>
+                                            <th class="col-opcion">2<br><span class="lbl-nivel">Regular</span></th>
+                                            <th class="col-opcion">3<br><span class="lbl-nivel">Bueno</span></th>
+                                            <th class="col-opcion">4<br><span class="lbl-nivel">Muy Bueno</span></th>
+                                            <th class="col-opcion">5<br><span class="lbl-nivel">Excelente</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="txt-pregunta">1. ¿Qué tan aplicables han sido los conocimientos adquiridos en la carrera dentro de tu entorno laboral real?</td>
+                                            <td><input type="radio" v-model="form.p1" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p1" value="2"></td>
+                                            <td><input type="radio" v-model="form.p1" value="3"></td>
+                                            <td><input type="radio" v-model="form.p1" value="4"></td>
+                                            <td><input type="radio" v-model="form.p1" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">2. ¿Consideras que la malla curricular que cursaste se encuentra actualizada frente a las demandas del sector?</td>
+                                            <td><input type="radio" v-model="form.p2" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p2" value="2"></td>
+                                            <td><input type="radio" v-model="form.p2" value="3"></td>
+                                            <td><input type="radio" v-model="form.p2" value="4"></td>
+                                            <td><input type="radio" v-model="form.p2" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">3. ¿Cómo evalúas la calidad de la infraestructura de la universidad (laboratorios, aulas, plataformas virtuales)?</td>
+                                            <td><input type="radio" v-model="form.p3" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p3" value="2"></td>
+                                            <td><input type="radio" v-model="form.p3" value="3"></td>
+                                            <td><input type="radio" v-model="form.p3" value="4"></td>
+                                            <td><input type="radio" v-model="form.p3" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">4. ¿Cómo calificarías el desempeño pedagógico y el dominio técnico de la planta docente?</td>
+                                            <td><input type="radio" v-model="form.p4" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p4" value="2"></td>
+                                            <td><input type="radio" v-model="form.p4" value="3"></td>
+                                            <td><input type="radio" v-model="form.p4" value="4"></td>
+                                            <td><input type="radio" v-model="form.p4" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">5. ¿De qué manera las prácticas preprofesionales y/o proyectos de vinculación con la sociedad fortalecieron tus competencias profesionales antes de graduarte?</td>
+                                            <td><input type="radio" v-model="form.p5" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p5" value="2"></td>
+                                            <td><input type="radio" v-model="form.p5" value="3"></td>
+                                            <td><input type="radio" v-model="form.p5" value="4"></td>
+                                            <td><input type="radio" v-model="form.p5" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">6. ¿Cómo evalúas el acceso y la utilidad de las herramientas tecnológicas, software especializado y bases de datos científicas provistas por la carrera?</td>
+                                            <td><input type="radio" v-model="form.p6" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p6" value="2"></td>
+                                            <td><input type="radio" v-model="form.p6" value="3"></td>
+                                            <td><input type="radio" v-model="form.p6" value="4"></td>
+                                            <td><input type="radio" v-model="form.p6" value="5"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="txt-pregunta">7. ¿Consideras que las competencias declaradas en el perfil de egreso de tu carrera corresponden a las funciones reales que te exige el mercado laboral?</td>
+                                            <td><input type="radio" v-model="form.p7" value="1" required></td>
+                                            <td><input type="radio" v-model="form.p7" value="2"></td>
+                                            <td><input type="radio" v-model="form.p7" value="3"></td>
+                                            <td><input type="radio" v-model="form.p7" value="4"></td>
+                                            <td><input type="radio" v-model="form.p7" value="5"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 style="color: var(--azul-sidebar); font-size: 1.1rem; margin-top: 3rem; margin-bottom: 1.5rem;">Bloque 2: Análisis y Sugerencias</h3>
+
+                            <div class="text-question">
+                                <label>5. En tu experiencia profesional actual, ¿qué competencias o temáticas consideras que le faltaron a la carrera enseñarte?</label>
+                                <textarea v-model="form.p8" placeholder="Ej: Mayor enfoque en despliegues Cloud, metodologías ágiles, etc." required></textarea>
+                            </div>
+
+                            <div class="text-question">
+                                <label>6. ¿Qué sugerencias puntuales le darías a la facultad para mejorar la formación de las futuras generaciones?</label>
+                                <textarea v-model="form.p9" placeholder="Escribe aquí tus sugerencias de mejora institucional..." required></textarea>
+                            </div>
+
+                            <div style="margin-top: 2.5rem; text-align: center;">
+                                <button type="submit" class="btn-submit" :disabled="procesando">
+                                    {{ procesando ? 'ENVIANDO RESPUESTAS...' : 'Finalizar y Enviar Encuesta' }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 3. VISTA DE ÉXITO -->
+                    <div class="success-state" v-if="estadoVista === 'success'">
+                        <div class="success-banner">
+                            <div class="success-circle">✓</div>
+                            <h2>¡Encuesta Completada!</h2>
+                            <p>{{ lblFechaEnvio }}</p>
+                        </div>
+                        <p class="success-info-text">Muchas gracias por tu valioso tiempo. Tus respuestas han sido firmadas digitalmente y enviadas al repositorio central para el proceso de autoevaluación institucional.</p>
+                        <button class="btn-return" @click="volverInicio">Volver al Inicio</button>
+                    </div>
+
+                </div>
             </div>
         </div>
+
     </div>
 
+    <!-- Script de inicialización reactivo de la vista -->
     <script type="module" src="js/encuesta.js"></script>
 </body>
 </html>

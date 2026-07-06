@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrativo - ULEAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Incluimos Font Awesome para el icono del ojito -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --azul-institucional: #1e293b;
+            --azul-hover: #0f172a;
+            --blanco: #ffffff;
+            --gris-fondo: #f4f7fa;
+            --rojo-alerta: #dc2626;
+            --texto-mutado: #64748b;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-fondo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--azul-institucional);
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+        }
+        /* Estilo para nuestro botón personalizado del ojo */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .toggle-password:hover {
+            color: #475569;
+        }
+        /* Desactivar el ojo por defecto de Microsoft Edge e Internet Explorer */
+        input::-ms-reveal, input::-ms-clear {
+            display: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background-color: var(--azul-institucional);
+            color: var(--blanco);
+        }
+        .btn-primary:hover {
+            background-color: var(--azul-hover);
+        }
+        .error-msg {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--rojo-alerta);
+            background-color: #fef2f2;
+            padding: 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #fca5a5;
+        }
+        .back-redirect {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .back-redirect a {
+            color: #004a99;
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="login-card">
+    <div style="text-align: center; font-weight: 700; color: #1e293b; font-size: 1.5rem; margin-bottom: 0.5rem;">ULEAM</div>
+    <h2>Panel Administrativo</h2>
+    
+    <form @submit.prevent="loginAdmin">
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" v-model="correo" placeholder="ejemplo@uleam.edu.ec" required>
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña</label>
+            <div class="password-container">
+                <input 
+                    :type="mostrarPassword ? 'text' : 'password'" 
+                    v-model="password" 
+                    placeholder="••••••••" 
+                    required
+                >
+                <!-- Ojito controlado por Vue que siempre estará activo -->
+                <button type="button" class="toggle-password" @click="mostrarPassword = !mostrarPassword">
+                    <i :class="mostrarPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                </button>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" :disabled="procesando">
+            {{ procesando ? 'AUTENTICANDO...' : 'INICIAR SESIÓN' }}
+        </button>
+    </form>
+
+    <div v-if="msgError" class="error-msg">
+        {{ msgError }}
+    </div>
+
+    <div class="back-redirect">
+        <a href="login.html">← Volver al acceso de Graduados</a>
+    </div>
+</div>
+
+<script src="../config/supabaseClient.js"></script>
+<script type="module">
+    const { createApp, ref } = Vue;
+
+    createApp({
+        setup() {
+            const correo = ref('');
+            const password = ref('');
+            const procesando = ref(false);
+            const msgError = ref('');
+            const mostrarPassword = ref(false); // Estado para rastrear la visibilidad de la contraseña
+
+            const loginAdmin = async () => {
+                msgError.value = '';
+                procesando.value = true;
+
+                const correoNormalizado = correo.value.trim().toLowerCase();
+
+                // COMENTARIO TEMPORAL DE RASTREO
+                console.log("Intentando buscar correo:", correoNormalizado);
+
+                try {
+                    const { data: admin, error } = await window.supabase
+                        .from('usuarios_administrativos')
+                        .select('*')
+                        .ilike('correo', correoNormalizado)
+                        .eq('activo', true)
+                        .maybeSingle();
+
+                    // COMENTARIO TEMPORAL DE RASTREO
+                    console.log("Respuesta de Supabase -> Datos:", admin, "Error:", error);
+
+                    if (error || !admin) {
+                        msgError.value = "Credenciales inválidas o el usuario no está activo.";
+                        procesando.value = false;
+                        return;
+                    }
+
+                    // COMENTARIO TEMPORAL DE RASTREO
+                    console.log("Contraseña ingresada:", password.value, "Contraseña en BD:", admin.password_hash);
+
+                    if (admin.password_hash === password.value) {
+                        localStorage.setItem('admin_session', JSON.stringify({
+                            id: admin.id,
+                            rol: admin.rol,
+                            nombre: `${admin.nombres} ${admin.apellidos}`
+                        }));
+
+                        window.location.href = "../administrador/dashboard.html";
+                    } else {
+                        msgError.value = "La contraseña ingresada es incorrecta.";
+                        procesando.value = false;
+                    }
+
+                } catch (err) {
+                    console.error("Error capturado en el catch:", err);
+                    msgError.value = "Error al intentar conectar con el servidor.";
+                    procesando.value = false;
+                }
+            };
+
+            return { correo, password, procesando, msgError, mostrarPassword, loginAdmin };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
