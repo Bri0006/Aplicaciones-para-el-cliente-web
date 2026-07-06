@@ -140,7 +140,7 @@ createApp({
         ejecutarLogout() {
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = "../auth/login_admin.html"; 
+            window.location.href = "../auth/login_admin.html";
         }
     },
     mounted() {

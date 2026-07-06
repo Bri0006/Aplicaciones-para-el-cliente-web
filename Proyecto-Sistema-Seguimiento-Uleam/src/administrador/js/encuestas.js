@@ -299,7 +299,7 @@ createApp({
         ejecutarLogout() {
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = "../login.html"; 
+            window.location.href = "../auth/login_admin.html";
         }
     },
     mounted() {
